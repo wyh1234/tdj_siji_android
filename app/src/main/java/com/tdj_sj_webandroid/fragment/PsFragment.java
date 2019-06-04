@@ -3,6 +3,7 @@ package com.tdj_sj_webandroid.fragment;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
@@ -131,6 +132,19 @@ public class PsFragment extends BaseFrgment {
 
 
         }
+        @JavascriptInterface
+        public void telephone(String phone)
+        {
+            LogUtils.d(phone);
+
+            Intent intent_service = new Intent(Intent.ACTION_DIAL);
+            Uri data = Uri.parse("tel:" + phone);
+            intent_service.setData(data);
+            startActivity(intent_service);
+        }
+
+
+
 
         @JavascriptInterface
         public void mapNavi(String jsonObject)

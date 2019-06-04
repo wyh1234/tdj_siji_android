@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -190,6 +191,7 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
 
 
         }
+
         @JavascriptInterface
         public void uploadImage() {
             //从相册中选择图片 此处使用知乎开源库Matisse

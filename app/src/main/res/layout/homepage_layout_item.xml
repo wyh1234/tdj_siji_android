@@ -21,6 +21,7 @@
         android:layout_toRightOf="@+id/iv"
         android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"
+        android:textColor="@color/text_visible"
         android:layout_width="wrap_content"
         android:text="我们不一样"
         android:layout_height="wrap_content" />
