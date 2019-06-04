@@ -1,5 +1,4 @@
 package com.tdj_sj_webandroid.fragment;
-
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
