@@ -7,7 +7,10 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toolbar;
+
 import com.apkfuns.logutils.LogUtils;
+import com.gyf.barlibrary.ImmersionBar;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.tdj_sj_webandroid.MainTabActivity;
 
@@ -56,6 +59,7 @@ public class HomePageFragment extends BaseFrgment<HomePageFragmentPresenter> imp
     @Override
     protected void initView(View view) {
         ButterKnife.bind(this, view);
+        //第二种方式，如果toolbar有颜色，要设置状态栏颜色
         rxPermissions = new RxPermissions(getActivity());
         LinearLayoutManager layout = new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL, false);

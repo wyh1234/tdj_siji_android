@@ -9,6 +9,7 @@ import android.webkit.JsResult;
 import com.tdj_sj_webandroid.utils.ADFilterTool;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebSettings;
+import com.xiasuhuei321.loadingdialog.view.LoadingDialog;
 
 import java.util.Map;
 
@@ -141,8 +142,7 @@ public class SimpleWebView extends com.tencent.smtt.sdk.WebView{
     }
 
     public static class SimpleWebViewClient extends com.tencent.smtt.sdk.WebViewClient {
-
-
+        LoadingDialog loadingDialog;
 
         @Override
         public com.tencent.smtt.export.external.interfaces.WebResourceResponse shouldInterceptRequest(com.tencent.smtt.sdk.WebView webView, String url) {
@@ -165,18 +165,18 @@ public class SimpleWebView extends com.tencent.smtt.sdk.WebView{
         @Override
         public void onPageStarted(com.tencent.smtt.sdk.WebView webView, String s, Bitmap bitmap) {
             super.onPageStarted(webView, s, bitmap);
-            /*try{
-                loadingDialog = new SimpleLoadingDialog(webView.getContext(),true);
-                loadingDialog.show();
-            }catch (Exception e){}*/
+            try{
+                 loadingDialog = new LoadingDialog(webView.getContext());
+                loadingDialog.setLoadingText("加载中...").show();
+            }catch (Exception e){}
         }
         //在页面加载结束的时候，关闭LoadingDialog
         @Override
         public void onPageFinished(com.tencent.smtt.sdk.WebView webView, String s) {
             super.onPageFinished(webView, s);
-            /*    if (loadingDialog != null) {
+                if (loadingDialog != null) {
                     loadingDialog.close();
-                }*/
+                }
         }
 
         @Override

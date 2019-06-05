@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.apkfuns.logutils.LogUtils;
+import com.gyf.barlibrary.ImmersionBar;
 import com.tdj_sj_webandroid.AppAplication;
 import com.tdj_sj_webandroid.MainTabActivity;
 import com.tdj_sj_webandroid.MianActivity;
@@ -32,8 +33,8 @@ import butterknife.ButterKnife;
 public class MyFragment extends BaseFrgment {
     @BindView(R.id.tv_refresh)
     TextView tv_refresh;
-    @BindView(R.id.myProgressBar)
-    ProgressBar myProgressBar;
+  /*  @BindView(R.id.myProgressBar)
+    ProgressBar myProgressBar;*/
     @BindView(R.id.wv_program)
     SimpleWebView wv_program;
     private WebSettings settings;
@@ -71,12 +72,12 @@ public class MyFragment extends BaseFrgment {
             wv_program.loadUrl(Constants.URL+Constants.mine_do,map);
         LogUtils.d(Constants.URL+Constants.mine_do);
         wv_program.setWebViewClient(new SimpleWebView.SimpleWebViewClient() {
-            @Override
+    /*        @Override
             public void onPageFinished(com.tencent.smtt.sdk.WebView webView, String url) {
                 super.onPageFinished(webView, url);
                 myProgressBar.setVisibility(View.GONE);
 //                toolbarTitle.setText(webView.getTitle());//获取WebView 的标题，设置到toolbar中去
-            }
+            }*/
 
             @Override
             public boolean shouldOverrideUrlLoading(com.tencent.smtt.sdk.WebView webView, String url) {
@@ -91,7 +92,7 @@ public class MyFragment extends BaseFrgment {
             }
 
         });
-        wv_program.setWebChromeClient(new SimpleWebView.SimpleWebChromeClient() {
+/*        wv_program.setWebChromeClient(new SimpleWebView.SimpleWebChromeClient() {
             @Override
             public void onProgressChanged(com.tencent.smtt.sdk.WebView webView, int newProgress) {
                 if (newProgress == 100) {
@@ -105,7 +106,7 @@ public class MyFragment extends BaseFrgment {
                 super.onProgressChanged(webView, newProgress);
             }
 
-        });
+        });*/
     }
 
     @Override
@@ -120,7 +121,7 @@ public class MyFragment extends BaseFrgment {
 
     @Override
     protected int getContentId() {
-        return R.layout.activity_main;
+        return R.layout.my_layout;
     }
 
     public class AndroidtoJs extends Object {
@@ -150,7 +151,16 @@ public class MyFragment extends BaseFrgment {
 
 
         }
+        @JavascriptInterface
+        public void passwordChange(String url)
+        {
+            Intent intent=new Intent(getContext(), WebViewActivity.class);
+            intent.putExtra("url", Constants.URL1+url);
+            startActivity(intent);
 
+
+
+        }
 
     }
 }

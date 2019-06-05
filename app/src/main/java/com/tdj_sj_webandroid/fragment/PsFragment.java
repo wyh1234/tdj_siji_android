@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.apkfuns.logutils.LogUtils;
+import com.gyf.barlibrary.ImmersionBar;
 import com.tdj_sj_webandroid.MainTabActivity;
 import com.tdj_sj_webandroid.R;
 import com.tdj_sj_webandroid.SimpleWebView;
@@ -33,8 +34,8 @@ import butterknife.ButterKnife;
 public class PsFragment extends BaseFrgment {
     @BindView(R.id.tv_refresh)
     TextView tv_refresh;
-    @BindView(R.id.myProgressBar)
-    ProgressBar myProgressBar;
+   /* @BindView(R.id.myProgressBar)
+    ProgressBar myProgressBar;*/
     @BindView(R.id.wv_program)
     SimpleWebView wv_program;
     private WebSettings settings;
@@ -73,12 +74,12 @@ public class PsFragment extends BaseFrgment {
         wv_program.loadUrl(Constants.URL+Constants.task,map);
         LogUtils.d(Constants.URL+Constants.task);
         wv_program.setWebViewClient(new SimpleWebView.SimpleWebViewClient() {
-            @Override
+    /*        @Override
             public void onPageFinished(com.tencent.smtt.sdk.WebView webView, String url) {
                 super.onPageFinished(webView, url);
                 myProgressBar.setVisibility(View.GONE);
 //                toolbarTitle.setText(webView.getTitle());//获取WebView 的标题，设置到toolbar中去
-            }
+            }*/
 
             @Override
             public boolean shouldOverrideUrlLoading(com.tencent.smtt.sdk.WebView webView, String url) {
@@ -93,7 +94,7 @@ public class PsFragment extends BaseFrgment {
             }
 
         });
-        wv_program.setWebChromeClient(new SimpleWebView.SimpleWebChromeClient() {
+/*        wv_program.setWebChromeClient(new SimpleWebView.SimpleWebChromeClient() {
             @Override
             public void onProgressChanged(com.tencent.smtt.sdk.WebView webView, int newProgress) {
                 if (newProgress == 100) {
@@ -107,7 +108,7 @@ public class PsFragment extends BaseFrgment {
                 super.onProgressChanged(webView, newProgress);
             }
 
-        });
+        });*/
     }
 
     @Override
@@ -125,6 +126,16 @@ public class PsFragment extends BaseFrgment {
         return R.layout.activity_main;
     }
     public class AndroidtoJs extends Object {
+
+        @JavascriptInterface
+        public void  startDepart(String url){
+            LogUtils.d(url);
+            Intent intent=new Intent(getContext(), WebViewActivity.class);
+            intent.putExtra("url", Constants.URL1+url);
+            startActivity(intent);
+
+
+        }
         @JavascriptInterface
         public void backHomePage()
         {
@@ -132,37 +143,6 @@ public class PsFragment extends BaseFrgment {
 
 
         }
-        @JavascriptInterface
-        public void telephone(String phone)
-        {
-            LogUtils.d(phone);
-
-            Intent intent_service = new Intent(Intent.ACTION_DIAL);
-            Uri data = Uri.parse("tel:" + phone);
-            intent_service.setData(data);
-            startActivity(intent_service);
-        }
-
-
-
-
-        @JavascriptInterface
-        public void mapNavi(String jsonObject)
-        {
-            LogUtils.d(jsonObject);
-
-            try {
-                JSONObject jsonObject1=new JSONObject(jsonObject);
-                GeneralUtils.goToGaodeMap(getContext(),jsonObject1.getDouble("lat"),jsonObject1.getDouble("lng"),jsonObject1.getString("name"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-
-
-
-        }
-
 
     }
 }

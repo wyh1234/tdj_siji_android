@@ -6,12 +6,15 @@ import android.content.Intent;
 import android.location.LocationManager;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.apkfuns.logutils.LogUtils;
+import com.gyf.barlibrary.ImmersionBar;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.tdj_sj_webandroid.base.BaseActivity;
 import com.tdj_sj_webandroid.mvp.presenter.IPresenter;
@@ -29,8 +32,8 @@ import butterknife.ButterKnife;
 public class MianActivity extends BaseActivity implements IMyLocation {
     @BindView(R.id.tv_refresh)
     TextView tv_refresh;
-    @BindView(R.id.myProgressBar)
-    ProgressBar myProgressBar;
+  /*  @BindView(R.id.myProgressBar)
+    ProgressBar myProgressBar;*/
     @BindView(R.id.wv_program)
     SimpleWebView wv_program;
     private WebSettings settings;
@@ -55,6 +58,9 @@ public class MianActivity extends BaseActivity implements IMyLocation {
     protected void initView() {
         ButterKnife.bind(this);
 
+
+        ImmersionBar.with(this).statusBarDarkFont(true) .keyboardEnable(true)  //解决软键盘与底部输入框冲突问题，默认为false，还有一个重载方法，可以指定软键盘mode
+                .init();
         rxPermissions = new RxPermissions(this);
         manager = new MyLocationManager(this);
         wv_program.addJavascriptInterface(new AndroidtoJs(), "android");//AndroidtoJS类对象映射到js的test对象
@@ -63,7 +69,7 @@ public class MianActivity extends BaseActivity implements IMyLocation {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_main;
+        return R.layout.activity_mains;
     }
 
     /**
@@ -73,12 +79,12 @@ public class MianActivity extends BaseActivity implements IMyLocation {
     private void initDetailsH5() {
         wv_program.loadUrl(Constants.URL+Constants.login);
         wv_program.setWebViewClient(new SimpleWebView.SimpleWebViewClient() {
-            @Override
+/*            @Override
             public void onPageFinished(com.tencent.smtt.sdk.WebView webView, String url) {
                 super.onPageFinished(webView, url);
                 myProgressBar.setVisibility(View.GONE);
 //                toolbarTitle.setText(webView.getTitle());//获取WebView 的标题，设置到toolbar中去
-            }
+            }*/
 
             @Override
             public boolean shouldOverrideUrlLoading(com.tencent.smtt.sdk.WebView webView, String url) {
@@ -93,7 +99,7 @@ public class MianActivity extends BaseActivity implements IMyLocation {
             }
 
         });
-        wv_program.setWebChromeClient(new SimpleWebView.SimpleWebChromeClient() {
+/*        wv_program.setWebChromeClient(new SimpleWebView.SimpleWebChromeClient() {
             @Override
             public void onProgressChanged(com.tencent.smtt.sdk.WebView webView, int newProgress) {
                 if (newProgress == 100) {
@@ -107,7 +113,7 @@ public class MianActivity extends BaseActivity implements IMyLocation {
                 super.onProgressChanged(webView, newProgress);
             }
 
-        });
+        });*/
     }
 
 

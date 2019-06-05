@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.tdj_sj_webandroid.utils.Constants;
+import com.tdj_sj_webandroid.utils.Density;
 import com.tdj_sj_webandroid.utils.GeneralUtils;
 import com.tencent.smtt.sdk.QbSdk;
 import com.zhouyou.http.EasyHttp;
@@ -17,6 +18,7 @@ public class AppAplication extends Application {
     public void onCreate() {
         // TODO Auto-generated method stub
         super.onCreate();
+        Density.setDensity(this);
         app = this;
         initX5();
         EasyHttp.init(this);
@@ -29,10 +31,11 @@ public class AppAplication extends Application {
                 .setRetryCount(3)//默认网络不好自动重试3次
                 .setRetryDelay(500)//每次延时500ms重试
                 .setRetryIncreaseDelay(500)//每次延时叠加500ms
-                .setBaseUrl(Constants.URL)
+                .setBaseUrl(Constants.URL).setCertificates()
                 .setCacheDiskConverter(new SerializableDiskConverter())//默认缓存使用序列化转化
                 .setCacheMaxSize(50 * 1024 * 1024)//设置缓存大小为50M
                 .setCacheVersion(1);//缓存版本为1
+
 
 
 

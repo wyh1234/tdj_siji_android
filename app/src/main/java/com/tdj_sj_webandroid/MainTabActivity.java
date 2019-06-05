@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gyf.barlibrary.ImmersionBar;
 import com.tdj_sj_webandroid.fragment.HomePageFragment;
 import com.tdj_sj_webandroid.fragment.MyFragment;
 import com.tdj_sj_webandroid.fragment.PsFragment;
@@ -48,11 +49,14 @@ public class MainTabActivity extends FragmentActivity {
     private long mExitTime;
     @BindView(R.id.fg_content)
     FrameLayout fg_content;
+    public ImmersionBar immersionBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab_main);
         ButterKnife.bind(this);
+        immersionBar= ImmersionBar.with(this);
+        immersionBar .statusBarDarkFont(true).init();
         fragmentManager = getSupportFragmentManager();
         setTabSelection(0);
     }

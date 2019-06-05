@@ -4,9 +4,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
+import android.view.Window;
 
 import com.tdj_sj_webandroid.mvp.presenter.IPresenter;
 import com.tdj_sj_webandroid.mvp.view.IView;
+import com.tdj_sj_webandroid.utils.Density;
 
 
 /**
@@ -24,7 +26,7 @@ public abstract class BaseActivity<P extends IPresenter> extends FragmentActivit
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getView());
-//        Density.setDefault(this);//屏幕适配
+        Density.setDefault(this);//屏幕适配
       /*  if (isRegisterEventBus()) {
             EventBusUtil.register(this);
         }*/

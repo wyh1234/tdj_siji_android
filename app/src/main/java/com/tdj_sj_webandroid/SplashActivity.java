@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 
+import com.gyf.barlibrary.ImmersionBar;
 import com.tdj_sj_webandroid.utils.GeneralUtils;
 
 import java.util.Timer;
@@ -25,6 +26,7 @@ public class SplashActivity extends AppCompatActivity {
         setTheme(R.style.AppTheme);//解决启动白频；
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        ImmersionBar.with(this).statusBarDarkFont(true).init();
 
         TimerTask task = new TimerTask() {
             @Override

@@ -5,7 +5,7 @@
     android:background="#ffffff"
     android:orientation="vertical" >
     <View
-        android:background="#f5f5f5"
+        android:background="@color/colorPrimaryDark"
         android:layout_width="match_parent"
         android:layout_height="20dp"/>
 <!--    <ProgressBar
