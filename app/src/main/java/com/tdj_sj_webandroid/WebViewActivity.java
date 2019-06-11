@@ -12,26 +12,21 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.apkfuns.logutils.LogUtils;
 import com.gyf.barlibrary.ImmersionBar;
+import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.tdj_sj_webandroid.base.BaseActivity;
 import com.tdj_sj_webandroid.contract.TDJContract;
-import com.tdj_sj_webandroid.model.HomeInfo;
-import com.tdj_sj_webandroid.mvp.presenter.IPresenter;
 import com.tdj_sj_webandroid.mvp.presenter.WebViewPresenter;
 import com.tdj_sj_webandroid.utils.BitmapTools;
 import com.tdj_sj_webandroid.utils.GeneralUtils;
 import com.tdj_sj_webandroid.utils.GifSizeFilter;
 import com.tdj_sj_webandroid.utils.IMyLocation;
 import com.tdj_sj_webandroid.utils.MyGlideEngine;
-import com.tdj_sj_webandroid.utils.MyLocationManager;
-import com.yzq.zxinglibrary.android.CaptureActivity;
-import com.yzq.zxinglibrary.common.Constant;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.filter.Filter;
@@ -57,6 +52,8 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
         SimpleWebView wv_program;
     private WebSettings settings;
     private static final int REQUEST_CODE_CHOOSE_GRIDE = 0X0002;
+    private RxPermissions rxPermissions;
+    private int index;
 
     @Override
     protected WebViewPresenter loadPresenter() {
@@ -76,6 +73,7 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
     protected void initView() {
         ImmersionBar.with(this).statusBarDarkFont(true).init();
         ButterKnife.bind(this);
+        rxPermissions=new RxPermissions(this);
         wv_program.addJavascriptInterface(new AndroidtoJs(), "android");//AndroidtoJS类对象映射到js的test对象
         initDetailsH5();
     }
@@ -167,14 +165,39 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
         // 定义JS需要调用的方法
         // 被JS调用的方法必须加入@JavascriptInterface注解
             //定位
-     /*       rxPermissions.requestEach(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION).subscribe(new Consumer<Permission>() {
+
+
+
+/*        @JavascriptInterface
+        public void getPermission(){
                 @Override
-                public void accept(Permission permission) throws Exception {
-                    if (permission.granted) {
-                        Toast.makeText(getContext(),""+manager.beginLocatioon().getLatitude()+","+manager.beginLocatioon().getLongitude(),Toast.LENGTH_LONG).show();
-                    }
+                    rxPermissions.requestEach(Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION).subscribe(new Consumer<Permission>() {
+                        @Override
+                        public void accept(Permission permission) throws Exception {
+                            index++;
+                            LogUtils.d(index);
+                            if (index==2){
+                                index=0;
+                                if (permission.granted) {
+                                    LogUtils.d(permission.granted);
+                                    wv_program.loadUrl("javascript:getPermission('" + true+ "')");
+                                }else if (permission.shouldShowRequestPermissionRationale) {
+                                    // 用户拒绝了该权限，没有选中『不再询问』（Never ask again）,那么下次再次启动时，还会提示请求权限的对话框 Log.d(TAG, permission.name + " is denied. More info should be provided.");
+                                    Toast.makeText(getContext(),"必须开启定位权限才能完成打卡操作",Toast.LENGTH_LONG).show();
+                                } else {
+                                    // 用户拒绝了该权限，并且选中『不再询问』 Log.d(TAG, permission.name + " is denied.");
+                                    Toast.makeText(getContext(),"必须开启定位权限才能完成打卡操作",Toast.LENGTH_LONG).show();
+
+                                }
+                            }
+
+                        }
+                    });
                 }
-            });*/
+
+        }*/
+
+
         @JavascriptInterface
         public void goback()
         {

@@ -1,17 +1,24 @@
 package com.tdj_sj_webandroid;
 
+import android.Manifest;
 import android.app.Notification;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 
+import com.apkfuns.logutils.LogUtils;
 import com.gyf.barlibrary.ImmersionBar;
+import com.tbruyelle.rxpermissions2.Permission;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.tdj_sj_webandroid.utils.GeneralUtils;
 
 import java.util.Timer;
 import java.util.TimerTask;
+
+import io.reactivex.functions.Consumer;
 
 
 /**
@@ -20,12 +27,13 @@ import java.util.TimerTask;
 
 public class SplashActivity extends AppCompatActivity {
     public Timer timer = new Timer();
-
+    private RxPermissions rxPermissions;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setTheme(R.style.AppTheme);//解决启动白频；
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        rxPermissions=new RxPermissions(this);
         ImmersionBar.with(this).statusBarDarkFont(true).init();
 
         TimerTask task = new TimerTask() {
