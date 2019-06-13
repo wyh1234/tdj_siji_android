@@ -27,6 +27,7 @@ import com.tdj_sj_webandroid.utils.GeneralUtils;
 import com.tdj_sj_webandroid.utils.GifSizeFilter;
 import com.tdj_sj_webandroid.utils.IMyLocation;
 import com.tdj_sj_webandroid.utils.MyGlideEngine;
+import com.yzq.zxinglibrary.android.CaptureActivity;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.filter.Filter;
@@ -244,20 +245,31 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
         @JavascriptInterface
         public void uploadImage() {
             //从相册中选择图片 此处使用知乎开源库Matisse
-            Matisse.from(WebViewActivity.this)
-                    .choose(MimeType.ofImage())
-                    .theme(R.style.Matisse_Dracula)
-                    .countable(true)//true:选中后显示数字;false:选中后显示对号
-                    .maxSelectable(1)
-                    .capture(true)
-                    .captureStrategy(new CaptureStrategy(true, "com.tdj_sj_webandroid")) //是否拍照功能，并设置拍照后图片的保存路径; FILE_PATH = 你项目的包名.fileprovider,必须配置不然会抛异常
-                    .addFilter(new GifSizeFilter(320, 320, 5 * Filter.K * Filter.K))
-                    .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
-                    .originalEnable(true)
-                    .maxOriginalSize(10)
-                    .thumbnailScale(0.85f)
-                    .imageEngine(new MyGlideEngine())
-                    .forResult(REQUEST_CODE_CHOOSE_GRIDE);
+            rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE,Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe(new Consumer<Boolean>() {
+                @Override
+                public void accept(Boolean b) throws Exception {
+                    Log.i("permission",b+"");
+                    if (b) {
+                        Matisse.from(WebViewActivity.this)
+                                .choose(MimeType.ofImage())
+                                .theme(R.style.Matisse_Dracula)
+                                .countable(true)//true:选中后显示数字;false:选中后显示对号
+                                .maxSelectable(1)
+                                .capture(true)
+                                .captureStrategy(new CaptureStrategy(true, "com.tdj_sj_webandroid")) //是否拍照功能，并设置拍照后图片的保存路径; FILE_PATH = 你项目的包名.fileprovider,必须配置不然会抛异常
+                                .addFilter(new GifSizeFilter(320, 320, 5 * Filter.K * Filter.K))
+                                .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+                                .originalEnable(true)
+                                .maxOriginalSize(10)
+                                .thumbnailScale(0.85f)
+                                .imageEngine(new MyGlideEngine())
+                                .forResult(REQUEST_CODE_CHOOSE_GRIDE);
+
+                    }
+                }
+            });
+
+
 
 
         }

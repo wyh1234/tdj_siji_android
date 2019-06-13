@@ -171,6 +171,14 @@ public class MianActivity extends BaseActivity implements IMyLocation {
 
 
         }
+
+        @JavascriptInterface
+        public void quitLogin()
+        {
+            GeneralUtils.removeToken(AppAplication.getAppContext());
+            wv_program.goBack();
+
+        }
     }
 
 }

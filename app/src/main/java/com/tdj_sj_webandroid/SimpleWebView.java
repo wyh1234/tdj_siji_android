@@ -1,11 +1,14 @@
 package com.tdj_sj_webandroid;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.webkit.JsResult;
 
+import com.apkfuns.logutils.LogUtils;
 import com.tdj_sj_webandroid.utils.ADFilterTool;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebSettings;
@@ -84,11 +87,12 @@ public class SimpleWebView extends com.tencent.smtt.sdk.WebView{
         public void onProgressChanged(com.tencent.smtt.sdk.WebView webView, int newProgress) {
             super.onProgressChanged(webView, newProgress);
         }
-
+/*
         public boolean onJsAlert(com.tencent.smtt.sdk.WebView webView, String url, String message,
                                  final JsResult result) {
+            LogUtils.i(message);
 
-     /*       AlertDialog.Builder b = new AlertDialog.Builder(MainActivity.this);
+            AlertDialog.Builder b = new AlertDialog.Builder(webView.getContext());
             b.setTitle("警告");
             b.setMessage(message);
             b.setPositiveButton("确定",
@@ -102,9 +106,9 @@ public class SimpleWebView extends com.tencent.smtt.sdk.WebView{
                     });
             b.setCancelable(true);
             b.create();
-            b.show();*/
+            b.show();
             return true;
-        }
+        }*/
         @Override
         public void onReceivedTitle(com.tencent.smtt.sdk.WebView webView, String titles) {
             // TODO Auto-generated method stub
@@ -112,9 +116,9 @@ public class SimpleWebView extends com.tencent.smtt.sdk.WebView{
 //            title.setText(title_str);
         }
 
-        public boolean onJsConfirm(android.webkit.WebView view, String url,
+ /*       public boolean onJsConfirm(android.webkit.WebView view, String url,
                                    String message, final JsResult result) {
-/*            AlertDialog.Builder b = new AlertDialog.Builder(MainActivity.this);
+            AlertDialog.Builder b = new AlertDialog.Builder(view.getContext());
             b.setTitle("提示");
             b.setMessage(message);
             b.setPositiveButton("确定",
@@ -135,10 +139,10 @@ public class SimpleWebView extends com.tencent.smtt.sdk.WebView{
             });
             b.setCancelable(true);
             b.create();
-            b.show();*/
+            b.show();
             return true;
 
-        }
+        }*/
     }
 
     public static class SimpleWebViewClient extends com.tencent.smtt.sdk.WebViewClient {
