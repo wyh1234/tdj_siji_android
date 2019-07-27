@@ -56,6 +56,7 @@ public class HttpUtils {
             public void onError(ApiException e) {
                 super.onError(e);
                 ToastUtils.showToast(context, e.getMessage());
+                response.onError(e);
 //                ApiExceptionManage.handleException(e,context);
             }
         });

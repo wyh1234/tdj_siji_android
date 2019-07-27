@@ -46,6 +46,9 @@ public abstract class BaseActivity<P extends IPresenter> extends FragmentActivit
         //加载网络（或者本地）数据
         initData();
 //        Log.i("父类","父类方法");
+
+
+
     }
 
     protected abstract P loadPresenter();

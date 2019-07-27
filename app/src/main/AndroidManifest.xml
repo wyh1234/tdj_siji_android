@@ -52,6 +52,10 @@
             android:name=".MianActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".StorageManagementActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".MainTabActivity"
             android:screenOrientation="portrait" />
         <activity

@@ -40,7 +40,7 @@ public class MianActivity extends BaseActivity implements IMyLocation {
     @BindView(R.id.wv_program)
     SimpleWebView wv_program;
     private WebSettings settings;
-    private RxPermissions rxPermissions;
+//    private RxPermissions rxPermissions;
     private MyLocationManager manager;
 
     @Override
@@ -64,15 +64,10 @@ public class MianActivity extends BaseActivity implements IMyLocation {
 
         ImmersionBar.with(this).statusBarDarkFont(true) .keyboardEnable(true)  //解决软键盘与底部输入框冲突问题，默认为false，还有一个重载方法，可以指定软键盘mode
                 .init();
-        rxPermissions = new RxPermissions(this);
+//        rxPermissions = new RxPermissions(this);
 
         manager = new MyLocationManager(this);
-        rxPermissions.requestEach(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION).subscribe(new Consumer<Permission>() {
-            @Override
-            public void accept(Permission f) throws Exception {
-                LogUtils.i(f.granted);
-            }
-        });
+
         wv_program.addJavascriptInterface(new AndroidtoJs(), "android");//AndroidtoJS类对象映射
         initDetailsH5();
     }
