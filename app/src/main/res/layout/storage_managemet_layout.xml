@@ -31,7 +31,7 @@
                     android:layout_height="match_parent" />
 
             <TextView
-                android:id="@+id/tv_cancle"
+                android:id="@+id/tv_qx"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"

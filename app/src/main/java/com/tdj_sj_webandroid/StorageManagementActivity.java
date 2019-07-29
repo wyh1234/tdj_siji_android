@@ -10,6 +10,7 @@ import android.media.MediaPlayer;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -26,6 +27,7 @@ import com.tdj_sj_webandroid.model.StorageManagement;
 import com.tdj_sj_webandroid.mvp.presenter.IPresenter;
 import com.tdj_sj_webandroid.mvp.presenter.StorageManagementPresenter;
 import com.tdj_sj_webandroid.utils.Constants;
+import com.tdj_sj_webandroid.utils.GeneralUtils;
 import com.zhouyou.http.exception.ApiException;
 
 import java.io.IOException;
@@ -47,19 +49,19 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
     TextView tv_num;
     @BindView(R.id.rk_list)
     RecyclerView rk_list;
-    @BindView(R.id.tv_cancle)
-    TextView tv_cancle;
+    @BindView(R.id.tv_qx)
+    TextView tv_qx;
     private BroadcastReceiver scanReceiver;
     private boolean b=false;
     private List<StorageManagement> list=new ArrayList();
     private StorageManagementAdapter storageManagementAdapter;
 
-    @OnClick({R.id.tv_cancle,R.id.right_text,R.id.btn_back})
+    @OnClick({R.id.tv_qx,R.id.right_text,R.id.btn_back})
     public void onClick(View view){
         switch (view.getId()){
-            case R.id.tv_cancle:
+            case R.id.tv_qx:
                 b=true;
-                tv_cancle.setTextColor(getResources().getColor(R.color.text_));
+                tv_qx.setTextColor(getResources().getColor(R.color.text_));
                 break;
             case R.id.right_text:
                 if (TextUtils.isEmpty(search_edit.getText().toString())){
@@ -244,7 +246,7 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
         LogUtils.i(b);
         if (b){
             b=false;
-            tv_cancle.setTextColor(getResources().getColor(R.color.text_gonees));
+            tv_qx.setTextColor(getResources().getColor(R.color.text_gonees));
                 if (list.size()>0){
                     for (int i=0;i<list.size();i++){
                         if (list.get(i).getSku().equals(result.getData().getSku())){
@@ -292,7 +294,21 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
     public void get_scann_onError(ApiException e) {
         if (b) {
             b = false;
-            tv_cancle.setTextColor(getResources().getColor(R.color.text_gonees));
+            tv_qx.setTextColor(getResources().getColor(R.color.text_gonees));
         }
     }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        // TODO Auto-generated method stub
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            View view = getCurrentFocus();
+            if (GeneralUtils.isHideInput(view, ev)) {
+                GeneralUtils. hideSoftInput(view.getWindowToken(),this);
+            }
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+
 }
