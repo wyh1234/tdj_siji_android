@@ -82,4 +82,5 @@ dependencies {
     compile 'com.zhihu.android:matisse:0.5.2-beta2'
     implementation 'com.gyf.immersionbar:immersionbar:2.3.3'
         compile 'com.github.ForgetAll:LoadingDialog:v1.0.1'
+    compile 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.3'
 }

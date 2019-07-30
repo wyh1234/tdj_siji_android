@@ -12,6 +12,7 @@ import com.tdj_sj_webandroid.utils.Constants;
 import com.zhouyou.http.exception.ApiException;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class StorageManagementPresenter extends BasePresenter<Model, StorageManagementActivity> {
@@ -38,5 +39,32 @@ public class StorageManagementPresenter extends BasePresenter<Model, StorageMana
             }
         });
 
+
+
+
     }
+
+    public void get_scann(int pn) {
+        Map<String,String> map=new HashMap<>();
+        map.put("ps","10");
+        map.put("pn",String.valueOf(pn));
+        HttpUtils.onGet(getIView().getContext(), map, Constants.home, new GsonResponseHandler<CustomApiResult<List<StorageManagement>>>() {
+            @Override
+            public void onError(ApiException e) {
+            }
+
+            @Override
+            public void onSuccess(CustomApiResult<List<StorageManagement>> response) {
+                LogUtils.i(response);
+                getIView().get_scann__home_Success(response);
+
+
+            }
+        });
+
+
+
+
+    }
+
 }

@@ -6,6 +6,33 @@ public class CustomApiResult <T>{
     private int err;
     private String msg;
     private T data;
+    private int ps;
+    private int pn;
+    private int total;
+
+    public int getPs() {
+        return ps;
+    }
+
+    public void setPs(int ps) {
+        this.ps = ps;
+    }
+
+    public int getPn() {
+        return pn;
+    }
+
+    public void setPn(int pn) {
+        this.pn = pn;
+    }
+
+    public int getTotal() {
+        return total;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
+    }
 
     public int getErr() {
         return err;

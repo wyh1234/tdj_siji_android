@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
+    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="#ffffff"
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
     <View
         android:background="#f5f5f5"
@@ -154,39 +156,22 @@
         android:layout_width="match_parent"
         android:background="#f6f6f6"
         android:layout_height="1dp"/>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        <com.scwang.smartrefresh.layout.SmartRefreshLayout
+            android:id="@+id/refreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:srlEnablePreviewInEditMode="true"
+            app:srlEnableRefresh="false">
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rk_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
         </android.support.v7.widget.RecyclerView>
-     <!--   <LinearLayout
-            android:layout_alignParentBottom="true"
-            android:layout_width="match_parent"
-            android:layout_gravity="bottom"
-            android:layout_height="50dp">
-            <Button
+            <com.scwang.smartrefresh.layout.footer.ClassicsFooter
                 android:layout_width="match_parent"
-                android:text="订单入库"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:textColor="@color/colorPrimaryDark"
-                android:background="@color/text_gonees"
-                android:layout_height="match_parent" />
-
-            <Button
-                android:layout_weight="1"
-                android:layout_width="match_parent"
-                android:background="@color/colorAccent"
-                android:text="取消入库"
-                android:textColor="@color/colorPrimaryDark"
-                android:gravity="center"
-                android:layout_height="match_parent" />
-
-        </LinearLayout>-->
-    </RelativeLayout>
+                android:layout_height="wrap_content"
+                app:srlClassicsSpinnerStyle="Translate" />
+        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
 </LinearLayout>

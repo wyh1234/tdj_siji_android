@@ -19,6 +19,8 @@ import android.widget.Toast;
 
 import com.apkfuns.logutils.LogUtils;
 import com.gyf.barlibrary.ImmersionBar;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
 import com.tdj_sj_webandroid.adapter.BaseRecyclerViewAdapter;
 import com.tdj_sj_webandroid.adapter.StorageManagementAdapter;
 import com.tdj_sj_webandroid.base.BaseActivity;
@@ -38,7 +40,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class StorageManagementActivity extends BaseActivity<StorageManagementPresenter> implements BaseRecyclerViewAdapter.OnItemClickListener {
+public class StorageManagementActivity extends BaseActivity<StorageManagementPresenter> implements BaseRecyclerViewAdapter.OnItemClickListener, OnLoadmoreListener {
     @BindView(R.id.btn_back)
     ImageView btn_back;
     @BindView(R.id.search_edit)
@@ -49,13 +51,16 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
     TextView tv_num;
     @BindView(R.id.rk_list)
     RecyclerView rk_list;
+    @BindView(R.id.refreshLayout)
+    RefreshLayout refreshLayout;
     @BindView(R.id.tv_qx)
     TextView tv_qx;
+    public int pageNo = 1;//翻页计数器
     private BroadcastReceiver scanReceiver;
     private boolean b=false;
     private List<StorageManagement> list=new ArrayList();
     private StorageManagementAdapter storageManagementAdapter;
-
+    private int total=0;
     @OnClick({R.id.tv_qx,R.id.right_text,R.id.btn_back})
     public void onClick(View view){
         switch (view.getId()){
@@ -80,9 +85,14 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
     protected StorageManagementPresenter loadPresenter() {
         return new StorageManagementPresenter();
     }
+    protected  void getData(int pn){
+       mPresenter.get_scann(pn);
 
+    }
     @Override
     protected void initData() {
+
+
         //新大陆
         Intent intent = new Intent("ACTION_BARCODE_CFG");
         intent.putExtra("EXTRA_SCAN_MODE", 3);
@@ -128,6 +138,7 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
     @Override
     protected void initView() {
         ButterKnife.bind(this);
+        refreshLayout.setOnLoadmoreListener(this);
         ImmersionBar.with(this).statusBarDarkFont(true).keyboardEnable(true)  //解决软键盘与底部输入框冲突问题，默认为false，还有一个重载方法，可以指定软键盘mode
                 .init();
         LinearLayoutManager layout = new LinearLayoutManager(getContext(),
@@ -136,6 +147,7 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
         storageManagementAdapter=new StorageManagementAdapter(this,list);
         rk_list.setAdapter(storageManagementAdapter);
         storageManagementAdapter.setOnItemClickListener(this);
+        getData(1);
     }
 
     @Override
@@ -243,39 +255,42 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
 
     }
     public void get_scann_Success(CustomApiResult<StorageManagement> result) {
+        if (result.getErr()!=0){
+            tv_qx.setTextColor(getResources().getColor(R.color.text_gonees));
+            modeIndicater(this);
+            return;
+        }
         LogUtils.i(b);
         if (b){
             b=false;
-            tv_qx.setTextColor(getResources().getColor(R.color.text_gonees));
                 if (list.size()>0){
                     for (int i=0;i<list.size();i++){
                         if (list.get(i).getSku().equals(result.getData().getSku())){
                             list.remove(i);
                             LogUtils.i(i);
-
                             break;
                         }
 
                     }
                     storageManagementAdapter.notifyDataSetChanged();
-
-
+                    LogUtils.i(total);
+                    tv_num.setText("已入库："+(--total));
 
                 }
 
 
         }else {
             if (result.getErr()==0){
-                list.add(result.getData());
+                list.add(0,result.getData());
                 storageManagementAdapter.notifyDataSetChanged();
-
+                tv_num.setText("已入库："+(++total));
 
             }else {
                 modeIndicater(this);
             }
 
         }
-        tv_num.setText("已入库："+list.size());
+
 
     }
 
@@ -310,5 +325,36 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
         return super.dispatchTouchEvent(ev);
     }
 
+    public void get_scann__home_Success(CustomApiResult<List<StorageManagement>> response) {
+        if (refreshLayout.isEnableLoadmore()) {
+            refreshLayout.finishLoadmore();
+        }
+        if (response.getErr()==0){
 
+            if (response.getData().size()>0){
+                list.addAll(response.getData());
+                tv_num.setText("已入库："+list.size());
+                storageManagementAdapter.notifyDataSetChanged();
+
+            }else {
+                if (response.getPn()!=1){
+                    Toast.makeText(this,"数据加载完毕",Toast.LENGTH_LONG).show();
+                }
+            }
+            total=response.getTotal();
+            tv_num.setText("已入库："+response.getTotal());
+
+        }else {
+            if (response.getPn()!=1){
+                Toast.makeText(this,"数据加载完毕",Toast.LENGTH_LONG).show();
+            }
+        }
+
+
+    }
+
+    @Override
+    public void onLoadmore(RefreshLayout refreshlayout) {
+        getData(++pageNo);
+    }
 }
