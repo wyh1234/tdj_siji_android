@@ -15,6 +15,7 @@
         android:id="@+id/toolbar"
         android:background="#f5f5f5"
         app:contentInsetStart="0dp"
+        app:contentInsetEnd="0dp"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         >
@@ -44,20 +45,30 @@
                 android:layout_alignParentRight="true"
                 android:textColor="@color/text_gonees"
                 android:textSize="12sp" />
+            <RelativeLayout
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:paddingLeft="15dp"
-                android:paddingRight="15dp"
                 android:text="扫码入库"
-                android:layout_centerInParent="true"
                 android:layout_centerVertical="true"
                 android:textColor="#1A1A1A"
-
                 android:textSize="18sp" />
+            <TextView
+                android:id="@+id/tv_title1"
+                android:layout_toRightOf="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_centerVertical="true"
+                android:textColor="#1A1A1A"
+                android:textSize="18sp" />
+            </RelativeLayout>
         </RelativeLayout>
     </android.support.v7.widget.Toolbar>
     <View

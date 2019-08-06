@@ -9,6 +9,15 @@ public class CustomApiResult <T>{
     private int ps;
     private int pn;
     private int total;
+    private String regionNo;
+
+    public String getRegionNo() {
+        return regionNo;
+    }
+
+    public void setRegionNo(String regionNo) {
+        this.regionNo = regionNo;
+    }
 
     public int getPs() {
         return ps;
