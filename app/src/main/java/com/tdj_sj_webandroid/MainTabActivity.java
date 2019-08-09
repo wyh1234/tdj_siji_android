@@ -13,9 +13,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gyf.barlibrary.ImmersionBar;
+import com.tdj_sj_webandroid.base.BaseActivity;
 import com.tdj_sj_webandroid.fragment.HomePageFragment;
 import com.tdj_sj_webandroid.fragment.MyFragment;
 import com.tdj_sj_webandroid.fragment.PsFragment;
+import com.tdj_sj_webandroid.mvp.presenter.IPresenter;
 
 import java.util.List;
 
@@ -23,7 +25,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainTabActivity extends FragmentActivity {
+public class MainTabActivity extends BaseActivity {
     @BindView(R.id.home)
     FrameLayout frameLayout_home;
     @BindView(R.id.ps)
@@ -50,15 +52,34 @@ public class MainTabActivity extends FragmentActivity {
     @BindView(R.id.fg_content)
     FrameLayout fg_content;
     public ImmersionBar immersionBar;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tab_main);
+    protected IPresenter loadPresenter() {
+        return null;
+    }
+
+    @Override
+    protected void initData() {
+
+    }
+
+    @Override
+    protected void initListener() {
+
+    }
+
+    @Override
+    protected void initView() {
         ButterKnife.bind(this);
         immersionBar= ImmersionBar.with(this);
         immersionBar .statusBarDarkFont(true).init();
         fragmentManager = getSupportFragmentManager();
         setTabSelection(0);
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_tab_main;
     }
 
     @OnClick({R.id.home, R.id.ps,R.id.my,R.id.ps_image})

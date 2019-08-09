@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.tdj_sj_webandroid">
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -29,7 +30,15 @@
     <uses-permission android:name="android.permission.CALL_PHONE"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
-
+    <!--用于进行网络定位-->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
+    <!--用于获取wifi的获取权限，wifi信息会用来进行网络定位-->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"></uses-permission>
+    <!--用于申请调用A-GPS模块-->
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"></uses-permission>
+    <!--用于申请获取蓝牙信息进行室内定位-->
+    <uses-permission android:name="android.permission.BLUETOOTH"></uses-permission>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"></uses-permission>
 
     <application
         android:name=".AppAplication"
@@ -61,7 +70,10 @@
         <activity
             android:name=".WebViewActivity"
             android:screenOrientation="portrait" />
-
+        <activity
+            android:name=".utils.appupdate.PermissionActivity"
+            android:label=""
+            android:theme="@style/DialogActivity" />
         <!-- 腾讯X5内核初始化 -->
         <service android:name="com.tencent.smtt.export.external.DexClassLoaderProviderService"
             android:label="dexopt"
@@ -69,13 +81,16 @@
 
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.tdj_sj_webandroid"
+            android:authorities="${applicationId}.fileProvider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths_public" />
         </provider>
+        <service android:name=".utils.appupdate.DownloadService" />
+        <service android:name="com.amap.api.location.APSService"></service>
+        <meta-data android:name="com.amap.api.v2.apikey" android:value="8f0874da3bb5e23ef8aa84a3f6ceebab"/>
     </application>
 
 </manifest>

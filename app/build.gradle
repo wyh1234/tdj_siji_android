@@ -84,4 +84,6 @@ dependencies {
     compile 'com.github.ForgetAll:LoadingDialog:v1.0.1'
     compile 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.3'
     implementation files('libs/ScannerAPI.jar')
+    compile 'com.amap.api:location:latest.integration'
+    implementation 'org.greenrobot:eventbus:3.0.0'
 }

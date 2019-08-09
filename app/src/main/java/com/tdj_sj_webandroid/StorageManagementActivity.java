@@ -32,7 +32,7 @@ import com.tdj_sj_webandroid.mvp.presenter.IPresenter;
 import com.tdj_sj_webandroid.mvp.presenter.StorageManagementPresenter;
 import com.tdj_sj_webandroid.utils.Constants;
 import com.tdj_sj_webandroid.utils.GeneralUtils;
-import com.tdj_sj_webandroid.utils.SoundPlayer;
+import com.tdj_sj_webandroid.utils.player.SoundPlayer;
 import com.zhouyou.http.exception.ApiException;
 
 import java.io.IOException;
@@ -107,11 +107,11 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
     }
     @Override
     protected void initData() {
-         soundUtils = new SoundPlayer(this, SoundPlayer.RING_SOUND);
-        soundUtils.putSound(0,R.raw.aa);
+         soundUtils = new SoundPlayer(this);
+   /*     soundUtils.putSound(0,R.raw.aa);
         soundUtils.putSound(1,R.raw.quxiao);
         soundUtils.putSound(2,R.raw.saomacaoqu);
-        soundUtils.putSound(3,R.raw.rukeshibai);
+        soundUtils.putSound(3,R.raw.rukeshibai);*/
         //东大集
         Intent intent = new Intent("com.seuic.scanner.action.PARAM_SETTINGS").putExtra(TYPE_BARCODE_BROADCAST_ACTION, SCANACTION);
         intent.putExtra("number",0x10a);
@@ -336,15 +336,18 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
                     storageManagementAdapter.notifyDataSetChanged();
                     LogUtils.i(total);
                     tv_num.setText("已入库："+(--total));
-                    soundUtils.playSound(1,SoundPlayer.SINGLE_PLAY);
+//                    soundUtils.playSound(1,SoundPlayer.SINGLE_PLAY);
+                    soundUtils.play(R.raw.quxiao,false);
 //                    modeIndicater(this,1);
 
                 }
 
 
         }else {
-            soundUtils.playSound(0,SoundPlayer.SINGLE_PLAY);
+//            soundUtils.playSound(0,SoundPlayer.SINGLE_PLAY);
+            soundUtils.play(R.raw.aa,false);
             if (result.getErr()==0){
+
                 list.add(0,result.getData());
                 storageManagementAdapter.notifyDataSetChanged();
                 tv_num.setText("已入库："+(++total));
@@ -360,11 +363,13 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
             }
         }
         if (result.getErr()==1){
-            soundUtils.playSound(3,SoundPlayer.SINGLE_PLAY);
+//            soundUtils.playSound(3,SoundPlayer.SINGLE_PLAY);
+            soundUtils.play(R.raw.rukeshibai,false);
 //            modeIndicater(this,3);
         }
         if (result.getErr()==2){
-            soundUtils.playSound(2,SoundPlayer.SINGLE_PLAY);
+//            soundUtils.playSound(2,SoundPlayer.SINGLE_PLAY);
+            soundUtils.play(R.raw.saomacaoqu,false);
 //            modeIndicater(this,4);
         }
 

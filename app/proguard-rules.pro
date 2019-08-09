@@ -549,3 +549,8 @@ public static final int *;
  -keep class com.zhouyou.http.model.** {*;}
  -keep class com.zhouyou.http.cache.model.** {*;}
  -keep class com.zhouyou.http.cache.stategy.**{*;}
+
+
+-keep class com.amap.api.location.**{*;}
+-keep class com.amap.api.fence.**{*;}
+-keep class com.autonavi.aps.amapapi.model.**{*;}

@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Environment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -29,12 +30,17 @@ import com.tdj_sj_webandroid.adapter.HomePageFragmentAdapter;
 import com.tdj_sj_webandroid.base.BaseFrgment;
 
 import com.tdj_sj_webandroid.contract.TDJContract;
+import com.tdj_sj_webandroid.model.AppUpdate;
 import com.tdj_sj_webandroid.model.HomeInfo;
 import com.tdj_sj_webandroid.mvp.presenter.HomePageFragmentPresenter;
 import com.tdj_sj_webandroid.utils.Constants;
+import com.tdj_sj_webandroid.utils.appupdate.DownloadManager;
+import com.tdj_sj_webandroid.utils.appupdate.OnDownloadListener;
+import com.tdj_sj_webandroid.utils.appupdate.UpdateConfiguration;
 import com.yzq.zxinglibrary.android.CaptureActivity;
 import com.yzq.zxinglibrary.common.Constant;
 
+import java.io.File;
 import java.io.IOException;
 
 import butterknife.BindView;
@@ -43,7 +49,7 @@ import io.reactivex.functions.Consumer;
 
 import static android.app.Activity.RESULT_OK;
 
-public class HomePageFragment extends BaseFrgment<HomePageFragmentPresenter> implements TDJContract.HomePageFragmentView, BaseRecyclerViewAdapter.OnItemClickListener {
+public class HomePageFragment extends BaseFrgment<HomePageFragmentPresenter> implements TDJContract.HomePageFragmentView, BaseRecyclerViewAdapter.OnItemClickListener, OnDownloadListener {
     @BindView(R.id.tv_title)
     TextView tv_title;
     @BindView(R.id.list)
@@ -92,27 +98,8 @@ public class HomePageFragment extends BaseFrgment<HomePageFragmentPresenter> imp
     @Override
     protected void loadData() {
         mPresenter.get_menus();
+        mPresenter.get_versions_store();
 
-
-//东大集
-//        Intent intent = new Intent(ACTION_SCANNER_APP_SETTINGS).putExtra(TYPE_BOOT_START, true);
-//        Intent intent = new Intent(ACTION_SCANNER_APP_SETTINGS).putExtra(TYPE_BARCODE_BROADCAST_ACTION, SCANACTION);
-//        getActivity().sendBroadcast(intent);
-//
-//
-//         scanReceiver =new BroadcastReceiver() {
-//            @Override
-//            public void onReceive(Context context, Intent intent) {
-//                if (intent.getAction().equals(SCANACTION)) {
-//                    {
-//
-//                        mPresenter.get_scann(intent.getStringExtra("scannerdata"));
-//                        LogUtils.i(intent.getStringExtra("scannerdata"));
-//
-//                    }
-//                }
-//            }
-//        };
 
     }
 
@@ -137,15 +124,6 @@ public class HomePageFragment extends BaseFrgment<HomePageFragmentPresenter> imp
 
     }
 
-    @Override
-    public void get_scann_Success(int code) {
-        if (code==0){
-            Toast.makeText(getContext(),"code",Toast.LENGTH_LONG).show();
-        }else {
-            modeIndicater(activity.getApplicationContext());
-        }
-
-    }
 
     @Override
     public void onItemClick(RecyclerView.Adapter adapter, View v, int position) {
@@ -195,125 +173,63 @@ public class HomePageFragment extends BaseFrgment<HomePageFragmentPresenter> imp
         }
     }
 
-    private void registerReceiver(){
-//    新大陆
-//    IntentFilter mFilter= new IntentFilter("nlscan.action.SCANNER_RESULT");
-//        getActivity().registerReceiver(scanReceiver, mFilter);
-        // 东大集
-//        IntentFilter intentFilter=new IntentFilter(SCANACTION);
-//        intentFilter.setPriority(Integer.MAX_VALUE);
-//        getActivity().registerReceiver(scanReceiver, intentFilter);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-//  新大陆
-//  unRegisterReceiver();
-        // 东大集
-//        unRegisterReceiver();
-    }
-    private void unRegisterReceiver()
-    {
-        // 东大集
-//                try {
-//         getActivity(). unregisterReceiver(scanReceiver);
-//        } catch (Exception e) {
-//        }
-
-//新大陆
-//        try {
-//            getActivity(). unregisterReceiver(scanReceiver);
-//        } catch (Exception e) {
-//        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-//    新大陆
-//    registerReceiver();
-        // 东大集
-//        registerReceiver();
-    }
 
 
+    public void get_versions_Success(AppUpdate appUpdate) {
+        LogUtils.i(appUpdate);
+        if (appUpdate.getData() != null) {
+                UpdateConfiguration configuration = new UpdateConfiguration()
+                        //输出错误日志
+                        .setEnableLog(true)
+                        //设置自定义的下载
+                        //.setHttpManager()
+                        //下载完成自动跳动安装页面
+                        .setJumpInstallPage(true)
+                        //支持断点下载
+                        .setBreakpointDownload(true)
+                        //设置是否显示通知栏进度
+                        .setShowNotification(true)
+                        //设置强制更新
+                        .setForcedUpgrade(true)
+                        //设置下载过程的监听
+                        .setOnDownloadListener(this);
 
-    /**
+                DownloadManager manager = DownloadManager.getInstance(getContext());
+                manager.setApkName("taohaoyun.apk")
+                        .setApkUrl(appUpdate.getData().getUrl())
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setShowNewerToast(true)
+                        .setConfiguration(configuration)
+                        .setDownloadPath(Environment.getExternalStorageDirectory() + "/AppUpdate")
+                        .setApkVersionCode(2)
+                        .setApkVersionName(appUpdate.getData().getVersion())
+                        .setApkSize("" + appUpdate.getData().getSize())
+                        .setApkDescription(appUpdate.getData().getRemark())
+                        .download();
 
-     * 监听系统静音模式
-
-     * @param mContext
-
-     */
-
-    private void modeIndicater(Context mContext){
-
-        AudioManager am = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
-
-        final int ringerMode = am.getRingerMode();
-
-        switch (ringerMode) {
-
-            case AudioManager.RINGER_MODE_NORMAL://普通模式
-
-                playFromRawFile(mContext);
-
-                break;
-
-            case AudioManager.RINGER_MODE_VIBRATE://静音模式
-
-                break;
-
-            case AudioManager.RINGER_MODE_SILENT://震动模式
-
-                break;
-
-        }
-
-    }
-
-    /**
-
-     * 提示音
-
-     * @param mContext
-
-     */
-
-    private void playFromRawFile(Context mContext) {
-
-        try {
-
-            MediaPlayer player = new MediaPlayer();
-
-            AssetFileDescriptor file = mContext.getResources().openRawResourceFd(R.raw.aa);
-
-            try {
-
-                player.setDataSource(file.getFileDescriptor(), file.getStartOffset(), file.getLength());
-
-                file.close();
-
-                if (!player.isPlaying()){
-
-                    player.prepare();
-
-                    player.start();
-
-                }
-
-            } catch (IOException e) {
-
-                player = null;
 
             }
 
-        } catch (Exception e) {
-
-            e.printStackTrace();
-
         }
+
+
+    @Override
+    public void start() {
+
+    }
+
+    @Override
+    public void downloading(int max, int progress) {
+
+    }
+
+    @Override
+    public void done(File apk) {
+
+    }
+
+    @Override
+    public void error(Exception e) {
 
     }
 }

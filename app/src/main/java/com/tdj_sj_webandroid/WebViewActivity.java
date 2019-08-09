@@ -15,6 +15,7 @@ import android.webkit.WebSettings;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amap.api.location.AMapLocation;
 import com.apkfuns.logutils.LogUtils;
 import com.gyf.barlibrary.ImmersionBar;
 import com.tbruyelle.rxpermissions2.Permission;
@@ -53,7 +54,6 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
         SimpleWebView wv_program;
     private WebSettings settings;
     private static final int REQUEST_CODE_CHOOSE_GRIDE = 0X0002;
-    private RxPermissions rxPermissions;
     private int index;
 
     @Override
@@ -74,7 +74,7 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
     protected void initView() {
         ImmersionBar.with(this).statusBarDarkFont(true).init();
         ButterKnife.bind(this);
-        rxPermissions=new RxPermissions(this);
+
         wv_program.addJavascriptInterface(new AndroidtoJs(), "android");//AndroidtoJS类对象映射到js的test对象
         initDetailsH5();
     }
@@ -161,6 +161,7 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
         wv_program.loadUrl("javascript:getImageUrl('" + url + "')");
 
     }
+
 
     public class AndroidtoJs extends Object {
         // 定义JS需要调用的方法

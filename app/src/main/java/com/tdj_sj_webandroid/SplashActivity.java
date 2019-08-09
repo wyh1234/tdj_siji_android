@@ -13,6 +13,8 @@ import com.apkfuns.logutils.LogUtils;
 import com.gyf.barlibrary.ImmersionBar;
 import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.tdj_sj_webandroid.base.BaseActivity;
+import com.tdj_sj_webandroid.mvp.presenter.IPresenter;
 import com.tdj_sj_webandroid.utils.GeneralUtils;
 
 import java.util.Timer;
@@ -27,13 +29,11 @@ import io.reactivex.functions.Consumer;
 
 public class SplashActivity extends AppCompatActivity {
     public Timer timer = new Timer();
-    private RxPermissions rxPermissions;
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         setTheme(R.style.AppTheme);//解决启动白频；
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        rxPermissions=new RxPermissions(this);
         ImmersionBar.with(this).statusBarDarkFont(true).init();
 
         TimerTask task = new TimerTask() {
@@ -54,6 +54,7 @@ public class SplashActivity extends AppCompatActivity {
         };
         timer.schedule(task, 3 * 1000 + 200);
     }
+
 
 
 }

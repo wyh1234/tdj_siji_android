@@ -40,7 +40,6 @@ public class MianActivity extends BaseActivity implements IMyLocation {
     @BindView(R.id.wv_program)
     SimpleWebView wv_program;
     private WebSettings settings;
-//    private RxPermissions rxPermissions;
     private MyLocationManager manager;
 
     @Override
