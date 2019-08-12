@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Environment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +21,8 @@ import com.apkfuns.logutils.LogUtils;
 import com.gyf.barlibrary.ImmersionBar;
 import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.tdj_sj_webandroid.DDJStorageManagementActivity;
+import com.tdj_sj_webandroid.DDJStorageManagementActivity_ViewBinder;
 import com.tdj_sj_webandroid.MainTabActivity;
 
 import com.tdj_sj_webandroid.R;
@@ -147,7 +150,14 @@ public class HomePageFragment extends BaseFrgment<HomePageFragmentPresenter> imp
         }else if (getHomeInfo().getMenus().get(position).getMenuDesc().equals("ps")){
             activity.setTabSelection(1);
         }else if (getHomeInfo().getMenus().get(position).getMenuDesc().equals("smrk")){
-            Intent intent = new Intent(getContext(), StorageManagementActivity.class);
+            LogUtils.i(Build.MODEL.equals("NLS-MT90"));
+            Intent intent;
+            if (Build.MODEL.equals("NLS-MT90")){
+                 intent = new Intent(getContext(), StorageManagementActivity.class);
+
+            }else {
+                 intent = new Intent(getContext(), DDJStorageManagementActivity.class);
+            }
             startActivity(intent);
         }
 

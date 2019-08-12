@@ -1,5 +1,7 @@
 package com.tdj_sj_webandroid.mvp.presenter;
 
+import android.os.Build;
+
 import com.apkfuns.logutils.LogUtils;
 import com.tdj_sj_webandroid.AppAplication;
 import com.tdj_sj_webandroid.base.BasePresenter;
@@ -63,7 +65,7 @@ public class HomePageFragmentPresenter extends BasePresenter<Model, HomePageFrag
     }*/
     public void get_versions_store() {
 
-        HttpUtils.onGet(getIView().getContext(), new HashMap<String, String>(), Constants.version+GeneralUtils.getAppVersionName(AppAplication.getAppContext()), new GsonResponseHandler<AppUpdate>() {
+        HttpUtils.onGet(getIView().getContext(), new HashMap<String, String>(), Constants.version+GeneralUtils.getAppVersionName(AppAplication.getAppContext())+"&type="+ Build.MODEL, new GsonResponseHandler<AppUpdate>() {
 
             @Override
             public void onError(ApiException e) {

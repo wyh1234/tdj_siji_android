@@ -63,6 +63,9 @@
         <activity
             android:name=".StorageManagementActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".DDJStorageManagementActivity"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".MainTabActivity"
@@ -91,6 +94,14 @@
         <service android:name=".utils.appupdate.DownloadService" />
         <service android:name="com.amap.api.location.APSService"></service>
         <meta-data android:name="com.amap.api.v2.apikey" android:value="8f0874da3bb5e23ef8aa84a3f6ceebab"/>
+
+        <receiver
+            android:name=".utils.SecretCodeReceiver">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SECRET_CODE" />
+                <data android:scheme="android_secret_code" android:host="1010"  />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

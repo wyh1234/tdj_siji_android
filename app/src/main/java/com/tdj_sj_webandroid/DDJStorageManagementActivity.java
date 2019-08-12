@@ -21,32 +21,27 @@ import com.apkfuns.logutils.LogUtils;
 import com.gyf.barlibrary.ImmersionBar;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
-import com.seuic.scanner.Scanner;
-import com.seuic.scanner.ScannerFactory;
 import com.tdj_sj_webandroid.adapter.BaseRecyclerViewAdapter;
 import com.tdj_sj_webandroid.adapter.StorageManagementAdapter;
 import com.tdj_sj_webandroid.base.BaseActivity;
 import com.tdj_sj_webandroid.model.CustomApiResult;
 import com.tdj_sj_webandroid.model.StorageManagement;
-import com.tdj_sj_webandroid.mvp.presenter.IPresenter;
+import com.tdj_sj_webandroid.mvp.presenter.DDJStorageManagementPresenter;
 import com.tdj_sj_webandroid.mvp.presenter.StorageManagementPresenter;
 import com.tdj_sj_webandroid.utils.Constants;
 import com.tdj_sj_webandroid.utils.GeneralUtils;
-import com.tdj_sj_webandroid.utils.SoundPlayer;
+import com.tdj_sj_webandroid.utils.player.SoundPlayer;
 import com.zhouyou.http.exception.ApiException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class StorageManagementActivity extends BaseActivity<StorageManagementPresenter> implements BaseRecyclerViewAdapter.OnItemClickListener, OnLoadmoreListener {
+public class DDJStorageManagementActivity extends BaseActivity<DDJStorageManagementPresenter> implements BaseRecyclerViewAdapter.OnItemClickListener, OnLoadmoreListener {
     @BindView(R.id.btn_back)
     ImageView btn_back;
     @BindView(R.id.search_edit)
@@ -65,10 +60,10 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
     TextView tv_title1;
     public int pageNo = 1;//翻页计数器
     private BroadcastReceiver scanReceiver;
-    private boolean b=false;
-    private List<StorageManagement> list=new ArrayList();
+    private boolean b = false;
+    private List<StorageManagement> list = new ArrayList();
     private StorageManagementAdapter storageManagementAdapter;
-    private int total=0;
+    private int total = 0;
 
 
     private String SCANACTION = "com.android.server.scannerservice.broadcast";
@@ -76,21 +71,22 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
     private final String TYPE_BARCODE_BROADCAST_ACTION = "action_barcode_broadcast";
     private final String TYPE_BOOT_START = "boot_start";
     private SoundPlayer soundUtils;
-    @OnClick({R.id.tv_qx,R.id.right_text,R.id.btn_back})
-    public void onClick(View view){
-        switch (view.getId()){
+
+    @OnClick({R.id.tv_qx, R.id.right_text, R.id.btn_back})
+    public void onClick(View view) {
+        switch (view.getId()) {
             case R.id.tv_qx:
-                b=true;
+                b = true;
                 tv_qx.setTextColor(getResources().getColor(R.color.text_));
                 break;
             case R.id.right_text:
-                if (TextUtils.isEmpty(search_edit.getText().toString())){
+                if (TextUtils.isEmpty(search_edit.getText().toString())) {
                     return;
                 }
-                if (b){
-                    mPresenter.get_scann(search_edit.getText().toString(),"out");
-                }else {
-                    mPresenter.get_scann(search_edit.getText().toString(),"in");
+                if (b) {
+                    mPresenter.get_scann(search_edit.getText().toString(), "out");
+                } else {
+                    mPresenter.get_scann(search_edit.getText().toString(), "in");
                 }
                 break;
             case R.id.btn_back:
@@ -101,56 +97,49 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
 
 
     @Override
-    protected StorageManagementPresenter loadPresenter() {
-        return new StorageManagementPresenter();
+    protected DDJStorageManagementPresenter loadPresenter() {
+        return new DDJStorageManagementPresenter();
     }
-    protected  void getData(int pn){
-       mPresenter.get_scann(pn);
+
+    protected void getData(int pn) {
+        mPresenter.get_scann(pn);
 
     }
+
     @Override
     protected void initData() {
-         soundUtils = new SoundPlayer(this, SoundPlayer.RING_SOUND);
-        soundUtils.putSound(0,R.raw.aa);
-        soundUtils.putSound(1,R.raw.quxiao);
-        soundUtils.putSound(2,R.raw.saomacaoqu);
-        soundUtils.putSound(3,R.raw.rukeshibai);
-        //新大陆
-        Intent intent = new Intent("ACTION_BAR_SCANCFG");
-        intent.putExtra("EXTRA_SCAN_MODE", 3);
-        intent.putExtra("CODE_ID","EAN13");
-        intent.putExtra("PROPERTY","TrsmtChkChar");
-        intent.putExtra("VALUE","1");
+        soundUtils = new SoundPlayer(this);
+        //东大集
+        Intent intent = new Intent("com.seuic.scanner.action.PARAM_SETTINGS").putExtra(TYPE_BARCODE_BROADCAST_ACTION, SCANACTION);
+        intent.putExtra("number",0x10a);
+        intent.putExtra("value",30);
         sendBroadcast(intent);
-        scanReceiver = new BroadcastReceiver() {
+
+
+         scanReceiver =new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                final String scanResult_1 = intent.getStringExtra("SCAN_BARCODE1");
-                final String scanResult_2 = intent.getStringExtra("SCAN_BARCODE2");
-                final int barcodeType = intent.getIntExtra("SCAN_BARCODE_TYPE", -1); // -1:unknown
-                final String scanStatus = intent.getStringExtra("SCAN_STATE");
-                LogUtils.i(scanStatus);
-                LogUtils.i(scanResult_1);
-                if ("ok".equals(scanStatus)) {
-                    //成功
-                    LogUtils.i(scanResult_1);
+                if (intent.getAction().equals(SCANACTION)) {
+                    {
+                        //成功
+                        LogUtils.i(intent.getStringExtra("scannerdata"));
                         search_edit.setText("");
-                        search_edit.setText(scanResult_1);
+                        search_edit.setText(intent.getStringExtra("scannerdata"));
                         search_edit.setSelection(search_edit.getText().length());
-                    LogUtils.i(b);
-                    if (b){
-                        mPresenter.get_scann(scanResult_1,"out");
-                    }else {
-                        mPresenter.get_scann(scanResult_1,"in");
+                        LogUtils.i(b);
+                        if (b){
+                            mPresenter.get_scann(intent.getStringExtra("scannerdata"),"out");
+                        }else {
+                            mPresenter.get_scann(intent.getStringExtra("scannerdata"),"in");
+                        }
+
                     }
-
-
-                } else {
-                    //失败如超时等
-                    LogUtils.i("scanStatus" + scanStatus);
                 }
             }
         };
+
+
+
     }
 
     @Override
@@ -167,7 +156,7 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
         LinearLayoutManager layout = new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL, false);
         rk_list.setLayoutManager(layout);
-        storageManagementAdapter=new StorageManagementAdapter(this,list);
+        storageManagementAdapter = new StorageManagementAdapter(this, list);
         rk_list.setAdapter(storageManagementAdapter);
         storageManagementAdapter.setOnItemClickListener(this);
         getData(1);
@@ -179,8 +168,9 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
     }
 
     private void registerReceiver() {
-        IntentFilter mFilter = new IntentFilter("nlscan.action.SCANNER_RESULT");
-        registerReceiver(scanReceiver, mFilter);
+         IntentFilter intentFilter=new IntentFilter(SCANACTION);
+        intentFilter.setPriority(Integer.MAX_VALUE);
+      registerReceiver(scanReceiver, intentFilter);
     }
 
     @Override
@@ -191,29 +181,28 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
 
     private void unRegisterReceiver() {
         try {
-           unregisterReceiver(scanReceiver);
+            unregisterReceiver(scanReceiver);
         } catch (Exception e) {
         }
     }
+
     @Override
     public void onResume() {
         super.onResume();
         registerReceiver();
     }
+
     /**
-
      * 监听系统静音模式
-
+     *
      * @param mContext
-
      */
 
-    private void modeIndicater(Context mContext,int m){
+    private void modeIndicater(Context mContext, int m) {
         AudioManager am = null;
-        if (am==null){
-            am= (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
+        if (am == null) {
+            am = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
         }
-
 
 
         final int ringerMode = am.getRingerMode();
@@ -222,7 +211,7 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
 
             case AudioManager.RINGER_MODE_NORMAL://普通模式
 
-                playFromRawFile(mContext,m);
+                playFromRawFile(mContext, m);
 
                 break;
 
@@ -239,28 +228,26 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
     }
 
     /**
-
      * 提示音
-
+     *
      * @param mContext
-
      */
 
-    private void playFromRawFile(Context mContext,int m) {
+    private void playFromRawFile(Context mContext, int m) {
         MediaPlayer player = null;
         try {
-            if (player==null){
+            if (player == null) {
                 player = new MediaPlayer();
             }
-           
+
             AssetFileDescriptor file = null;
-            if (m==1){
+            if (m == 1) {
                 file = mContext.getResources().openRawResourceFd(R.raw.quxiao);
-            }else if (m==0){
+            } else if (m == 0) {
                 file = mContext.getResources().openRawResourceFd(R.raw.aa);
-            }else if (m==3){
+            } else if (m == 3) {
                 file = mContext.getResources().openRawResourceFd(R.raw.rukeshibai);
-            }else if (m==4){
+            } else if (m == 4) {
                 file = mContext.getResources().openRawResourceFd(R.raw.saomacaoqu);
             }
 
@@ -270,7 +257,7 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
 
                 file.close();
 
-                if (!player.isPlaying()){
+                if (!player.isPlaying()) {
 
                     player.prepare();
                     player.start();
@@ -289,70 +276,57 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
         }
 
     }
+
     public void get_scann_Success(CustomApiResult<StorageManagement> result) {
         tv_qx.setTextColor(getResources().getColor(R.color.text_gonees));
-        if (result.getErr()==0){
-        if (b){
-            b=false;
-                if (list.size()>0){
-//                    LogUtils.i(list.contains(result.getData()));
-//                    list.remove(result.getData());
-//                    LogUtils.i(list);
-
-                    Iterator<StorageManagement> iterator = list.iterator();
-                    while (iterator.hasNext()) {
-                        StorageManagement item = iterator.next();
-                        if (item.getSku().equals(result.getData().getSku())) {
-                            iterator.remove();
-                        }
-                    }
-
-            /*        for (int i=0;i<list.size();i++){
-                        if (list.get(i).getSku().equals(result.getData().getSku())){
+        if (result.getErr() == 0) {
+            if (b) {
+                b = false;
+                if (list.size() > 0) {
+                    for (int i = 0; i < list.size(); i++) {
+                        if (list.get(i).getSku().equals(result.getData().getSku())) {
                             list.remove(i);
                             LogUtils.i(i);
                             break;
                         }
 
-                    }*/
-                    LogUtils.i(list);
+                    }
                     storageManagementAdapter.notifyDataSetChanged();
                     LogUtils.i(total);
-                    tv_num.setText("已入库："+(--total));
-                    soundUtils.playSound(1,SoundPlayer.SINGLE_PLAY);
-//                    soundUtils.play(R.raw.quxiao,false);
+                    tv_num.setText("已入库：" + (--total));
+//                    soundUtils.playSound(1,SoundPlayer.SINGLE_PLAY);
+                    soundUtils.play(R.raw.quxiao, false);
 //                    modeIndicater(this,1);
 
                 }
 
 
-        }else {
-            soundUtils.playSound(0,SoundPlayer.SINGLE_PLAY);
-//            soundUtils.play(R.raw.aa,false);
-            if (result.getErr()==0){
+            } else {
+//            soundUtils.playSound(0,SoundPlayer.SINGLE_PLAY);
+                soundUtils.play(R.raw.aa, false);
+                if (result.getErr() == 0) {
 
-                list.add(0,result.getData());
-                storageManagementAdapter.notifyDataSetChanged();
-                tv_num.setText("已入库："+(++total));
+                    list.add(0, result.getData());
+                    storageManagementAdapter.notifyDataSetChanged();
+                    tv_num.setText("已入库：" + (++total));
+
+                }
+
 
             }
-
-
-
-        }
-        }else {
-            if (b){
-                b=false;
+        } else {
+            if (b) {
+                b = false;
             }
         }
-        if (result.getErr()==1){
-            soundUtils.playSound(3,SoundPlayer.SINGLE_PLAY);
-//            soundUtils.play(R.raw.rukeshibai,false);
+        if (result.getErr() == 1) {
+//            soundUtils.playSound(3,SoundPlayer.SINGLE_PLAY);
+            soundUtils.play(R.raw.rukeshibai, false);
 //            modeIndicater(this,3);
         }
-        if (result.getErr()==2){
-            soundUtils.playSound(2,SoundPlayer.SINGLE_PLAY);
-//            soundUtils.play(R.raw.saomacaoqu,false);
+        if (result.getErr() == 2) {
+//            soundUtils.playSound(2,SoundPlayer.SINGLE_PLAY);
+            soundUtils.play(R.raw.saomacaoqu, false);
 //            modeIndicater(this,4);
         }
 
@@ -364,8 +338,9 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
 
     @Override
     public void onItemClick(RecyclerView.Adapter adapter, View v, int position) {
-        Intent intent=new Intent(getContext(), WebViewActivity.class);
-        intent.putExtra("url", Constants.URL+"order/info.do?code="+list.get(position).getSku());
+        Intent intent = new Intent(getContext(), WebViewActivity.class);
+
+        intent.putExtra("url", Constants.URL + "order/info.do?code=" + list.get(position).getSku());
         startActivity(intent);
     }
 
@@ -382,7 +357,7 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             View view = getCurrentFocus();
             if (GeneralUtils.isHideInput(view, ev)) {
-                GeneralUtils. hideSoftInput(view.getWindowToken(),this);
+                GeneralUtils.hideSoftInput(view.getWindowToken(), this);
             }
         }
         return super.dispatchTouchEvent(ev);
@@ -393,24 +368,24 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
             refreshLayout.finishLoadmore();
         }
         tv_title1.setText(response.getRegionNo());
-        if (response.getErr()==0){
+        if (response.getErr() == 0) {
 
-            if (response.getData().size()>0){
+            if (response.getData().size() > 0) {
                 list.addAll(response.getData());
-                tv_num.setText("已入库："+list.size());
+                tv_num.setText("已入库：" + list.size());
                 storageManagementAdapter.notifyDataSetChanged();
 
-            }else {
-                if (response.getPn()!=1){
-                    Toast.makeText(this,"数据加载完毕",Toast.LENGTH_LONG).show();
+            } else {
+                if (response.getPn() != 1) {
+                    Toast.makeText(this, "数据加载完毕", Toast.LENGTH_LONG).show();
                 }
             }
-            total=response.getTotal();
-            tv_num.setText("已入库："+response.getTotal());
+            total = response.getTotal();
+            tv_num.setText("已入库：" + response.getTotal());
 
-        }else {
-            if (response.getPn()!=1){
-                Toast.makeText(this,"数据加载完毕",Toast.LENGTH_LONG).show();
+        } else {
+            if (response.getPn() != 1) {
+                Toast.makeText(this, "数据加载完毕", Toast.LENGTH_LONG).show();
             }
         }
 
