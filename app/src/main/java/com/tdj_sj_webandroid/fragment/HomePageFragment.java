@@ -22,7 +22,6 @@ import com.gyf.barlibrary.ImmersionBar;
 import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.tdj_sj_webandroid.DDJStorageManagementActivity;
-import com.tdj_sj_webandroid.DDJStorageManagementActivity_ViewBinder;
 import com.tdj_sj_webandroid.MainTabActivity;
 
 import com.tdj_sj_webandroid.R;

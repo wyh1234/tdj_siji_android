@@ -1,10 +1,10 @@
 package com.tdj_sj_webandroid.utils;
 
 public class Constants {
-    public final static String URL="https://siji.51taodj.com/tdj-driver/";
-    public final static String URL1="https://siji.51taodj.com/tdj-driver";
-//public final static String URL="https://siji.51taodj.com/test-driver/";
-//    public final static String URL1="https://siji.51taodj.com/test-driver";
+//    public final static String URL="https://siji.51taodj.com/tdj-driver/";
+//    public final static String URL1="https://siji.51taodj.com/tdj-driver";
+public final static String URL="https://siji.51taodj.com/test-driver/";
+    public final static String URL1="https://siji.51taodj.com/test-driver";
 //public final static String URL="http://47.111.135.109:8060/test-driver/";
 //    public final static String URL1="http://47.111.135.109:8060/test-driver";
     public final static String upload="home/imgUpload.do";
