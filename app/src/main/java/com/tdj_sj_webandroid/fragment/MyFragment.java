@@ -161,6 +161,15 @@ public class MyFragment extends BaseFrgment {
 
 
         }
+        @JavascriptInterface
+        public void  startDepart(String url){
+            LogUtils.d(url);
+            Intent intent=new Intent(getContext(), WebViewActivity.class);
+            intent.putExtra("url", Constants.URL1+url);
+            startActivity(intent);
+
+
+        }
 
     }
 }

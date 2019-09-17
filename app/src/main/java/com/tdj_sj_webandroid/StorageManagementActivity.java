@@ -46,7 +46,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class StorageManagementActivity extends BaseActivity<StorageManagementPresenter> implements BaseRecyclerViewAdapter.OnItemClickListener, OnLoadmoreListener {
+public class StorageManagementActivity extends BaseActivity<StorageManagementPresenter> implements  OnLoadmoreListener {
     @BindView(R.id.btn_back)
     ImageView btn_back;
     @BindView(R.id.search_edit)
@@ -110,11 +110,16 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
     }
     @Override
     protected void initData() {
+
+
          soundUtils = new SoundPlayer(this, SoundPlayer.RING_SOUND);
-        soundUtils.putSound(0,R.raw.aa);
-        soundUtils.putSound(1,R.raw.quxiao);
-        soundUtils.putSound(2,R.raw.saomacaoqu);
-        soundUtils.putSound(3,R.raw.rukeshibai);
+        soundUtils.putSound(0,R.raw.quxiaochenggong);
+        soundUtils.putSound(1,R.raw.quxiaoshibai);
+        soundUtils.putSound(2,R.raw.rukuchenggong);
+        soundUtils.putSound(3,R.raw.saomachaoqu);
+        soundUtils.putSound(4,R.raw.saomashibai);
+        soundUtils.putSound(5,R.raw.yijiruku);
+
         //新大陆
         Intent intent = new Intent("ACTION_BAR_SCANCFG");
         intent.putExtra("EXTRA_SCAN_MODE", 3);
@@ -169,7 +174,7 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
         rk_list.setLayoutManager(layout);
         storageManagementAdapter=new StorageManagementAdapter(this,list);
         rk_list.setAdapter(storageManagementAdapter);
-        storageManagementAdapter.setOnItemClickListener(this);
+//        storageManagementAdapter.setOnItemClickListener(this);
         getData(1);
     }
 
@@ -319,7 +324,7 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
                     storageManagementAdapter.notifyDataSetChanged();
                     LogUtils.i(total);
                     tv_num.setText("已入库："+(--total));
-                    soundUtils.playSound(1,SoundPlayer.SINGLE_PLAY);
+                    soundUtils.playSound(0,SoundPlayer.SINGLE_PLAY);
 //                    soundUtils.play(R.raw.quxiao,false);
 //                    modeIndicater(this,1);
 
@@ -327,7 +332,7 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
 
 
         }else {
-            soundUtils.playSound(0,SoundPlayer.SINGLE_PLAY);
+            soundUtils.playSound(2,SoundPlayer.SINGLE_PLAY);
 //            soundUtils.play(R.raw.aa,false);
             if (result.getErr()==0){
 
@@ -346,28 +351,34 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
             }
         }
         if (result.getErr()==1){
-            soundUtils.playSound(3,SoundPlayer.SINGLE_PLAY);
+            soundUtils.playSound(4,SoundPlayer.SINGLE_PLAY);
 //            soundUtils.play(R.raw.rukeshibai,false);
 //            modeIndicater(this,3);
         }
         if (result.getErr()==2){
-            soundUtils.playSound(2,SoundPlayer.SINGLE_PLAY);
+            soundUtils.playSound(3,SoundPlayer.SINGLE_PLAY);
 //            soundUtils.play(R.raw.saomacaoqu,false);
 //            modeIndicater(this,4);
         }
+        if (result.getErr() == 8){
+            soundUtils.playSound(1,SoundPlayer.SINGLE_PLAY);
+        }
+        if (result.getErr() == 9){
+            soundUtils.playSound(5,SoundPlayer.SINGLE_PLAY);
 
+        }
     }
 
     public Context getContext() {
         return this;
     }
 
-    @Override
+/*    @Override
     public void onItemClick(RecyclerView.Adapter adapter, View v, int position) {
         Intent intent=new Intent(getContext(), WebViewActivity.class);
         intent.putExtra("url", Constants.URL+"order/info.do?code="+list.get(position).getSku());
         startActivity(intent);
-    }
+    }*/
 
     public void get_scann_onError(ApiException e) {
         if (b) {

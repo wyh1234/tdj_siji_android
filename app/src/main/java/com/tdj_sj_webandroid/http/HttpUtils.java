@@ -91,6 +91,33 @@ public class HttpUtils {
     }
 
     /**
+     * post
+     */
+    public static void onPost1(final Context context, Map<String, String> params, String url, final IResponse response) {
+        PostRequest postRequest = EasyHttp.post(url);
+        if (params != null && params.size() > 0) {
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                postRequest.params(entry.getKey(), entry.getValue());
+            }
+        }
+//        Disposable dis = postRequest.addInterceptor(new TokenInterceptor(context)).headers(SetHeaders()).
+        postRequest.addInterceptor(new TokenInterceptor(context)).headers(SetHeaders()).execute(new ProgressDialogCallBack<String>(new MyIProgressDialog(context), false, true) {
+            @Override
+            public void onSuccess(String t) {
+                LogUtils.i(t.toString());
+                IResponseType(response, t);
+            }
+
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                ToastUtils.showToast(context, e.getMessage());
+
+            }
+        });
+    }
+
+    /**
      * 上传单张图片
      */
     public static void onUploadOne(final Context context, File file, String url, final IResponse response) {

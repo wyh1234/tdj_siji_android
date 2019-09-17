@@ -55,7 +55,7 @@ public class SoundPlayer {
         this.context = context;
         this.soundVolType = soundVolType;
         // 初始化声音池和声音参数map
-        soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+        soundPool = new SoundPool(6, AudioManager.STREAM_MUSIC, 0);
         soundPoolMap = new HashMap<Integer, Integer>();
     }
 

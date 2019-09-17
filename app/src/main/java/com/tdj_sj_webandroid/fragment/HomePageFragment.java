@@ -1,12 +1,7 @@
 package com.tdj_sj_webandroid.fragment;
 import android.Manifest;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.res.AssetFileDescriptor;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Environment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,11 +9,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.apkfuns.logutils.LogUtils;
-import com.gyf.barlibrary.ImmersionBar;
 import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.tdj_sj_webandroid.DDJStorageManagementActivity;
@@ -26,9 +18,11 @@ import com.tdj_sj_webandroid.MainTabActivity;
 
 import com.tdj_sj_webandroid.R;
 import com.tdj_sj_webandroid.StorageManagementActivity;
+import com.tdj_sj_webandroid.SunMiStorageManagementActivity;
 import com.tdj_sj_webandroid.WebViewActivity;
 import com.tdj_sj_webandroid.adapter.BaseRecyclerViewAdapter;
 import com.tdj_sj_webandroid.adapter.HomePageFragmentAdapter;
+import com.tdj_sj_webandroid.android.os.SystemProperties;
 import com.tdj_sj_webandroid.base.BaseFrgment;
 
 import com.tdj_sj_webandroid.contract.TDJContract;
@@ -43,7 +37,6 @@ import com.yzq.zxinglibrary.android.CaptureActivity;
 import com.yzq.zxinglibrary.common.Constant;
 
 import java.io.File;
-import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -134,7 +127,7 @@ public class HomePageFragment extends BaseFrgment<HomePageFragmentPresenter> imp
 
             intent.putExtra("url", Constants.URL1+getHomeInfo().getMenus().get(position).getMenuUrl());
             startActivity(intent);
-    }else if  (getHomeInfo().getMenus().get(position).getMenuDesc().equals("sm")){
+        }else if  (getHomeInfo().getMenus().get(position).getMenuDesc().equals("sm")){
             rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE,Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe(new Consumer<Boolean>() {
                 @Override
                 public void accept(Boolean b) throws Exception {
@@ -151,11 +144,14 @@ public class HomePageFragment extends BaseFrgment<HomePageFragmentPresenter> imp
         }else if (getHomeInfo().getMenus().get(position).getMenuDesc().equals("smrk")){
             LogUtils.i(Build.MODEL.equals("NLS-MT90"));
             Intent intent;
+            intent = new Intent(getContext(), SunMiStorageManagementActivity.class);
             if (Build.MODEL.equals("NLS-MT90")){
                  intent = new Intent(getContext(), StorageManagementActivity.class);
 
-            }else {
-                 intent = new Intent(getContext(), DDJStorageManagementActivity.class);
+         /*   }else if ("SUNMI".equals(SystemProperties.get("ro.product.brand"))){
+                intent = new Intent(getContext(), SunMiStorageManagementActivity.class);
+            */}else {
+                intent = new Intent(getContext(), DDJStorageManagementActivity.class);
             }
             startActivity(intent);
         }

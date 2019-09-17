@@ -6,12 +6,15 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 
 import com.amap.api.location.AMapLocationListener;
 import com.apkfuns.logutils.LogUtils;
 import com.google.android.gms.maps.model.LatLng;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.tdj_sj_webandroid.AppAplication;
+import com.tdj_sj_webandroid.DDJStorageManagementActivity;
+import com.tdj_sj_webandroid.StorageManagementActivity;
 import com.tdj_sj_webandroid.http.GsonResponseHandler;
 import com.tdj_sj_webandroid.http.HttpUtils;
 import com.tdj_sj_webandroid.model.AppUpdate;
@@ -45,12 +48,12 @@ public abstract class BaseActivity<P extends IPresenter> extends FragmentActivit
     protected P mPresenter;
      public RxPermissions rxPermissions;
      private boolean aBoolean;
-    private LatLng last_latlng;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getView());
         Density.setDefault(this);//屏幕适配
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
       /*  if (isRegisterEventBus()) {
             EventBusUtil.register(this);
         }*/
@@ -167,6 +170,7 @@ public abstract class BaseActivity<P extends IPresenter> extends FragmentActivit
 
     }
 
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -178,6 +182,11 @@ public abstract class BaseActivity<P extends IPresenter> extends FragmentActivit
     @Subscribe( threadMode = ThreadMode.MAIN)
     public void eventCode(LocationBean locationBean) {
         LogUtils.i(locationBean);
+/*        LogUtils.i(this instanceof StorageManagementActivity);
+        LogUtils.i(this instanceof DDJStorageManagementActivity);
+        if (this instanceof StorageManagementActivity||this instanceof DDJStorageManagementActivity){
+            return;
+        }*/
         if (GeneralUtils.isNullOrZeroLenght(GeneralUtils.getToken(AppAplication.getAppContext())) ){
             return;
         }
@@ -185,7 +194,9 @@ public abstract class BaseActivity<P extends IPresenter> extends FragmentActivit
         map.put("lat",String.valueOf(locationBean.getLatitude()));
         map.put("lng",String.valueOf(locationBean.getLongitude()));
         map.put("address",locationBean.getAddress());
-        HttpUtils.onPost(this, map, Constants.addUserLocation, new GsonResponseHandler<CustomApiResult>() {
+        map.put("version",GeneralUtils.getAppVersionName(AppAplication.getAppContext()));
+
+        HttpUtils.onPost1(this, map, Constants.addUserLocation, new GsonResponseHandler<CustomApiResult>() {
             @Override
             public void onError(ApiException e) {
 
