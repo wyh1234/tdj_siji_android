@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -22,6 +23,8 @@ import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.tdj_sj_webandroid.base.BaseActivity;
 import com.tdj_sj_webandroid.contract.TDJContract;
+import com.tdj_sj_webandroid.model.LocationBean;
+import com.tdj_sj_webandroid.model.Resume;
 import com.tdj_sj_webandroid.mvp.presenter.WebViewPresenter;
 import com.tdj_sj_webandroid.utils.BitmapTools;
 import com.tdj_sj_webandroid.utils.GeneralUtils;
@@ -34,6 +37,8 @@ import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.filter.Filter;
 import com.zhihu.matisse.internal.entity.CaptureStrategy;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -55,6 +60,7 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
     private WebSettings settings;
     private static final int REQUEST_CODE_CHOOSE_GRIDE = 0X0002;
     private int index;
+    private String urls;
 
     @Override
     protected WebViewPresenter loadPresenter() {
@@ -79,6 +85,7 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
         initDetailsH5();
     }
 
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_main;
@@ -89,22 +96,24 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
      */
     @SuppressLint("SetJavaScriptEnabled")
     private void initDetailsH5() {
+
         Map<String,String> map=new HashMap<>();
         map.put("token",GeneralUtils.getToken(getApplication()));
         if (getIntent().getStringExtra("url")!=null){
             wv_program.loadUrl(getIntent().getStringExtra("url"),map);
         }
-
     wv_program.setWebViewClient(new SimpleWebView.SimpleWebViewClient() {
-/*            @Override
+            @Override
             public void onPageFinished(com.tencent.smtt.sdk.WebView webView, String url) {
                 super.onPageFinished(webView, url);
-                myProgressBar.setVisibility(View.GONE);
+                urls=url;
+                LogUtils.e(url);//https://siji.51taodj.com/test-driver/driverScann/center.do
 //                toolbarTitle.setText(webView.getTitle());//获取WebView 的标题，设置到toolbar中去
-            }*/
+            }
 
             @Override
             public boolean shouldOverrideUrlLoading(com.tencent.smtt.sdk.WebView webView, String url) {
+
                 if (url.contains("Activity/")) {
 
                 } else if (url.contains("Share")) {
@@ -116,21 +125,7 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
             }
 
         });
-/*        wv_program.setWebChromeClient(new SimpleWebView.SimpleWebChromeClient() {
-            @Override
-            public void onProgressChanged(com.tencent.smtt.sdk.WebView webView, int newProgress) {
-                if (newProgress == 100) {
-                    myProgressBar.setVisibility(View.GONE);
-                } else {
-                    if (View.GONE == myProgressBar.getVisibility()) {
-                        myProgressBar.setVisibility(View.VISIBLE);
-                    }
-                    myProgressBar.setProgress(newProgress);
-                }
-                super.onProgressChanged(webView, newProgress);
-            }
 
-        });*/
     }
 
 
@@ -149,6 +144,22 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
     @Override
     public LocationManager getLocationManager() {
         return (LocationManager) (getSystemService(LOCATION_SERVICE));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+    /*code 不同事件接受處理*/
+    @Subscribe( threadMode = ThreadMode.MAIN)
+    public void Resume(Resume resume) {
+        Map<String,String> map=new HashMap<>();
+        map.put("token",GeneralUtils.getToken(getApplication()));
+        LogUtils.e(GeneralUtils.isNullOrZeroLenght(urls));
+        if (!GeneralUtils.isNullOrZeroLenght(urls)){
+            wv_program.loadUrl(urls,map);
+        }
     }
 
     @Override
@@ -211,6 +222,21 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
         {
             finish();
 
+
+        }
+        @JavascriptInterface
+        public void check(String id,String customer_code)
+        {
+            LogUtils.e(id);
+            Intent intent;
+            if (Build.MODEL.equals("NLS-MT90")){
+                intent = new Intent(getContext(), NuclearGoodsActivity.class);
+           }else {
+                intent = new Intent(getContext(), DDJNuclearGoodsActivity.class);
+            }
+            intent.putExtra("customer_id",id);
+            intent.putExtra("customer_code",customer_code);
+            startActivity(intent);
 
         }
         @JavascriptInterface

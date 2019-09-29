@@ -10,10 +10,12 @@ import android.view.WindowManager;
 
 import com.amap.api.location.AMapLocationListener;
 import com.apkfuns.logutils.LogUtils;
+import com.github.nukc.stateview.StateView;
 import com.google.android.gms.maps.model.LatLng;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.tdj_sj_webandroid.AppAplication;
 import com.tdj_sj_webandroid.DDJStorageManagementActivity;
+import com.tdj_sj_webandroid.R;
 import com.tdj_sj_webandroid.StorageManagementActivity;
 import com.tdj_sj_webandroid.http.GsonResponseHandler;
 import com.tdj_sj_webandroid.http.HttpUtils;
@@ -48,6 +50,7 @@ public abstract class BaseActivity<P extends IPresenter> extends FragmentActivit
     protected P mPresenter;
      public RxPermissions rxPermissions;
      private boolean aBoolean;
+    protected StateView mStateView;//用于显示加载中、网络异常，空布局、内容布局
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,13 +78,19 @@ public abstract class BaseActivity<P extends IPresenter> extends FragmentActivit
 //        Log.i("父类","父类方法");
 
         rxPermissions=new RxPermissions(this);
-
+        mStateView = StateView.inject(getStateViewRoot());
+        if (mStateView != null){
+            mStateView.setEmptyResource(R.layout.page_empty);
+        }
         if (!aBoolean){
             getPermissions();
         }
 
     }
-
+    /**StateView的根布局，默认是整个界面，如果需要变换可以重写此方法*/
+    public View getStateViewRoot() {
+        return view;
+    }
     public void getPermissions(){
         rxPermissions.request( Manifest.permission.ACCESS_COARSE_LOCATION).subscribe(new Consumer<Boolean>() {
             @Override
@@ -141,7 +150,7 @@ public abstract class BaseActivity<P extends IPresenter> extends FragmentActivit
             mPresenter.detachView();
         }
         LocationUtils.getInstance().stopLocalService();
-
+        unregisterEventBus(this);
     }
 
     @Override
@@ -166,9 +175,10 @@ public abstract class BaseActivity<P extends IPresenter> extends FragmentActivit
     protected void onStop() {
         super.onStop();
         LogUtils.i("onStop");
-        unregisterEventBus(this);
+
 
     }
+
 
 
     @Override

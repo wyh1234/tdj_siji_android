@@ -144,7 +144,7 @@ public class HomePageFragment extends BaseFrgment<HomePageFragmentPresenter> imp
         }else if (getHomeInfo().getMenus().get(position).getMenuDesc().equals("smrk")){
             LogUtils.i(Build.MODEL.equals("NLS-MT90"));
             Intent intent;
-            intent = new Intent(getContext(), SunMiStorageManagementActivity.class);
+//            intent = new Intent(getContext(), SunMiStorageManagementActivity.class);
             if (Build.MODEL.equals("NLS-MT90")){
                  intent = new Intent(getContext(), StorageManagementActivity.class);
 

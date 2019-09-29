@@ -32,6 +32,7 @@ import com.tdj_sj_webandroid.mvp.presenter.IPresenter;
 import com.tdj_sj_webandroid.mvp.presenter.StorageManagementPresenter;
 import com.tdj_sj_webandroid.utils.Constants;
 import com.tdj_sj_webandroid.utils.GeneralUtils;
+import com.tdj_sj_webandroid.utils.PlayVoice;
 import com.tdj_sj_webandroid.utils.SoundPlayer;
 import com.zhouyou.http.exception.ApiException;
 
@@ -119,6 +120,7 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
         soundUtils.putSound(3,R.raw.saomachaoqu);
         soundUtils.putSound(4,R.raw.saomashibai);
         soundUtils.putSound(5,R.raw.yijiruku);
+        soundUtils.putSound(6,R.raw.gaidingdanyiquxiao);
 
         //新大陆
         Intent intent = new Intent("ACTION_BAR_SCANCFG");
@@ -324,15 +326,17 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
                     storageManagementAdapter.notifyDataSetChanged();
                     LogUtils.i(total);
                     tv_num.setText("已入库："+(--total));
-                    soundUtils.playSound(0,SoundPlayer.SINGLE_PLAY);
+
 //                    soundUtils.play(R.raw.quxiao,false);
 //                    modeIndicater(this,1);
 
                 }
 
-
+//            soundUtils.playSound(0,SoundPlayer.SINGLE_PLAY);
+            PlayVoice.playVoice(this,R.raw.quxiaochenggong);
         }else {
-            soundUtils.playSound(2,SoundPlayer.SINGLE_PLAY);
+//            soundUtils.playSound(2,SoundPlayer.SINGLE_PLAY);
+            PlayVoice.playVoice(this,R.raw.rukuchenggong);
 //            soundUtils.play(R.raw.aa,false);
             if (result.getErr()==0){
 
@@ -351,21 +355,29 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
             }
         }
         if (result.getErr()==1){
-            soundUtils.playSound(4,SoundPlayer.SINGLE_PLAY);
+//            soundUtils.playSound(4,SoundPlayer.SINGLE_PLAY);
+            PlayVoice.playVoice(this,R.raw.saomashibai);
 //            soundUtils.play(R.raw.rukeshibai,false);
 //            modeIndicater(this,3);
         }
         if (result.getErr()==2){
-            soundUtils.playSound(3,SoundPlayer.SINGLE_PLAY);
+//            soundUtils.playSound(3,SoundPlayer.SINGLE_PLAY);
+            PlayVoice.playVoice(this,R.raw.saomachaoqu);
 //            soundUtils.play(R.raw.saomacaoqu,false);
 //            modeIndicater(this,4);
         }
         if (result.getErr() == 8){
-            soundUtils.playSound(1,SoundPlayer.SINGLE_PLAY);
+//            soundUtils.playSound(1,SoundPlayer.SINGLE_PLAY);
+            PlayVoice.playVoice(this,R.raw.quxiaoshibai);
         }
         if (result.getErr() == 9){
-            soundUtils.playSound(5,SoundPlayer.SINGLE_PLAY);
+//            soundUtils.playSound(5,SoundPlayer.SINGLE_PLAY);
+            PlayVoice.playVoice(this,R.raw.yijiruku);
 
+        }
+        if (result.getErr()==13){
+//            soundUtils.playSound(6,SoundPlayer.SINGLE_PLAY);
+            PlayVoice.playVoice(this,R.raw.gaidingdanyiquxiao);
         }
     }
 

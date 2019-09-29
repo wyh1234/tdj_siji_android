@@ -77,6 +77,13 @@
             android:name=".WebViewActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".NuclearGoodsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".DDJNuclearGoodsActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".utils.appupdate.PermissionActivity"
             android:label=""
             android:theme="@style/DialogActivity" />

@@ -8,7 +8,7 @@ android {
         multiDexEnabled true
         targetSdkVersion 28
         versionCode 1
-        versionName "2.0"
+        versionName "2.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         ndk {
@@ -93,4 +93,6 @@ dependencies {
     compile 'com.amap.api:location:latest.integration'
     implementation 'org.greenrobot:eventbus:3.0.0'
     implementation files('libs/sunmiscan.jar')
+    compile 'com.github.nukc.stateview:library:1.5.4'
+
 }
