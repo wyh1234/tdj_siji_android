@@ -379,6 +379,10 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
 //            soundUtils.playSound(6,SoundPlayer.SINGLE_PLAY);
             PlayVoice.playVoice(this,R.raw.gaidingdanyiquxiao);
         }
+        if (result.getErr()==15){
+//            soundUtils.playSound(6,SoundPlayer.SINGLE_PLAY);
+            PlayVoice.playVoice(this,R.raw.feidangtain);
+        }
     }
 
     public Context getContext() {

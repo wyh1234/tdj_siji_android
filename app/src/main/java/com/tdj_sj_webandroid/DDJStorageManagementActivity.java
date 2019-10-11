@@ -345,6 +345,10 @@ public class DDJStorageManagementActivity extends BaseActivity<DDJStorageManagem
 //            soundUtils.play(R.raw.gaidingdanyiquxiao, false);
             PlayVoice.playVoice(this,R.raw.gaidingdanyiquxiao);
         }
+        if (result.getErr()==15){
+//            soundUtils.playSound(6,SoundPlayer.SINGLE_PLAY);
+            PlayVoice.playVoice(this,R.raw.feidangtain);
+        }
 
     }
 

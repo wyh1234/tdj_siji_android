@@ -113,6 +113,7 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
 
             @Override
             public boolean shouldOverrideUrlLoading(com.tencent.smtt.sdk.WebView webView, String url) {
+                LogUtils.e(url+"2222222");
 
                 if (url.contains("Activity/")) {
 
