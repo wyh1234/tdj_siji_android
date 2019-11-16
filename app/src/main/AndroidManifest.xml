@@ -82,6 +82,12 @@
         <activity
             android:name=".DDJNuclearGoodsActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".NuclearGoodsHotelActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".NuclearGoodsHotelItemActivity"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".utils.appupdate.PermissionActivity"

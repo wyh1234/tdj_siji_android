@@ -10,4 +10,5 @@
     <color name="text_">#cccccc</color>
     <color name="bg1">#6AAFFD</color>
     <color name="bg2">#ff0000</color>
+    <color name="text_visible_one">#503d9bff</color>
 </resources>

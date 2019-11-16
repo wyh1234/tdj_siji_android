@@ -25,10 +25,8 @@ import com.tdj_sj_webandroid.model.CustomApiResult;
 import com.tdj_sj_webandroid.model.Resume;
 import com.tdj_sj_webandroid.model.StorageManagement;
 import com.tdj_sj_webandroid.mvp.presenter.DDJNuclearGoodsPresenter;
-import com.tdj_sj_webandroid.mvp.presenter.NuclearGoodsPresenter;
 import com.tdj_sj_webandroid.utils.GeneralUtils;
 import com.tdj_sj_webandroid.utils.PlayVoice;
-import com.tdj_sj_webandroid.utils.player.SoundPlayer;
 import com.zhouyou.http.exception.ApiException;
 
 import org.greenrobot.eventbus.EventBus;
@@ -70,10 +68,7 @@ public class DDJNuclearGoodsActivity extends BaseActivity<DDJNuclearGoodsPresent
     private boolean b = false;
 
     private String SCANACTION = "com.android.server.scannerservice.broadcast";
-    private final String ACTION_SCANNER_APP_SETTINGS = "com.android.scanner.service_settings";
     private final String TYPE_BARCODE_BROADCAST_ACTION = "action_barcode_broadcast";
-    private final String TYPE_BOOT_START = "boot_start";
-    private SoundPlayer soundUtils;
     @OnClick({R.id.tv_qx, R.id.right_text, R.id.btn_back})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -105,7 +100,6 @@ public class DDJNuclearGoodsActivity extends BaseActivity<DDJNuclearGoodsPresent
 
     @Override
     protected void initData() {
-        soundUtils = new SoundPlayer(this);
         //东大集
         Intent intent = new Intent("com.seuic.scanner.action.PARAM_SETTINGS").putExtra(TYPE_BARCODE_BROADCAST_ACTION, SCANACTION);
         intent.putExtra("number",0x10a);
@@ -209,14 +203,9 @@ public class DDJNuclearGoodsActivity extends BaseActivity<DDJNuclearGoodsPresent
                     storageManagementAdapter.notifyDataSetChanged();
                     LogUtils.i(total);
                     tv_num.setText("已核货：" + (--total));
-
                 }
-//                soundUtils.play(R.raw.quxiaoshichenggonggai, false);
-
                 PlayVoice.playVoice(this,R.raw.quxiaoshichenggonggai);
-
             } else {
-//                soundUtils.play(R.raw.hehuochenggong, false);
                 PlayVoice.playVoice(this,R.raw.hehuochenggong);
                 if (result.getErr() == 0) {
                     list.add(0, result.getData());
@@ -233,32 +222,24 @@ public class DDJNuclearGoodsActivity extends BaseActivity<DDJNuclearGoodsPresent
             }
         }
         if (result.getErr() == 1) {
-            soundUtils.play(R.raw.hehuoshibai, false);
             PlayVoice.playVoice(this,R.raw.hehuoshibai);
         }
 
         if (result.getErr() == 8 || result.getErr() == 2) {
-            soundUtils.play(R.raw.quxiaoshibaigai, false);
             PlayVoice.playVoice(this,R.raw.quxiaoshibaigai);
         }
         if (result.getErr() == 4) {
-//            soundUtils.play(R.raw.saomashibaigai, false);
             PlayVoice.playVoice(this,R.raw.saomashibaigai);
 
         }
         if (result.getErr() == 6) {
-//            soundUtils.play(R.raw.yijinghehuo, false);
             PlayVoice.playVoice(this,R.raw.yijinghehuo);
         }
         tv_msg.setVisibility(View.GONE);
         if (result.getErr() == 5) {
-
-//            soundUtils.play(R.raw.chuanxian, false);
             PlayVoice.playVoice(this,R.raw.chuanxian);
         }
-
         if (result.getErr()==13){
-//            soundUtils.play(R.raw.gaidingdanyiquxiao, false);
             PlayVoice.playVoice(this,R.raw.gaidingdanyiquxiao);
         }
         if (!GeneralUtils.isNullOrZeroLenght(result.getMsg())){

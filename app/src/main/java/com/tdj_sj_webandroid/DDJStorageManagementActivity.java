@@ -4,9 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.AssetFileDescriptor;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -21,20 +18,14 @@ import com.apkfuns.logutils.LogUtils;
 import com.gyf.barlibrary.ImmersionBar;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
-import com.tdj_sj_webandroid.adapter.BaseRecyclerViewAdapter;
 import com.tdj_sj_webandroid.adapter.StorageManagementAdapter;
 import com.tdj_sj_webandroid.base.BaseActivity;
 import com.tdj_sj_webandroid.model.CustomApiResult;
 import com.tdj_sj_webandroid.model.StorageManagement;
 import com.tdj_sj_webandroid.mvp.presenter.DDJStorageManagementPresenter;
-import com.tdj_sj_webandroid.mvp.presenter.StorageManagementPresenter;
-import com.tdj_sj_webandroid.utils.Constants;
 import com.tdj_sj_webandroid.utils.GeneralUtils;
 import com.tdj_sj_webandroid.utils.PlayVoice;
-import com.tdj_sj_webandroid.utils.player.SoundPlayer;
 import com.zhouyou.http.exception.ApiException;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -69,10 +60,7 @@ public class DDJStorageManagementActivity extends BaseActivity<DDJStorageManagem
 
 
     private String SCANACTION = "com.android.server.scannerservice.broadcast";
-    private final String ACTION_SCANNER_APP_SETTINGS = "com.android.scanner.service_settings";
     private final String TYPE_BARCODE_BROADCAST_ACTION = "action_barcode_broadcast";
-    private final String TYPE_BOOT_START = "boot_start";
-    private SoundPlayer soundUtils;
 
     @OnClick({R.id.tv_qx, R.id.right_text, R.id.btn_back})
     public void onClick(View view) {
@@ -110,7 +98,6 @@ public class DDJStorageManagementActivity extends BaseActivity<DDJStorageManagem
 
     @Override
     protected void initData() {
-        soundUtils = new SoundPlayer(this);
         //东大集
         Intent intent = new Intent("com.seuic.scanner.action.PARAM_SETTINGS").putExtra(TYPE_BARCODE_BROADCAST_ACTION, SCANACTION);
         intent.putExtra("number",0x10a);
@@ -160,7 +147,6 @@ public class DDJStorageManagementActivity extends BaseActivity<DDJStorageManagem
         rk_list.setLayoutManager(layout);
         storageManagementAdapter = new StorageManagementAdapter(this, list);
         rk_list.setAdapter(storageManagementAdapter);
-//        storageManagementAdapter.setOnItemClickListener(this);
         getData(1);
     }
 
@@ -194,90 +180,6 @@ public class DDJStorageManagementActivity extends BaseActivity<DDJStorageManagem
         registerReceiver();
     }
 
-    /**
-     * 监听系统静音模式
-     *
-     * @param mContext
-     */
-
-    private void modeIndicater(Context mContext, int m) {
-        AudioManager am = null;
-        if (am == null) {
-            am = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
-        }
-
-
-        final int ringerMode = am.getRingerMode();
-
-        switch (ringerMode) {
-
-            case AudioManager.RINGER_MODE_NORMAL://普通模式
-
-                playFromRawFile(mContext, m);
-
-                break;
-
-            case AudioManager.RINGER_MODE_VIBRATE://静音模式
-
-                break;
-
-            case AudioManager.RINGER_MODE_SILENT://震动模式
-
-                break;
-
-        }
-
-    }
-
-    /**
-     * 提示音
-     *
-     * @param mContext
-     */
-
-    private void playFromRawFile(Context mContext, int m) {
-        MediaPlayer player = null;
-        try {
-            if (player == null) {
-                player = new MediaPlayer();
-            }
-
-            AssetFileDescriptor file = null;
-            if (m == 1) {
-                file = mContext.getResources().openRawResourceFd(R.raw.quxiao);
-            } else if (m == 0) {
-                file = mContext.getResources().openRawResourceFd(R.raw.aa);
-            } else if (m == 3) {
-                file = mContext.getResources().openRawResourceFd(R.raw.rukeshibai);
-            } else if (m == 4) {
-                file = mContext.getResources().openRawResourceFd(R.raw.saomacaoqu);
-            }
-
-            try {
-
-                player.setDataSource(file.getFileDescriptor(), file.getStartOffset(), file.getLength());
-
-                file.close();
-
-                if (!player.isPlaying()) {
-
-                    player.prepare();
-                    player.start();
-
-                }
-
-            } catch (IOException e) {
-                player = null;
-
-            }
-
-        } catch (Exception e) {
-
-            e.printStackTrace();
-
-        }
-
-    }
 
     public void get_scann_Success(CustomApiResult<StorageManagement> result) {
         tv_qx.setTextColor(getResources().getColor(R.color.text_gonees));
@@ -295,14 +197,10 @@ public class DDJStorageManagementActivity extends BaseActivity<DDJStorageManagem
                     storageManagementAdapter.notifyDataSetChanged();
                     LogUtils.i(total);
                     tv_num.setText("已入库：" + (--total));
-
                 }
-//                soundUtils.play(R.raw.quxiaochenggong, false);
                 PlayVoice.playVoice(this,R.raw.quxiaochenggong);
 
             } else {
-//            soundUtils.playSound(0,SoundPlayer.SINGLE_PLAY);
-//                soundUtils.play(R.raw.rukuchenggong, false);
                 PlayVoice.playVoice(this,R.raw.rukuchenggong);
                 if (result.getErr() == 0) {
 
@@ -320,33 +218,22 @@ public class DDJStorageManagementActivity extends BaseActivity<DDJStorageManagem
             }
         }
         if (result.getErr() == 1) {
-//            soundUtils.playSound(3,SoundPlayer.SINGLE_PLAY);
-//            soundUtils.play(R.raw.saomashibai, false);
             PlayVoice.playVoice(this,R.raw.saomashibai);
-//            modeIndicater(this,3);
-
         }
         if (result.getErr() == 2) {
-//            soundUtils.playSound(2,SoundPlayer.SINGLE_PLAY);
-//            soundUtils.play(R.raw.saomachaoqu, false);
             PlayVoice.playVoice(this,R.raw.saomachaoqu);
-//            modeIndicater(this,4);
         }
         if (result.getErr() == 8){
-//            soundUtils.play(R.raw.quxiaoshibai, false);
             PlayVoice.playVoice(this,R.raw.quxiaoshibai);
         }
         if (result.getErr() == 9){
-//            soundUtils.play(R.raw.yijiruku, false);
             PlayVoice.playVoice(this,R.raw.yijiruku);
         }
 
         if (result.getErr()==13){
-//            soundUtils.play(R.raw.gaidingdanyiquxiao, false);
             PlayVoice.playVoice(this,R.raw.gaidingdanyiquxiao);
         }
         if (result.getErr()==15){
-//            soundUtils.playSound(6,SoundPlayer.SINGLE_PLAY);
             PlayVoice.playVoice(this,R.raw.feidangtain);
         }
 
@@ -356,10 +243,6 @@ public class DDJStorageManagementActivity extends BaseActivity<DDJStorageManagem
         return this;
     }
 
-  /*  @Override
-    public void onItemClick(RecyclerView.Adapter adapter, View v, int position) {
-
-    }*/
 
     public void get_scann_onError(ApiException e) {
         if (b) {

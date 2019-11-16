@@ -31,7 +31,6 @@ import com.tdj_sj_webandroid.mvp.presenter.DDJStorageManagementPresenter;
 import com.tdj_sj_webandroid.mvp.presenter.SunMiStorageManagementPresenter;
 import com.tdj_sj_webandroid.utils.Constants;
 import com.tdj_sj_webandroid.utils.GeneralUtils;
-import com.tdj_sj_webandroid.utils.player.SoundPlayer;
 import com.zhouyou.http.exception.ApiException;
 
 import java.io.IOException;
@@ -67,7 +66,6 @@ public class SunMiStorageManagementActivity extends BaseActivity<SunMiStorageMan
     private StorageManagementAdapter storageManagementAdapter;
     private int total = 0;
 
-    private SoundPlayer soundUtils;
 
     @OnClick({R.id.tv_qx, R.id.right_text, R.id.btn_back})
     public void onClick(View view) {
@@ -105,7 +103,6 @@ public class SunMiStorageManagementActivity extends BaseActivity<SunMiStorageMan
 
     @Override
     protected void initData() {
-        soundUtils = new SoundPlayer(this);
         //东大集
         Intent intent = new Intent("com.summi.scan");
         intent.setPackage("com.sunmi.sunmiqrcodescanner");
@@ -186,7 +183,6 @@ public class SunMiStorageManagementActivity extends BaseActivity<SunMiStorageMan
                     LogUtils.i(total);
                     tv_num.setText("已入库：" + (--total));
 //                    soundUtils.playSound(1,SoundPlayer.SINGLE_PLAY);
-                    soundUtils.play(R.raw.quxiaochenggong, false);
 //                    modeIndicater(this,1);
 
                 }
@@ -194,7 +190,6 @@ public class SunMiStorageManagementActivity extends BaseActivity<SunMiStorageMan
 
             } else {
 //            soundUtils.playSound(0,SoundPlayer.SINGLE_PLAY);
-                soundUtils.play(R.raw.rukuchenggong, false);
                 if (result.getErr() == 0) {
 
                     list.add(0, result.getData());
@@ -211,20 +206,13 @@ public class SunMiStorageManagementActivity extends BaseActivity<SunMiStorageMan
             }
         }
         if (result.getErr() == 1) {
-//            soundUtils.playSound(3,SoundPlayer.SINGLE_PLAY);
-            soundUtils.play(R.raw.saomashibai, false);
 //            modeIndicater(this,3);
         }
         if (result.getErr() == 2) {
-//            soundUtils.playSound(2,SoundPlayer.SINGLE_PLAY);
-            soundUtils.play(R.raw.saomachaoqu, false);
-//            modeIndicater(this,4);
         }
         if (result.getErr() == 8){
-            soundUtils.play(R.raw.quxiaoshibai, false);
         }
         if (result.getErr() == 9){
-            soundUtils.play(R.raw.yijiruku, false);
         }
 
 

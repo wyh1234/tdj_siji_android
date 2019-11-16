@@ -16,6 +16,7 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.tdj_sj_webandroid.DDJStorageManagementActivity;
 import com.tdj_sj_webandroid.MainTabActivity;
 
+import com.tdj_sj_webandroid.NuclearGoodsHotelActivity;
 import com.tdj_sj_webandroid.R;
 import com.tdj_sj_webandroid.StorageManagementActivity;
 import com.tdj_sj_webandroid.SunMiStorageManagementActivity;
@@ -53,10 +54,6 @@ public class HomePageFragment extends BaseFrgment<HomePageFragmentPresenter> imp
     private RxPermissions rxPermissions;
     private static final int REQUEST_CODE_SCAN=0X0001;
     private MainTabActivity activity;
-    private String SCANACTION = "com.tdj.server.scannerservice.broadcast";
-    private final String ACTION_SCANNER_APP_SETTINGS = "com.android.scanner.service_settings";
-    private final String TYPE_BARCODE_BROADCAST_ACTION = "action_barcode_broadcast";
-    private final String TYPE_BOOT_START = "boot_start";
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -124,7 +121,6 @@ public class HomePageFragment extends BaseFrgment<HomePageFragmentPresenter> imp
     public void onItemClick(RecyclerView.Adapter adapter, View v, int position) {
         if (getHomeInfo().getMenus().get(position).getMenuDesc()==null){
             Intent intent=new Intent(getContext(), WebViewActivity.class);
-
             intent.putExtra("url", Constants.URL1+getHomeInfo().getMenus().get(position).getMenuUrl());
             startActivity(intent);
         }else if  (getHomeInfo().getMenus().get(position).getMenuDesc().equals("sm")){
@@ -142,7 +138,7 @@ public class HomePageFragment extends BaseFrgment<HomePageFragmentPresenter> imp
         }else if (getHomeInfo().getMenus().get(position).getMenuDesc().equals("ps")){
             activity.setTabSelection(1);
         }else if (getHomeInfo().getMenus().get(position).getMenuDesc().equals("smrk")){
-            LogUtils.i(Build.MODEL.equals("NLS-MT90"));
+            LogUtils.e(Build.MODEL);
             Intent intent;
 //            intent = new Intent(getContext(), SunMiStorageManagementActivity.class);
             if (Build.MODEL.equals("NLS-MT90")){
@@ -153,6 +149,10 @@ public class HomePageFragment extends BaseFrgment<HomePageFragmentPresenter> imp
             */}else {
                 intent = new Intent(getContext(), DDJStorageManagementActivity.class);
             }
+            startActivity(intent);
+        }else if (getHomeInfo().getMenus().get(position).getMenuDesc().equals("smhh")){
+            Intent intent=new Intent(getContext(), NuclearGoodsHotelActivity.class);
+            intent.putExtra("url", Constants.URL1+getHomeInfo().getMenus().get(position).getMenuUrl());
             startActivity(intent);
         }
 

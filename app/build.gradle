@@ -8,7 +8,7 @@ android {
         multiDexEnabled true
         targetSdkVersion 28
         versionCode 1
-        versionName "2.2"
+        versionName "2.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         ndk {
@@ -72,6 +72,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'com.jakewharton:butterknife:8.2.1'
+    implementation 'com.android.support:design:28.0.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.2.1'
     implementation files('libs/tbs_sdk_thirdapp_v3.6.0.1310_43612_sharewithdownload_withoutGame_obfs_20180706_163319.jar')
     //    compile 'com.jaeger.statusbarutil:library:1.5.1'
