@@ -284,7 +284,7 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
                                 .countable(true)//true:选中后显示数字;false:选中后显示对号
                                 .maxSelectable(1)
                                 .capture(true)
-                                .captureStrategy(new CaptureStrategy(true, "com.tdj_sj_webandroid")) //是否拍照功能，并设置拍照后图片的保存路径; FILE_PATH = 你项目的包名.fileprovider,必须配置不然会抛异常
+                                .captureStrategy(new CaptureStrategy(true, "com.tdj_sj_webandroid.fileProvider")) //是否拍照功能，并设置拍照后图片的保存路径; FILE_PATH = 你项目的包名.fileprovider,必须配置不然会抛异常
                                 .addFilter(new GifSizeFilter(320, 320, 5 * Filter.K * Filter.K))
                                 .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
                                 .originalEnable(true)

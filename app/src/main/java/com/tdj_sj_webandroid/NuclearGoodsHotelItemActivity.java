@@ -77,7 +77,12 @@ public class NuclearGoodsHotelItemActivity extends BaseActivity {
             titles.add("正常(0)");
             titles.add("未入库(0)");
             titles.add("串线(0)");
-            tv_title.setText("核货");
+            if ( getIntent().getStringExtra("customer_name")!=null){
+                tv_title.setText(""+( getIntent().getStringExtra("customer_name")));
+            }else {
+                tv_title.setText("核货");
+            }
+
             num=getIntent().getStringExtra("num");
             customer_id=getIntent().getStringExtra("customer_id");
         }

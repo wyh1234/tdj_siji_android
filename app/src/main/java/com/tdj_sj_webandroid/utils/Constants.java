@@ -16,6 +16,7 @@ public final static String URL="https://siji.51taodj.com/test-driver/";
     public final static String retreat="home/retreat.do?orderNo=";
     public final static String task="task/task.do";
     public final static String scann="order/scanner.do?";
+
     public final static String home="order/home.do";
     public final static String version="version/check.do?version=";
 

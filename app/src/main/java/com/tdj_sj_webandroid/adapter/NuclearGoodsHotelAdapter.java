@@ -33,7 +33,7 @@ public class NuclearGoodsHotelAdapter extends BaseRecyclerViewAdapter<NuclearGoo
 
     @Override
     protected void onBindData(RecyclerViewHolder holder, final NuclearGoodsHotel.OrderListBean bean, int position) {
-        ((TextView) holder.getView(R.id.tv_code)).setText(bean.getCode());
+        ((TextView) holder.getView(R.id.tv_code)).setText(bean.getCode()+"\t\t"+bean.getName());
         ((TextView) holder.getView(R.id.tv_num)).setText("子订单共："+bean.getNum()+"个");
         ((TextView) holder.getView(R.id.tv_zc)).setText(bean.getZc()+"");
         ((TextView) holder.getView(R.id.tv_ds)).setText(bean.getDs()+"");
@@ -45,6 +45,7 @@ public class NuclearGoodsHotelAdapter extends BaseRecyclerViewAdapter<NuclearGoo
                 Intent intent=new Intent(context, NuclearGoodsHotelItemActivity.class);
                 intent.putExtra("num",bean.getNum()+"");
                 intent.putExtra("customer_id",bean.getCustomer()+"");
+                intent.putExtra("customer_name",bean.getCode()+bean.getName());
                 intent.putExtra("position","1");
                 context.startActivity(intent);
             }
@@ -55,6 +56,7 @@ public class NuclearGoodsHotelAdapter extends BaseRecyclerViewAdapter<NuclearGoo
                 Intent intent=new Intent(context, NuclearGoodsHotelItemActivity.class);
                 intent.putExtra("num",bean.getNum()+"");
                 intent.putExtra("customer_id",bean.getCustomer()+"");
+                intent.putExtra("customer_name",bean.getCode()+bean.getName());
                 intent.putExtra("position","0");
                 context.startActivity(intent);
             }
@@ -63,6 +65,7 @@ public class NuclearGoodsHotelAdapter extends BaseRecyclerViewAdapter<NuclearGoo
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(context, NuclearGoodsHotelItemActivity.class);
+                intent.putExtra("customer_name",bean.getCode()+bean.getName());
                 intent.putExtra("num",bean.getNum()+"");
                 intent.putExtra("customer_id",bean.getCustomer()+"");
                 intent.putExtra("position","2");
@@ -76,6 +79,7 @@ public class NuclearGoodsHotelAdapter extends BaseRecyclerViewAdapter<NuclearGoo
                 intent.putExtra("num",bean.getNum()+"");
                 intent.putExtra("customer_id",bean.getCustomer()+"");
                 intent.putExtra("position","3");
+                intent.putExtra("customer_name",bean.getCode()+bean.getName());
                 context.startActivity(intent);
             }
         });

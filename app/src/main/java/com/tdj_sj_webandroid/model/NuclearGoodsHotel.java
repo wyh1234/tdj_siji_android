@@ -148,6 +148,15 @@ public class NuclearGoodsHotel {
         private int drk;
         private int ds;
         private int customer;
+        private String customerName;
+
+        public String getCustomerName() {
+            return customerName;
+        }
+
+        public void setCustomerName(String customerName) {
+            this.customerName = customerName;
+        }
 
         public String getCode() {
             return code;
