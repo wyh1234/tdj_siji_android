@@ -7,7 +7,8 @@ public final static String URL="https://siji.51taodj.com/test-driver/";
     public final static String URL1="https://siji.51taodj.com/test-driver";
 //public final static String URL="http://192.168.10.239:8089/";
 //    public final static String URL1="http://192.168.10.239:8089";
-//public final static String URL="https://siji.51taodj.com/test-driver/";
+//public final static String URL="https://siji.51taodj.com/
+// test-driver/";
 //    public final static String URL1="https://siji.51taodj.com/test-driver";
     public final static String upload="home/imgUpload.do";
     public final static String menus="user/menus.do";
@@ -26,4 +27,9 @@ public final static String URL="https://siji.51taodj.com/test-driver/";
     public final static String checkGoods="checkGoods/center.do?type=";
     public final static String problem="checkGoods/problem.do?type=";
     public final static String statis="checkGoods/statis.do?type=";
+    public final static String diy="diy/scanner.do?";
+    public final static String diy_home="diy/home.do?";
+    public final static String getSijiCount="storeDiyFee/getSijiCount.do?";
+    public final static String getSijiCountByStore="storeDiyFee/getSijiCountByStore.do?";
+
 }

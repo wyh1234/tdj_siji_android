@@ -14,8 +14,10 @@ import com.apkfuns.logutils.LogUtils;
 import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.tdj_sj_webandroid.DDJStorageManagementActivity;
+import com.tdj_sj_webandroid.DIYScannerActivity;
 import com.tdj_sj_webandroid.MainTabActivity;
 
+import com.tdj_sj_webandroid.ManualScannerActivity;
 import com.tdj_sj_webandroid.NuclearGoodsHotelActivity;
 import com.tdj_sj_webandroid.R;
 import com.tdj_sj_webandroid.StorageManagementActivity;
@@ -154,6 +156,18 @@ public class HomePageFragment extends BaseFrgment<HomePageFragmentPresenter> imp
             Intent intent=new Intent(getContext(), NuclearGoodsHotelActivity.class);
             intent.putExtra("url", Constants.URL1+getHomeInfo().getMenus().get(position).getMenuUrl());
             startActivity(intent);
+        }else if (getHomeInfo().getMenus().get(position).getMenuDesc().equals("zzsmrk")){
+            if (!Build.MODEL.equals("NLS-MT90")){
+                Intent  diyScanner_intent = new Intent(getContext(), DIYScannerActivity.class);
+                startActivity(diyScanner_intent);
+              }
+
+        }else if (getHomeInfo().getMenus().get(position).getMenuDesc().equals("rgsmrk")){
+            Intent intent;
+            if (!Build.MODEL.equals("NLS-MT90")){
+                Intent  manualScanner_intent = new Intent(getContext(), ManualScannerActivity.class);
+                startActivity(manualScanner_intent);
+            }
         }
 
     }

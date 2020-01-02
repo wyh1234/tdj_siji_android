@@ -95,5 +95,6 @@ dependencies {
     implementation 'org.greenrobot:eventbus:3.0.0'
     implementation files('libs/sunmiscan.jar')
     compile 'com.github.nukc.stateview:library:1.5.4'
+    implementation 'com.contrarywind:Android-PickerView:4.1.8'
 
 }

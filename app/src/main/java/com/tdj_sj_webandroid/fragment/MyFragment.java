@@ -17,6 +17,7 @@ import com.tdj_sj_webandroid.AppAplication;
 import com.tdj_sj_webandroid.MainTabActivity;
 import com.tdj_sj_webandroid.MianActivity;
 import com.tdj_sj_webandroid.R;
+import com.tdj_sj_webandroid.ScannerHistoryActivity;
 import com.tdj_sj_webandroid.SimpleWebView;
 import com.tdj_sj_webandroid.WebViewActivity;
 import com.tdj_sj_webandroid.base.BaseFrgment;
@@ -169,6 +170,11 @@ public class MyFragment extends BaseFrgment {
             startActivity(intent);
 
 
+        }
+        @JavascriptInterface
+        public void  scannerHistory(){
+            Intent intent=new Intent(getContext(), ScannerHistoryActivity.class);
+            startActivity(intent);
         }
 
     }

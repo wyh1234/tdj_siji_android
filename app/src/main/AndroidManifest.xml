@@ -88,6 +88,18 @@
         <activity
             android:name=".NuclearGoodsHotelItemActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".DIYScannerActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ManualScannerActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ScannerHistoryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ScannerHistoryDetalisActivity"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".utils.appupdate.PermissionActivity"

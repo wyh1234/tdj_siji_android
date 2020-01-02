@@ -63,6 +63,15 @@ public class StorageManagement {
     private int qty;
     private String unit;
     private String productName;
+    private int order_type;
+
+    public int getOrder_type() {
+        return order_type;
+    }
+
+    public void setOrder_type(int order_type) {
+        this.order_type = order_type;
+    }
 
     public int getQty() {
         return qty;
