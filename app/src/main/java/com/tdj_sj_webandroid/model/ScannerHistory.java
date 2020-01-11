@@ -25,7 +25,16 @@ public class ScannerHistory {
     private String createStartTime;
     private String createEndTime;
     private int total;
+    private int orderNum;
     private List<ItemsBean> items;
+
+    public int getOrderNum() {
+        return orderNum;
+    }
+
+    public void setOrderNum(int orderNum) {
+        this.orderNum = orderNum;
+    }
 
     public String getStartTime() {
         return startTime;

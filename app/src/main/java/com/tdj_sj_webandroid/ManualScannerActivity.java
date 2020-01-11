@@ -176,7 +176,15 @@ public class ManualScannerActivity extends BaseActivity<ManualScannerPresenter> 
             if (b) {
                 b = false;
                 if (list.size() > 0) {
-                    if (type==1) {
+                    Iterator<StorageManagement> iterator = list.iterator();
+                    while (iterator.hasNext()) {
+                        StorageManagement item = iterator.next();
+                        if (item.getSku().equals(result.getData().getSku())) {
+                            iterator.remove();
+                        }
+                    }
+                    storageManagementAdapter.notifyDataSetChanged();
+                  /*  if (type==1) {
                         if (result.getData().getOrder_type() == 1 || result.getData().getOrder_type() == 2) {
                             Iterator<StorageManagement> iterator = list.iterator();
                             while (iterator.hasNext()) {
@@ -205,9 +213,9 @@ public class ManualScannerActivity extends BaseActivity<ManualScannerPresenter> 
                             }
                         }
                         storageManagementAdapter.notifyDataSetChanged();
-                    }
+                    }*/
 
-                    setCurrQxTab(result.getData().getOrder_type());
+//                    setCurrQxTab(result.getData().getOrder_type());
                 }
                 PlayVoice.playVoice(this,R.raw.quxiaochenggong);
 
@@ -230,7 +238,7 @@ public class ManualScannerActivity extends BaseActivity<ManualScannerPresenter> 
 
 
 
-                    setCurrRkTab(result.getData().getOrder_type());
+//                    setCurrRkTab(result.getData().getOrder_type());
                 }
 
 
@@ -284,7 +292,7 @@ public class ManualScannerActivity extends BaseActivity<ManualScannerPresenter> 
                     Toast.makeText(this, "数据加载完毕", Toast.LENGTH_LONG).show();
                 }
             }
-            setTab(response.getTotal());
+//            setTab(response.getTotal());
 
         } else {
             if (response.getPn() != 1) {
@@ -307,9 +315,9 @@ public class ManualScannerActivity extends BaseActivity<ManualScannerPresenter> 
         if (order_type==1||order_type==2){
             tv_zc.setText("正常时段（"+(++zc_total)+")");
         }else if (order_type==3){
-            tv_ys.setText("延迟入库（"+(++zc_total)+")");
+            tv_ys.setText("延迟入库（"+(++yc_total)+")");
         }else if (order_type==4){
-            tv_cd.setText("严重迟到（"+(++zc_total)+")");
+            tv_cd.setText("严重迟到（"+(++cd_total)+")");
         }
     }
     public void setTab(int total){

@@ -188,7 +188,7 @@ public class ScannerHistoryActivity extends BaseActivity<ScannerHistoryPresenter
             return;
         }
         if (response.getErr() == 0) {
-            tv_total.setText("扫码数："+response.getData().getTotal());
+            tv_total.setText("扫码数："+response.getData().getOrderNum());
 
             if (response.getData().getItems().size() > 0) {
                 scannerHistoryList.addAll(response.getData().getItems());
