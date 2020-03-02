@@ -9,6 +9,7 @@ import com.tdj_sj_webandroid.model.CustomApiResult;
 import com.tdj_sj_webandroid.model.StorageManagement;
 import com.tdj_sj_webandroid.mvp.model.Model;
 import com.tdj_sj_webandroid.utils.Constants;
+import com.tdj_sj_webandroid.utils.GeneralUtils;
 import com.zhouyou.http.exception.ApiException;
 
 import java.util.HashMap;
@@ -20,10 +21,13 @@ public class ManualScannerPresenter extends BasePresenter<Model, ManualScannerAc
     public Model loadModel() {
         return null;
     }
-    public void get_scann(String code,String type) {
+    public void get_scann(String code,String type,String sale) {
         Map<String,String> map=new HashMap<>();
         map.put("code",code);
         map.put("type",type);
+        if (!GeneralUtils.isNullOrZeroLenght(sale)){
+            map.put("flag",sale);
+        }
         HttpUtils.onGet(getIView().getContext(), map, Constants.diy, new GsonResponseHandler<CustomApiResult<StorageManagement>>() {
             @Override
             public void onError(ApiException e) {
@@ -44,11 +48,14 @@ public class ManualScannerPresenter extends BasePresenter<Model, ManualScannerAc
 
     }
 
-    public void get_scann(int pn,int type) {
+    public void get_scann(int pn,int type,String sale) {
         Map<String,String> map=new HashMap<>();
         map.put("ps","10");
         map.put("type",type+"");
         map.put("pn",String.valueOf(pn));
+        if (!GeneralUtils.isNullOrZeroLenght(sale)){
+            map.put("flag",sale);
+        }
         HttpUtils.onGet(getIView().getContext(), map, Constants.diy_home, new GsonResponseHandler<CustomApiResult<List<StorageManagement>>>() {
             @Override
             public void onError(ApiException e) {

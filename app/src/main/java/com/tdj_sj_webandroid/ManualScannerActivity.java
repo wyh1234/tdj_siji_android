@@ -84,9 +84,9 @@ public class ManualScannerActivity extends BaseActivity<ManualScannerPresenter> 
                     return;
                 }
                 if (b) {
-                    mPresenter.get_scann(search_edit.getText().toString(), "out");
+                    mPresenter.get_scann(search_edit.getText().toString(), "out",GeneralUtils.isNullOrZeroLenght(getIntent().getStringExtra("flag"))?"":getIntent().getStringExtra("flag"));
                 } else {
-                    mPresenter.get_scann(search_edit.getText().toString(), "in");
+                    mPresenter.get_scann(search_edit.getText().toString(), "in",GeneralUtils.isNullOrZeroLenght(getIntent().getStringExtra("flag"))?"":getIntent().getStringExtra("flag"));
                 }
                 break;
             case R.id.btn_back:
@@ -124,7 +124,7 @@ public class ManualScannerActivity extends BaseActivity<ManualScannerPresenter> 
             }
 
         }
-        mPresenter.get_scann(pn,type);
+        mPresenter.get_scann(pn,type,GeneralUtils.isNullOrZeroLenght(getIntent().getStringExtra("flag"))?"":getIntent().getStringExtra("flag"));
 
     }
     @Override
@@ -155,9 +155,9 @@ public class ManualScannerActivity extends BaseActivity<ManualScannerPresenter> 
                         search_edit.setSelection(search_edit.getText().length());
                         LogUtils.i(b);
                         if (b){
-                            mPresenter.get_scann(intent.getStringExtra("scannerdata"),"out");
+                            mPresenter.get_scann(intent.getStringExtra("scannerdata"),"out",GeneralUtils.isNullOrZeroLenght(getIntent().getStringExtra("flag"))?"":getIntent().getStringExtra("flag"));
                         }else {
-                            mPresenter.get_scann(intent.getStringExtra("scannerdata"),"in");
+                            mPresenter.get_scann(intent.getStringExtra("scannerdata"),"in",GeneralUtils.isNullOrZeroLenght(getIntent().getStringExtra("flag"))?"":getIntent().getStringExtra("flag"));
                         }
 
                     }

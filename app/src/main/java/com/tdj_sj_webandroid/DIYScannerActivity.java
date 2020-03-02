@@ -73,9 +73,9 @@ public class DIYScannerActivity extends BaseActivity<DIYScannerPresenter> implem
                     return;
                 }
                 if (b) {
-                    mPresenter.get_scann(search_edit.getText().toString(), "out");
+                    mPresenter.get_scann(search_edit.getText().toString(), "out",GeneralUtils.isNullOrZeroLenght(getIntent().getStringExtra("flag"))?"":getIntent().getStringExtra("flag"));
                 } else {
-                    mPresenter.get_scann(search_edit.getText().toString(), "in");
+                    mPresenter.get_scann(search_edit.getText().toString(), "in",GeneralUtils.isNullOrZeroLenght(getIntent().getStringExtra("flag"))?"":getIntent().getStringExtra("flag"));
                 }
                 break;
             case R.id.btn_back:
@@ -109,9 +109,9 @@ public class DIYScannerActivity extends BaseActivity<DIYScannerPresenter> implem
                         search_edit.setSelection(search_edit.getText().length());
                         LogUtils.i(b);
                         if (b){
-                            mPresenter.get_scann(intent.getStringExtra("scannerdata"),"out");
+                            mPresenter.get_scann(intent.getStringExtra("scannerdata"),"out",GeneralUtils.isNullOrZeroLenght(getIntent().getStringExtra("flag"))?"":getIntent().getStringExtra("flag"));
                         }else {
-                            mPresenter.get_scann(intent.getStringExtra("scannerdata"),"in");
+                            mPresenter.get_scann(intent.getStringExtra("scannerdata"),"in",GeneralUtils.isNullOrZeroLenght(getIntent().getStringExtra("flag"))?"":getIntent().getStringExtra("flag"));
                         }
 
                     }
@@ -139,7 +139,7 @@ public class DIYScannerActivity extends BaseActivity<DIYScannerPresenter> implem
         getData(1);
     }
     protected void getData(int pn) {
-        mPresenter.get_scann(pn);
+        mPresenter.get_scann(pn,GeneralUtils.isNullOrZeroLenght(getIntent().getStringExtra("flag"))?"":getIntent().getStringExtra("flag"));
 
     }
     @Override

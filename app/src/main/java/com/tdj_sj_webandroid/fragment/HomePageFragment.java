@@ -168,6 +168,20 @@ public class HomePageFragment extends BaseFrgment<HomePageFragmentPresenter> imp
                 Intent  manualScanner_intent = new Intent(getContext(), ManualScannerActivity.class);
                 startActivity(manualScanner_intent);
             }
+        }else if (getHomeInfo().getMenus().get(position).getMenuDesc().equals("jhcsmrk")){
+            Intent intent;
+            if (!Build.MODEL.equals("NLS-MT90")){
+                Intent  manualScanner_intent = new Intent(getContext(), ManualScannerActivity.class);
+                manualScanner_intent.putExtra("flag","sale");
+                startActivity(manualScanner_intent);
+            }
+        }else if (getHomeInfo().getMenus().get(position).getMenuDesc().equals("jhczzsmrk")){
+            Intent intent;
+            if (!Build.MODEL.equals("NLS-MT90")){
+                Intent  diyScanner_intent = new Intent(getContext(), DIYScannerActivity.class);
+                diyScanner_intent.putExtra("flag","sale");
+                startActivity(diyScanner_intent);
+            }
         }
 
     }
