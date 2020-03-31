@@ -40,6 +40,16 @@ public class NuclearGoodsHotelFragment extends BaseFrgment<NuclearGoodsHotelPres
     private List<NuclearGoodsHotel.OrderListBean> data=new ArrayList<>();
     private NuclearGoodsHotelAdapter adapter;
     private NuclearGoodsHotelActivity activity;
+    private String keywords="";
+
+    public String getKeywords() {
+        return keywords;
+    }
+
+    public void setKeywords(String keywords) {
+        this.keywords = keywords;
+    }
+
     public static NuclearGoodsHotelFragment newInstance(int str) {
         Bundle args = new Bundle();
         args.putInt("intent", str);
@@ -71,7 +81,7 @@ public class NuclearGoodsHotelFragment extends BaseFrgment<NuclearGoodsHotelPres
         super.onUserVisible();
         index=getArguments().getInt("intent");
         LogUtils.e(index);
-        mPresenter.checkGoods(index+1);
+        mPresenter.checkGoods(index+1,keywords);
 
     }
     public void stop() {
@@ -138,6 +148,12 @@ public class NuclearGoodsHotelFragment extends BaseFrgment<NuclearGoodsHotelPres
     /*code 不同事件接受處理*/
     @Subscribe( threadMode = ThreadMode.MAIN)
     public void Resume(Resume resume) {
-        mPresenter.checkGoods(index+1);
+        if (resume.getTag()==1){
+            mPresenter.checkGoods(index+1,resume.getKeywords());
+            setKeywords(resume.getKeywords());
+
+        }else {
+            mPresenter.checkGoods(index+1,getKeywords());
+        }
     }
 }

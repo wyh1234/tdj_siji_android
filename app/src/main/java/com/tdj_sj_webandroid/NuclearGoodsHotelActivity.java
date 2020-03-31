@@ -3,6 +3,7 @@ package com.tdj_sj_webandroid;
 import android.content.Intent;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -10,7 +11,11 @@ import com.apkfuns.logutils.LogUtils;
 import com.gyf.barlibrary.ImmersionBar;
 import com.tdj_sj_webandroid.adapter.FragmentHotelAdapter;
 import com.tdj_sj_webandroid.base.BaseActivity;
+import com.tdj_sj_webandroid.model.Resume;
+import com.tdj_sj_webandroid.model.SeachTag;
 import com.tdj_sj_webandroid.mvp.presenter.IPresenter;
+import com.tdj_sj_webandroid.utils.GeneralUtils;
+import com.tdj_sj_webandroid.utils.ToastUtils;
 import com.tdj_sj_webandroid.utils.tablayout.WTabLayout;
 
 import org.greenrobot.eventbus.EventBus;
@@ -36,13 +41,17 @@ public class NuclearGoodsHotelActivity extends BaseActivity {
     ViewPager viewPager;
     @BindView(R.id.tv_question)
     TextView tv_question;
+    @BindView(R.id.search_edit)
+    EditText search_edit;
+    @BindView(R.id.right_text)
+    TextView right_text;
 
 
     @BindView(R.id.btn_back)
     ImageView btn_back;
     public FragmentHotelAdapter adatper;
     public List<String> titles = new ArrayList<>();
-    @OnClick({R.id.btn_back,R.id.tv_question})
+    @OnClick({R.id.btn_back,R.id.tv_question,R.id.right_text})
     public void onClick(View view){
         switch (view.getId()){
             case R.id.btn_back:
@@ -53,6 +62,18 @@ public class NuclearGoodsHotelActivity extends BaseActivity {
                 intent.putExtra("question","question");
                 startActivity(intent);
                 LogUtils.e("44444");
+
+                break;
+            case R.id.right_text:
+             /*   if (GeneralUtils.isNullOrZeroLenght(search_edit.getText().toString())){
+                    ToastUtils.showToast(this,"请输入编号");
+
+                }else {*/
+                    Resume resume=new Resume();
+                    resume.setTag(1);
+                    resume.setKeywords(search_edit.getText().toString());
+                    EventBus.getDefault().post(resume);
+//                }
 
                 break;
         }

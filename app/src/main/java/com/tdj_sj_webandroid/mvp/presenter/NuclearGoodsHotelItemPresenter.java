@@ -21,9 +21,9 @@ public class NuclearGoodsHotelItemPresenter extends BasePresenter<Model, Nuclear
         return null;
     }
 
-    public void checkGoods(String url) {
+    public void checkGoods(String url,String customerlinecod) {
         Map<String,String> map=new HashMap<>();
-        HttpUtils.onGet(getIView().getContext(), map, url, new GsonResponseHandler<CustomApiResult<GoodsInfo>>() {
+        HttpUtils.onGet(getIView().getContext(), map, url+"&customerlinecode="+customerlinecod, new GsonResponseHandler<CustomApiResult<GoodsInfo>>() {
             @Override
             public void onError(ApiException e) {
                 getIView().checkGoods_onError(e);

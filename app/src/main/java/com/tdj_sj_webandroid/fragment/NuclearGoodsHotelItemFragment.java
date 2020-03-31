@@ -38,10 +38,20 @@ public class NuclearGoodsHotelItemFragment extends BaseFrgment<NuclearGoodsHotel
     @BindView(R.id.recyclerView_list)
     RecyclerView recyclerView_list;
     private int index;
+
     private List<GoodsInfo.GoodsListBean> data=new ArrayList<>();
     private GoodsListAdapter adapter;
 
     private NuclearGoodsHotelItemActivity activity;
+    private String keywords="";
+
+    public String getKeywords() {
+        return keywords;
+    }
+
+    public void setKeywords(String keywords) {
+        this.keywords = keywords;
+    }
 
     public static NuclearGoodsHotelItemFragment newInstance(int str) {
         Bundle args = new Bundle();
@@ -70,9 +80,9 @@ public class NuclearGoodsHotelItemFragment extends BaseFrgment<NuclearGoodsHotel
         index=getArguments().getInt("intent");
         LogUtils.e(index);
         if (GeneralUtils.isNullOrZeroLenght(activity.question)){
-          mPresenter.checkGoods(Constants.statis+(index+1)+"&nums="+(activity.num)+"&customer_id="+(activity.customer_id));
+          mPresenter.checkGoods(Constants.statis+(index+1)+"&nums="+(activity.num)+"&customer_id="+(activity.customer_id),getKeywords());
         }else {
-            mPresenter.checkGoods(Constants.problem+(index+1));
+            mPresenter.checkGoods(Constants.problem+(index+1),getKeywords());
         }
 
     }
@@ -135,17 +145,22 @@ public class NuclearGoodsHotelItemFragment extends BaseFrgment<NuclearGoodsHotel
         }
         mStateView.showContent();//显示内容
         data.addAll(result.getData().getGoodsList());
+        adapter.setNum(activity.num!=null?Integer.parseInt(activity.num):result.getData().getTab2());
         adapter.notifyDataSetChanged();
+
 
     }
     /*code 不同事件接受處理*/
     @Subscribe( threadMode = ThreadMode.MAIN)
     public void Resume(Resume resume) {
+            setKeywords(GeneralUtils.isNullOrZeroLenght(resume.getKeywords())?"":resume.getKeywords());
+
         if (GeneralUtils.isNullOrZeroLenght(resume.getType())){
             if (GeneralUtils.isNullOrZeroLenght(activity.question)){
-                mPresenter.checkGoods(Constants.statis+(index+1)+"&nums="+(activity.num)+"&customer_id="+(activity.customer_id));
+
+                mPresenter.checkGoods(Constants.statis+(index+1)+"&nums="+(activity.num)+"&customer_id="+(activity.customer_id),getKeywords());
             }else {
-                mPresenter.checkGoods(Constants.problem+(index+1));
+                mPresenter.checkGoods(Constants.problem+(index+1),getKeywords());
             }
         }
 

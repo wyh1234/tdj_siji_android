@@ -93,6 +93,7 @@ public class NuclearGoodsHotelAdapter extends BaseRecyclerViewAdapter<NuclearGoo
                     intent = new Intent(context, DDJNuclearGoodsActivity.class);
                 }
                 intent.putExtra("customer_id",bean.getCustomer()+"");
+                intent.putExtra("num",bean.getNum());
                 intent.putExtra("customer_code",bean.getCode());
                 context.startActivity(intent);
             }

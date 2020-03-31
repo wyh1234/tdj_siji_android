@@ -60,12 +60,23 @@ public class DDJNuclearGoodsActivity extends BaseActivity<DDJNuclearGoodsPresent
     TextView tv_msg;
     @BindView(R.id.ll)
     LinearLayout ll;
+    @BindView(R.id.tv_num_s)
+    TextView tv_num_s;
     public int pageNo = 1;//翻页计数器
     private BroadcastReceiver scanReceiver;
     private List<StorageManagement> list = new ArrayList();
     private NuclearGoodsAdapter storageManagementAdapter;
     private int total = 0;
     private boolean b = false;
+    private int num;
+
+    public int getNum() {
+        return num;
+    }
+
+    public void setNum(int num) {
+        this.num = num;
+    }
 
     private String SCANACTION = "com.android.server.scannerservice.broadcast";
     private final String TYPE_BARCODE_BROADCAST_ACTION = "action_barcode_broadcast";
@@ -146,6 +157,8 @@ public class DDJNuclearGoodsActivity extends BaseActivity<DDJNuclearGoodsPresent
         storageManagementAdapter = new NuclearGoodsAdapter(this, list);
         rk_list.setAdapter(storageManagementAdapter);
         getData(1);
+        setNum(getIntent().getIntExtra("num",0));
+
     }
 
     protected void getData(int pn) {
@@ -212,6 +225,8 @@ public class DDJNuclearGoodsActivity extends BaseActivity<DDJNuclearGoodsPresent
                     storageManagementAdapter.notifyDataSetChanged();
                     tv_num.setText("已核货：" + (++total));
 
+
+
                 }
 
 
@@ -251,6 +266,8 @@ public class DDJNuclearGoodsActivity extends BaseActivity<DDJNuclearGoodsPresent
         }else {
             mStateView.showEmpty();
         }
+
+        tv_num_s.setText("未核货："+(num-total));
     }
 
     public void get_scann__home_Success(CustomApiResult<List<StorageManagement>> response) {
@@ -263,6 +280,7 @@ public class DDJNuclearGoodsActivity extends BaseActivity<DDJNuclearGoodsPresent
             if (response.getData().size()>0){
                 list.addAll(response.getData());
                 tv_num.setText("已核货：" + list.size());
+                tv_num_s.setText("未核货："+(num-list.size()));
                 storageManagementAdapter.notifyDataSetChanged();
                 mStateView.showContent();
             } else {
@@ -274,6 +292,7 @@ public class DDJNuclearGoodsActivity extends BaseActivity<DDJNuclearGoodsPresent
             }
             total = response.getTotal();
             tv_num.setText("已核货：" + response.getTotal());
+            tv_num_s.setText("未核货："+(num-response.getTotal()));
 
         } else {
             if (pageNo != 1) {

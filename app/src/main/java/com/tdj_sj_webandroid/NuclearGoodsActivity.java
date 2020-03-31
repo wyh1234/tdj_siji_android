@@ -61,12 +61,24 @@ public class NuclearGoodsActivity extends BaseActivity<NuclearGoodsPresenter> im
     TextView tv_msg;
     @BindView(R.id.ll)
     LinearLayout ll;
+    @BindView(R.id.tv_num_s)
+    TextView tv_num_s;
     public int pageNo = 1;//翻页计数器
     private BroadcastReceiver scanReceiver;
     private List<StorageManagement> list = new ArrayList();
     private NuclearGoodsAdapter storageManagementAdapter;
     private int total = 0;
     private boolean b=false;
+    private int num;
+
+    public int getNum() {
+        return num;
+    }
+
+    public void setNum(int num) {
+        this.num = num;
+    }
+
     @OnClick({R.id.tv_qx,R.id.right_text,R.id.btn_back})
     public void onClick(View view){
         switch (view.getId()){
@@ -248,6 +260,7 @@ public class NuclearGoodsActivity extends BaseActivity<NuclearGoodsPresenter> im
         }else {
             mStateView.showEmpty();
         }
+        tv_num_s.setText("未核货："+(num-total));
     }
 
     public void get_scann__home_Success(CustomApiResult<List<StorageManagement>> response) {
@@ -261,6 +274,7 @@ public class NuclearGoodsActivity extends BaseActivity<NuclearGoodsPresenter> im
                 mStateView.showContent();
                 list.addAll(response.getData());
                 tv_num.setText("已核货："+list.size());
+                tv_num_s.setText("未核货："+(num-list.size()));
                 storageManagementAdapter.notifyDataSetChanged();
 
             }else {
@@ -273,6 +287,7 @@ public class NuclearGoodsActivity extends BaseActivity<NuclearGoodsPresenter> im
             }
             total=response.getTotal();
             tv_num.setText("已核货："+response.getTotal());
+            tv_num_s.setText("未核货："+(num-response.getTotal()));
 
         }else {
             if (pageNo!=1){

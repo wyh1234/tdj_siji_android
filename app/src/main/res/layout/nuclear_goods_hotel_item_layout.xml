@@ -79,7 +79,38 @@
         android:layout_height="35dp">
 
     </com.tdj_sj_webandroid.utils.tablayout.WTabLayout>
-
+    <RelativeLayout
+        android:id="@+id/search_edit_group"
+        android:layout_height="35dp"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        >
+        <EditText
+            android:id="@+id/search_edit"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginRight="90dp"
+            android:layout_marginLeft="15dp"
+            android:background="@drawable/saoma_shap"
+            android:gravity="center_vertical"
+            android:hint="请输入编号"
+            android:imeOptions="actionDone"
+            android:paddingStart="15dp"
+            android:singleLine="true"
+            android:textSize="16sp" />
+        <TextView
+            android:id="@+id/right_text"
+            android:layout_width="70dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/text_gonees"
+            android:gravity="center"
+            android:text="搜索"
+            />
+    </RelativeLayout>
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPager"
         android:layout_width="match_parent"

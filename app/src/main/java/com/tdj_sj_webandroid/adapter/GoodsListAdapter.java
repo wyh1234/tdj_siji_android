@@ -22,6 +22,15 @@ import java.util.List;
 public class GoodsListAdapter extends BaseRecyclerViewAdapter<GoodsInfo.GoodsListBean>{
     public String title;
     private Context context;
+    private int num;
+
+    public int getNum() {
+        return num;
+    }
+
+    public void setNum(int num) {
+        this.num = num;
+    }
 
     public void setTitle(String title) {
         this.title = title;
@@ -90,6 +99,8 @@ public class GoodsListAdapter extends BaseRecyclerViewAdapter<GoodsInfo.GoodsLis
                 }
                 intent.putExtra("customer_id",bean.getCustomer_id()+"");
                 intent.putExtra("customer_code",bean.getLineCode()+"-"+bean.getCustomerLineCode());
+                intent.putExtra("num",num);
+
                 context.startActivity(intent);
             }
         });

@@ -8,7 +8,7 @@ android {
         multiDexEnabled true
         targetSdkVersion 28
         versionCode 1
-        versionName "2.4"
+        versionName "2.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         ndk {
