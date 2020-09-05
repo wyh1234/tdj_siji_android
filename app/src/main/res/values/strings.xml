@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">淘好运</string>
+    <string name="app_name">淘大运</string>
     <string name="msg_close">再按一次退出程序</string>
     <string name="error_gif">长宽不小于 %1$dpx，且大小不超过 %2$sM。</string>
 </resources>

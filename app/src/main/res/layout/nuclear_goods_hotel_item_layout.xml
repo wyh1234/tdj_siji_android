@@ -95,7 +95,7 @@
             android:layout_marginLeft="15dp"
             android:background="@drawable/saoma_shap"
             android:gravity="center_vertical"
-            android:hint="请输入编号"
+            android:hint="请输入编号或者手机号"
             android:imeOptions="actionDone"
             android:paddingStart="15dp"
             android:singleLine="true"
