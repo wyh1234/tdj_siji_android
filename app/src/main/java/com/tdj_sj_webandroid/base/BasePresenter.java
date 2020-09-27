@@ -14,6 +14,7 @@ import java.lang.ref.WeakReference;
  * @VERSION V1.4
  * com.example.gs.mvpdemo.base
  */
+ 
 
 public abstract class BasePresenter<M extends IModel, V extends IView> implements IPresenter {
     private WeakReference actReference;
