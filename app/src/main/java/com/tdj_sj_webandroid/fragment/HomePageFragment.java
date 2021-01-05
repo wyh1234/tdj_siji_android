@@ -15,6 +15,7 @@ import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.tdj_sj_webandroid.DDJStorageManagementActivity;
 import com.tdj_sj_webandroid.DIYScannerActivity;
+import com.tdj_sj_webandroid.LyManagementActivity;
 import com.tdj_sj_webandroid.MainTabActivity;
 
 import com.tdj_sj_webandroid.ManualScannerActivity;
@@ -28,6 +29,7 @@ import com.tdj_sj_webandroid.adapter.HomePageFragmentAdapter;
 import com.tdj_sj_webandroid.android.os.SystemProperties;
 import com.tdj_sj_webandroid.base.BaseFrgment;
 
+import com.tdj_sj_webandroid.bluetooth.MainActivity;
 import com.tdj_sj_webandroid.contract.TDJContract;
 import com.tdj_sj_webandroid.model.AppUpdate;
 import com.tdj_sj_webandroid.model.HomeInfo;
@@ -111,7 +113,11 @@ public class HomePageFragment extends BaseFrgment<HomePageFragmentPresenter> imp
     @Override
     public void get_menus_Success(HomeInfo homeInfo) {
         setHomeInfo(homeInfo);
+
+
         tv_title.setText(homeInfo.getTitle());
+
+
         HomePageFragmentAdapter homePageFragmentAdapter= new HomePageFragmentAdapter(getContext(),homeInfo.getMenus());
         homePageFragmentAdapter.setOnItemClickListener(this);
         list.setAdapter(homePageFragmentAdapter);
@@ -146,9 +152,9 @@ public class HomePageFragment extends BaseFrgment<HomePageFragmentPresenter> imp
             if (Build.MODEL.equals("NLS-MT90")){
                  intent = new Intent(getContext(), StorageManagementActivity.class);
 
-         /*   }else if ("SUNMI".equals(SystemProperties.get("ro.product.brand"))){
+            }/*else if (Build.MODEL.equals("L2-H")){
                 intent = new Intent(getContext(), SunMiStorageManagementActivity.class);
-            */}else {
+            }*/else {
                 intent = new Intent(getContext(), DDJStorageManagementActivity.class);
             }
             startActivity(intent);
@@ -182,6 +188,15 @@ public class HomePageFragment extends BaseFrgment<HomePageFragmentPresenter> imp
                 diyScanner_intent.putExtra("flag","sale");
                 startActivity(diyScanner_intent);
             }
+        }else if(getHomeInfo().getMenus().get(position).getMenuDesc().equals("lysmrk")){
+            Intent intent;
+            intent = new Intent(getContext(), MainActivity.class);
+            startActivity(intent);
+        }else if(getHomeInfo().getMenus().get(position).getMenuDesc().equals("lysmhh")){
+            Intent intent;
+            intent = new Intent(getContext(), MainActivity.class);
+            intent.putExtra("lyhh","lyhh");
+            startActivity(intent);
         }
 
     }

@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.tdj_sj_webandroid">
+
+
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -69,7 +74,14 @@
             android:name=".DDJStorageManagementActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".bluetooth.MainActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".SunMiStorageManagementActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".LyManagementActivity"
             android:screenOrientation="portrait" />
 
         <activity
@@ -88,7 +100,17 @@
             android:name=".NuclearGoodsHotelActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".NuclearGoodsHotelItemActivity"
+            android:name=".bluetooth.LyGoodsHotelActivity"
+            android:screenOrientation="portrait" />
+        <activity
+        android:name=".NuclearGoodsHotelItemActivity"
+        android:screenOrientation="portrait" />
+        <activity
+            android:name=".bluetooth.LyGoodsHotelItemActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".bluetooth.LyGoodsActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".DIYScannerActivity"
@@ -124,7 +146,9 @@
         <service android:name=".utils.appupdate.DownloadService" />
         <service android:name="com.amap.api.location.APSService"></service>
         <meta-data android:name="com.amap.api.v2.apikey" android:value="8f0874da3bb5e23ef8aa84a3f6ceebab"/>
-
+        <service
+            android:name="com.example.bluetooth.prt.BluetoothLeService"
+            android:enabled="true" />
         <receiver
             android:name=".utils.SecretCodeReceiver">
             <intent-filter>

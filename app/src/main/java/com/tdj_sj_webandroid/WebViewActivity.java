@@ -13,6 +13,8 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +55,15 @@ import io.reactivex.functions.Consumer;
 public class WebViewActivity extends BaseActivity<WebViewPresenter> implements IMyLocation, TDJContract.WebViewView {
     @BindView(R.id.tv_refresh)
     TextView tv_refresh;
+    @BindView(R.id.view)
+    View view;
+    @BindView(R.id.title)
+    RelativeLayout title;
+    @BindView(R.id.btn_back)
+    ImageView btn_back;
+    @BindView(R.id.tv_title)
+    TextView tv_title;
+
    /* @BindView(R.id.myProgressBar)
     ProgressBar myProgressBar;*/
     @BindView(R.id.wv_program)
@@ -83,6 +94,18 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
 
         wv_program.addJavascriptInterface(new AndroidtoJs(), "android");//AndroidtoJS类对象映射到js的test对象
         initDetailsH5();
+
+        if (getIntent().getStringExtra("title")!=null){
+            view.setVisibility(View.VISIBLE);
+            tv_title.setText(getIntent().getStringExtra("title"));
+            title.setVisibility(View.VISIBLE);
+            btn_back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+        }
     }
 
 

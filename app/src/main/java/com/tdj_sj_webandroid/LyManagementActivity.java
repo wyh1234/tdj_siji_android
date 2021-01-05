@@ -2,15 +2,11 @@ package com.tdj_sj_webandroid;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.res.AssetFileDescriptor;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -19,24 +15,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.apkfuns.logutils.LogUtils;
+import com.example.bluetooth.prt.HPRTHelper;
 import com.gyf.barlibrary.ImmersionBar;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
-import com.tdj_sj_webandroid.adapter.BaseRecyclerViewAdapter;
 import com.tdj_sj_webandroid.adapter.StorageManagementAdapter;
 import com.tdj_sj_webandroid.base.BaseActivity;
 import com.tdj_sj_webandroid.model.CustomApiResult;
 import com.tdj_sj_webandroid.model.StorageManagement;
-import com.tdj_sj_webandroid.mvp.presenter.DDJStorageManagementPresenter;
-import com.tdj_sj_webandroid.mvp.presenter.SunMiStorageManagementPresenter;
+import com.tdj_sj_webandroid.mvp.presenter.LyManagementPresenter;
 import com.tdj_sj_webandroid.utils.Constants;
 import com.tdj_sj_webandroid.utils.GeneralUtils;
 import com.tdj_sj_webandroid.utils.PlayVoice;
 import com.zhouyou.http.exception.ApiException;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -44,8 +37,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SunMiStorageManagementActivity extends BaseActivity<SunMiStorageManagementPresenter> implements  OnLoadmoreListener {
-    public int pageNo = 1;//翻页计数器
+public class LyManagementActivity extends BaseActivity<LyManagementPresenter> implements OnLoadmoreListener {
     @BindView(R.id.btn_back)
     ImageView btn_back;
     @BindView(R.id.search_edit)
@@ -62,14 +54,13 @@ public class SunMiStorageManagementActivity extends BaseActivity<SunMiStorageMan
     TextView tv_qx;
     @BindView(R.id.tv_title1)
     TextView tv_title1;
+    public int pageNo = 1;//翻页计数器
     private boolean b = false;
     private List<StorageManagement> list = new ArrayList();
     private StorageManagementAdapter storageManagementAdapter;
     private int total = 0;
-    private static final String ACTION_DATA_CODE_RECEIVED="com.sunmi.scanner.ACTION_DATA_CODE_RECEIVED";
-    private static final String DATA="data";
-    private static final String SOURCE="source_byte";
-    private BroadcastReceiver scanReceiver;
+
+
 
     @OnClick({R.id.tv_qx, R.id.right_text, R.id.btn_back})
     public void onClick(View view) {
@@ -96,8 +87,8 @@ public class SunMiStorageManagementActivity extends BaseActivity<SunMiStorageMan
 
 
     @Override
-    protected SunMiStorageManagementPresenter loadPresenter() {
-        return new SunMiStorageManagementPresenter();
+    protected LyManagementPresenter loadPresenter() {
+        return new LyManagementPresenter();
     }
 
     protected void getData(int pn) {
@@ -107,28 +98,25 @@ public class SunMiStorageManagementActivity extends BaseActivity<SunMiStorageMan
 
     @Override
     protected void initData() {
-        //东大集
-        Intent intent = new Intent(ACTION_DATA_CODE_RECEIVED);
-        sendBroadcast(intent);
 
-        scanReceiver = new BroadcastReceiver() {
+        HPRTHelper helper = HPRTHelper.getHPRTHelper(AppAplication.getAppContext());
+        helper.getGattData(new HPRTHelper.onGattdata() {
             @Override
-            public void onReceive(Context context, Intent intent) {
-                        //成功
-                        LogUtils.i(intent.getStringExtra(DATA));
-
-                        search_edit.setText("");
-                        search_edit.setText(intent.getStringExtra(DATA));
-                        search_edit.setSelection(search_edit.getText().length());
-                        LogUtils.i(b);
-                        if (b) {
-                            mPresenter.get_scann(intent.getStringExtra(DATA), "out");
-                        } else {
-                            mPresenter.get_scann(intent.getStringExtra(DATA), "in");
-                        }
-
+            public void getdata(byte[] data) {
+                search_edit.setText("");
+                // TODO Auto-generated method stub
+                search_edit.setText(search_edit.getText().toString()+ Constants.byteASCIIstr(data).trim());
+                search_edit.setSelection(search_edit.getText().length());
+                LogUtils.i(b);
+                if (b) {
+                    mPresenter.get_scann(search_edit.getText().toString(), "out");
+                } else {
+                    mPresenter.get_scann(search_edit.getText().toString(), "in");
+                }
             }
-        };
+        });
+
+
 
 
     }
@@ -158,6 +146,10 @@ public class SunMiStorageManagementActivity extends BaseActivity<SunMiStorageMan
     }
 
 
+
+
+
+
     public void get_scann_Success(CustomApiResult<StorageManagement> result) {
         tv_qx.setTextColor(getResources().getColor(R.color.text_gonees));
         if (result.getErr() == 0) {
@@ -175,10 +167,10 @@ public class SunMiStorageManagementActivity extends BaseActivity<SunMiStorageMan
                     LogUtils.i(total);
                     tv_num.setText("已入库：" + (--total));
                 }
-                PlayVoice.playVoice(this,R.raw.quxiaochenggong);
+                PlayVoice.playVoice(this, R.raw.quxiaochenggong);
 
             } else {
-                PlayVoice.playVoice(this,R.raw.rukuchenggong);
+                PlayVoice.playVoice(this, R.raw.rukuchenggong);
                 if (result.getErr() == 0) {
 
                     list.add(0, result.getData());
@@ -195,24 +187,25 @@ public class SunMiStorageManagementActivity extends BaseActivity<SunMiStorageMan
             }
         }
         if (result.getErr() == 1) {
-            PlayVoice.playVoice(this,R.raw.saomashibai);
+            PlayVoice.playVoice(this, R.raw.saomashibai);
         }
         if (result.getErr() == 2) {
-            PlayVoice.playVoice(this,R.raw.saomachaoqu);
+            PlayVoice.playVoice(this, R.raw.saomachaoqu);
         }
-        if (result.getErr() == 8){
-            PlayVoice.playVoice(this,R.raw.quxiaoshibai);
+        if (result.getErr() == 8) {
+            PlayVoice.playVoice(this, R.raw.quxiaoshibai);
         }
-        if (result.getErr() == 9){
-            PlayVoice.playVoice(this,R.raw.yijiruku);
+        if (result.getErr() == 9) {
+            PlayVoice.playVoice(this, R.raw.yijiruku);
         }
 
-        if (result.getErr()==13){
-            PlayVoice.playVoice(this,R.raw.gaidingdanyiquxiao);
+        if (result.getErr() == 13) {
+            PlayVoice.playVoice(this, R.raw.gaidingdanyiquxiao);
         }
-        if (result.getErr()==15){
-            PlayVoice.playVoice(this,R.raw.feidangtain);
+        if (result.getErr() == 15) {
+            PlayVoice.playVoice(this, R.raw.feidangtain);
         }
+
     }
 
     public Context getContext() {
@@ -272,34 +265,4 @@ public class SunMiStorageManagementActivity extends BaseActivity<SunMiStorageMan
     public void onLoadmore(RefreshLayout refreshlayout) {
         getData(++pageNo);
     }
-
-
-
-
-    private void registerReceiver(){
-        IntentFilter filter=new IntentFilter();
-     filter.addAction(ACTION_DATA_CODE_RECEIVED);
-        registerReceiver(scanReceiver,filter);
-    }
-
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        unRegisterReceiver();
-    }
-
-    private void unRegisterReceiver() {
-        try {
-            unregisterReceiver(scanReceiver);
-        } catch (Exception e) {
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        registerReceiver();
-    }
-
 }

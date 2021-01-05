@@ -16,6 +16,7 @@ import com.gyf.barlibrary.ImmersionBar;
 import com.tdj_sj_webandroid.base.BaseActivity;
 import com.tdj_sj_webandroid.fragment.HomePageFragment;
 import com.tdj_sj_webandroid.fragment.MyFragment;
+import com.tdj_sj_webandroid.fragment.NewHomePageFragment;
 import com.tdj_sj_webandroid.fragment.PsFragment;
 import com.tdj_sj_webandroid.mvp.presenter.IPresenter;
 
@@ -45,7 +46,7 @@ public class MainTabActivity extends BaseActivity {
     @BindView(R.id.my_tv)
     TextView my_tv;
     private FragmentManager fragmentManager;
-    private HomePageFragment homePageFragment;
+    private NewHomePageFragment homePageFragment;
     private PsFragment psFragment;
     private MyFragment myFragment;
     private long mExitTime;
@@ -87,15 +88,19 @@ public class MainTabActivity extends BaseActivity {
         switch (view.getId()) {
             case R.id.home:
                 setTabSelection(0);
+                immersionBar .statusBarDarkFont(true).init();
                 break;
             case R.id.ps:
                 setTabSelection(1);
+                immersionBar .statusBarDarkFont(true).init();
                 break;
 
             case R.id.ps_image:
+                immersionBar .statusBarDarkFont(true).init();
                 setTabSelection(1);
                 break;
             case R.id.my:
+                immersionBar .statusBarDarkFont(true).init();
                 setTabSelection(2);
                 break;
         }
@@ -111,7 +116,7 @@ public class MainTabActivity extends BaseActivity {
                 home_imag.setImageResource(R.mipmap.shouye);
                 home_tv.setTextColor(getResources().getColor(R.color.text_visible));
                 if (homePageFragment == null) {
-                    homePageFragment = new HomePageFragment();
+                    homePageFragment = new NewHomePageFragment();
                 }
                 if (homePageFragment.isAdded()) {
                     transaction.show(homePageFragment);

@@ -4,7 +4,9 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.location.LocationManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -20,13 +22,22 @@ import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.tdj_sj_webandroid.base.BaseActivity;
 import com.tdj_sj_webandroid.mvp.presenter.IPresenter;
+import com.tdj_sj_webandroid.utils.BitmapTools;
 import com.tdj_sj_webandroid.utils.Constants;
 import com.tdj_sj_webandroid.utils.GeneralUtils;
+import com.tdj_sj_webandroid.utils.GifSizeFilter;
 import com.tdj_sj_webandroid.utils.IMyLocation;
+import com.tdj_sj_webandroid.utils.MyGlideEngine;
 import com.tdj_sj_webandroid.utils.MyLocationManager;
+import com.zhihu.matisse.Matisse;
+import com.zhihu.matisse.MimeType;
+import com.zhihu.matisse.filter.Filter;
+import com.zhihu.matisse.internal.entity.CaptureStrategy;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,7 +52,7 @@ public class MianActivity extends BaseActivity implements IMyLocation {
     SimpleWebView wv_program;
     private WebSettings settings;
     private MyLocationManager manager;
-
+    private static final int REQUEST_CODE_CHOOSE_GRIDE = 0X0002;
     @Override
     protected IPresenter loadPresenter() {
         return null;
@@ -173,6 +184,10 @@ public class MianActivity extends BaseActivity implements IMyLocation {
             wv_program.goBack();
 
         }
+
+
+
     }
+
 
 }

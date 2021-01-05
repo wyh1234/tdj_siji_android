@@ -13,7 +13,44 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="2dp" />-->
+    <View
+        android:id="@+id/view"
+        android:visibility="gone"
+        android:background="#f2f2f2"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"/>
+        <RelativeLayout
+            android:visibility="gone"
+            android:id="@+id/title"
+            android:background="#f2f2f2"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
 
+            <ImageView
+                android:id="@+id/btn_back"
+                android:layout_width="38dp"
+                android:src="@mipmap/fanhui"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:layout_centerVertical="true"
+                android:layout_height="match_parent" />
+
+            <RelativeLayout
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/tv_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:layout_centerVertical="true"
+                    android:textColor="#1A1A1A"
+                    android:textSize="18sp" />
+
+            </RelativeLayout>
+        </RelativeLayout>
 
     <com.tdj_sj_webandroid.SimpleWebView
         android:id="@+id/wv_program"

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@drawable/home_lit_shap"
+    android:layout_marginBottom="40dp"
+    android:layout_marginTop="-30dp"
+    android:layout_marginLeft="@dimen/dp_10"
+    android:layout_marginRight="@dimen/dp_10"
+    android:orientation="vertical"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <View
+        android:layout_width="3dp"
+        android:layout_marginTop="1dp"
+        android:background="@color/bg1"
+        android:layout_height="15dp"/>
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="7dp"
+            android:textSize="13dp"
+            android:textColor="#333333"
+            android:text="22222222222222222222222"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+    <android.support.v7.widget.RecyclerView
+        android:layout_marginTop="5dp"
+        android:id="@+id/recylcerview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>
