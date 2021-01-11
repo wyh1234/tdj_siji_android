@@ -19,8 +19,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 
+import com.apkfuns.logutils.LogUtils;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -198,7 +200,9 @@ public class GeneralUtils {
             Toast.makeText(mContext, "请先安装高德地图客户端",Toast.LENGTH_LONG).show();
             return;
         }
+        LogUtils.e("转换前"+mLat+","+mLng);
         LatLng endPoint = BD2GCJ(new LatLng(mLat, mLng));//坐标转换
+        LogUtils.e("转换后"+endPoint);
         StringBuffer stringBuffer = new StringBuffer("androidamap://navi?sourceApplication=").append("amap");
         stringBuffer.append("&lat=").append(endPoint.latitude)
                 .append("&lon=").append(endPoint.longitude).append("&keywords=" + mAddressStr)
@@ -207,6 +211,38 @@ public class GeneralUtils {
         Intent intent = new Intent("android.intent.action.VIEW", Uri.parse(stringBuffer.toString()));
         intent.setPackage("com.autonavi.minimap");
         mContext.startActivity(intent);
+    }
+
+
+    /**
+     * 跳转百度地图
+     */
+    public static void goToBaiduMap(Context mContext, double mLat, double mLng, String mAddressStr) {
+        if (!isInstalled("com.baidu.BaiduMap",mContext)) {
+            Toast.makeText(mContext, "请先安装百度地图客户端",Toast.LENGTH_LONG).show();
+            return;
+        }
+        LatLng endPoint = CD2GCJ(new LatLng(mLat, mLng));//坐标转换
+        Intent intent = new Intent();
+        intent.setData(Uri.parse("baidumap://map/direction?destination=latlng:"
+                + endPoint.latitude + ","
+                + endPoint.longitude + "|name:" + mAddressStr + // 终点
+                "&mode=driving" + // 导航路线方式
+                "&src=" + mContext.getPackageName()));
+        mContext.startActivity(intent); // 启动调用
+    }
+
+    /**
+     * BD-09 坐标转换成 GCJ-02 坐标
+     */
+    public static LatLng CD2GCJ(LatLng bd) {
+        double x = bd.longitude - 0.0065, y = bd.latitude - 0.006;
+        double z = Math.sqrt(x * x + y * y) - 0.00002 * Math.sin(y * Math.PI);
+        double theta = Math.atan2(y, x) - 0.000003 * Math.cos(x * Math.PI);
+
+        double lng = z * Math.cos(theta);//lng
+        double lat = z * Math.sin(theta);//lat
+        return new LatLng(lat, lng);
     }
 
     /**
@@ -228,16 +264,15 @@ public class GeneralUtils {
         return false;
     }
     /**
-     * BD-09 坐标转换成 GCJ-02 坐标
+     * GCJ-02 坐标转换成 BD-09 坐标
      */
     public static LatLng BD2GCJ(LatLng bd) {
-        double x = bd.longitude - 0.0065, y = bd.latitude - 0.006;
-        double z = Math.sqrt(x * x + y * y) - 0.00002 * Math.sin(y * Math.PI);
-        double theta = Math.atan2(y, x) - 0.000003 * Math.cos(x * Math.PI);
-
-        double lng = z * Math.cos(theta);//lng
-        double lat = z * Math.sin(theta);//lat
-        return new LatLng(lat, lng);
+        double x = bd.longitude, y = bd.latitude;
+        double z = Math.sqrt(x * x + y * y) + 0.00002 * Math.sin(y * Math.PI);
+        double theta = Math.atan2(y, x) + 0.000003 * Math.cos(x * Math.PI);
+        double tempLon = z * Math.cos(theta) + 0.0065;
+        double tempLat = z * Math.sin(theta) + 0.006;
+        return new LatLng(tempLat, tempLon);
     }
 
     // 判定是否需要隐藏
