@@ -201,16 +201,24 @@ public class GeneralUtils {
             return;
         }
         LogUtils.e("转换前"+mLat+","+mLng);
-        LatLng endPoint = BD2GCJ(new LatLng(mLat, mLng));//坐标转换
-        LogUtils.e("转换后"+endPoint);
-        StringBuffer stringBuffer = new StringBuffer("androidamap://navi?sourceApplication=").append("amap");
-        stringBuffer.append("&lat=").append(endPoint.latitude)
-                .append("&lon=").append(endPoint.longitude).append("&keywords=" + mAddressStr)
-                .append("&dev=").append(0)
-                .append("&style=").append(2);
-        Intent intent = new Intent("android.intent.action.VIEW", Uri.parse(stringBuffer.toString()));
+        String uri = String.format("amapuri://route/plan/?dlat=%s&dlon=%s&dname=B&dev=0&t=0",
+                mLat, mLng);
+        Intent intent = new Intent();
+        intent.setAction("android.intent.action.VIEW");
+        intent.addCategory("android.intent.category.DEFAULT");
+        intent.setData(Uri.parse(uri));
         intent.setPackage("com.autonavi.minimap");
         mContext.startActivity(intent);
+//        LatLng endPoint = BD2GCJ(new LatLng(mLat, mLng));//坐标转换
+//        LogUtils.e("转换后"+endPoint);
+//        StringBuffer stringBuffer = new StringBuffer("androidamap://navi?sourceApplication=").append("amap");
+//        stringBuffer.append("&lat=").append(endPoint.latitude)
+//                .append("&lon=").append(endPoint.longitude).append("&keywords=" + mAddressStr)
+//                .append("&dev=").append(0)
+//                .append("&style=").append(2);
+//        Intent intent = new Intent("android.intent.action.VIEW", Uri.parse(stringBuffer.toString()));
+//        intent.setPackage("com.autonavi.minimap");
+//        mContext.startActivity(intent);
     }
 
 
