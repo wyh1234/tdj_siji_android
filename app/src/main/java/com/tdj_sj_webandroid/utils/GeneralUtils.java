@@ -215,7 +215,8 @@ public class GeneralUtils {
         stringBuffer.append("&lat=").append(mLat)
                 .append("&lon=").append(mLng).append("&keywords=" + mAddressStr)
                 .append("&dev=").append(0)
-                .append("&style=").append(2);
+                .append("&style=").append(2)
+                        .append("&t=").append(0);
         Intent intent = new Intent("android.intent.action.VIEW", Uri.parse(stringBuffer.toString()));
         intent.setPackage("com.autonavi.minimap");
         mContext.startActivity(intent);
