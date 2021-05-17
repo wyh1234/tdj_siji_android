@@ -76,6 +76,7 @@ obj/
 .idea/libraries/
 .idea/shelf/
 .idea/workspace.xml
+.idea/runConfigurations.xml
 .idea/tasks.xml
 .idea/.name
 .idea/compiler.xml
