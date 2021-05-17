@@ -16,16 +16,11 @@ import android.webkit.WebSettings;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.amap.api.location.AMapLocation;
 import com.apkfuns.logutils.LogUtils;
 import com.gyf.barlibrary.ImmersionBar;
-import com.tbruyelle.rxpermissions2.Permission;
-import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.tdj_sj_webandroid.base.BaseActivity;
 import com.tdj_sj_webandroid.contract.TDJContract;
-import com.tdj_sj_webandroid.model.LocationBean;
 import com.tdj_sj_webandroid.model.Resume;
 import com.tdj_sj_webandroid.mvp.presenter.WebViewPresenter;
 import com.tdj_sj_webandroid.utils.BitmapTools;
@@ -33,7 +28,6 @@ import com.tdj_sj_webandroid.utils.GeneralUtils;
 import com.tdj_sj_webandroid.utils.GifSizeFilter;
 import com.tdj_sj_webandroid.utils.IMyLocation;
 import com.tdj_sj_webandroid.utils.MyGlideEngine;
-import com.yzq.zxinglibrary.android.CaptureActivity;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.filter.Filter;
@@ -274,7 +268,12 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
             startActivity(intent_service);
         }
 
-
+        @JavascriptInterface
+        public void refreshPage()
+        {
+            finish();
+            initDetailsH5();
+        }
 
 
         @JavascriptInterface

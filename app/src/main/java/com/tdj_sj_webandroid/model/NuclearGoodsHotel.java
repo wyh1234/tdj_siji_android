@@ -149,6 +149,33 @@ public class NuclearGoodsHotel {
         private int ds;
         private int customer;
         private String customerName;
+        private String autoCode;
+        private int isEdited;
+        private int isC;    //0普通客户 1.个人客户  2.大客户
+
+        public int getIsC() {
+            return isC;
+        }
+
+        public void setIsC(int isC) {
+            this.isC = isC;
+        }
+
+        public int getIsEdited() {
+            return isEdited;
+        }
+
+        public void setIsEdited(int isEdited) {
+            this.isEdited = isEdited;
+        }
+
+        public String getAutoCode() {
+            return autoCode;
+        }
+
+        public void setAutoCode(String autoCode) {
+            this.autoCode = autoCode;
+        }
 
         public String getCustomerName() {
             return customerName;

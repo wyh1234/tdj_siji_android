@@ -3,16 +3,12 @@ package com.tdj_sj_webandroid.fragment;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.apkfuns.logutils.LogUtils;
-import com.gyf.barlibrary.ImmersionBar;
 import com.tdj_sj_webandroid.MainTabActivity;
 import com.tdj_sj_webandroid.R;
 import com.tdj_sj_webandroid.SimpleWebView;
@@ -21,9 +17,6 @@ import com.tdj_sj_webandroid.base.BaseFrgment;
 import com.tdj_sj_webandroid.mvp.presenter.IPresenter;
 import com.tdj_sj_webandroid.utils.Constants;
 import com.tdj_sj_webandroid.utils.GeneralUtils;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -142,6 +135,13 @@ public class PsFragment extends BaseFrgment {
             activity.setTabSelection(0);
 
 
+        }
+
+        @JavascriptInterface
+        public void refreshPage()
+        {
+            activity.finish();
+            initDetailsH5();
         }
 
     }

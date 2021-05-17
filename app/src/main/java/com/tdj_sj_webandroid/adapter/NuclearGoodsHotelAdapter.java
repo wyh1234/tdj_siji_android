@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -13,7 +14,6 @@ import com.tdj_sj_webandroid.NuclearGoodsActivity;
 import com.tdj_sj_webandroid.NuclearGoodsHotelItemActivity;
 import com.tdj_sj_webandroid.R;
 import com.tdj_sj_webandroid.model.NuclearGoodsHotel;
-import com.tdj_sj_webandroid.model.StorageManagement;
 
 import java.util.List;
 
@@ -33,12 +33,29 @@ public class NuclearGoodsHotelAdapter extends BaseRecyclerViewAdapter<NuclearGoo
 
     @Override
     protected void onBindData(RecyclerViewHolder holder, final NuclearGoodsHotel.OrderListBean bean, int position) {
-        ((TextView) holder.getView(R.id.tv_code)).setText(bean.getCode()+"\t\t"+bean.getName());
+        ((TextView) holder.getView(R.id.tv_code)).setText(bean.getCode());
+        ((TextView) holder.getView(R.id.tv_name)).setText(bean.getName());
+        ((TextView) holder.getView(R.id.tv_customer)).setText(bean.getCustomer()+"");
         ((TextView) holder.getView(R.id.tv_num)).setText("子订单共："+bean.getNum()+"个");
         ((TextView) holder.getView(R.id.tv_zc)).setText(bean.getZc()+"");
         ((TextView) holder.getView(R.id.tv_ds)).setText(bean.getDs()+"");
         ((TextView) holder.getView(R.id.tv_drk)).setText(bean.getDrk()+"");
         ((TextView) holder.getView(R.id.tv_ch)).setText(bean.getCh()+"");
+        TextView tv_autoCode = (TextView) holder.getView(R.id.tv_autoCode);
+        ImageView iv_star = (ImageView) holder.getView(R.id.iv_star);
+        tv_autoCode.setVisibility(View.GONE);
+        iv_star.setVisibility(View.GONE);
+        if (bean.getIsEdited() == 0){
+            tv_autoCode.setVisibility(View.GONE);
+        }else if (bean.getIsEdited() == 1){
+            tv_autoCode.setVisibility(View.VISIBLE);
+            tv_autoCode.setText(bean.getAutoCode());
+        }
+        if (bean.getIsC() == 2){
+            iv_star.setVisibility(View.VISIBLE);
+        }else {
+            iv_star.setVisibility(View.GONE);
+        }
         ((RelativeLayout) holder.getView(R.id.rl_one)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
