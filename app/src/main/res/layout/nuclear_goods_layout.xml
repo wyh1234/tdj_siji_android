@@ -75,39 +75,57 @@
         android:background="#f6f6f6"
         android:layout_width="match_parent"
         android:layout_height="1dp"/>
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/search_edit_group"
-        android:layout_height="35dp"
+        android:layout_height="40dp"
         android:layout_marginTop="10dp"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         >
-        <EditText
-            android:id="@+id/search_edit"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginRight="90dp"
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_marginLeft="15dp"
             android:background="@drawable/saoma_shap"
-            android:gravity="center_vertical"
-            android:hint="请输入条形码"
-            android:imeOptions="actionDone"
-            android:paddingStart="15dp"
-            android:singleLine="true"
-            android:textSize="16sp" />
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/search_edit"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:hint="请输入条形码"
+                android:imeOptions="actionDone"
+                android:paddingStart="15dp"
+                android:singleLine="true"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/iv_clean"
+                android:layout_marginRight="@dimen/dp_10"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/clean_pop"/>
+
+        </LinearLayout>
         <TextView
+            android:layout_marginLeft="@dimen/dp_10"
             android:id="@+id/right_text"
             android:layout_width="70dp"
             android:layout_height="match_parent"
-            android:layout_marginRight="10dp"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/saoma_shap1"
-            android:textColor="#ffffff"
+            android:textColor="@color/white"
             android:gravity="center"
             android:text="确定"
+            android:textSize="17sp"
+            android:layout_marginRight="@dimen/dp_10"
+            android:background="@drawable/agreement_button"
             />
-    </RelativeLayout>
+    </LinearLayout>
     <TextView
         android:id="@+id/tv_msg"
         android:layout_width="match_parent"

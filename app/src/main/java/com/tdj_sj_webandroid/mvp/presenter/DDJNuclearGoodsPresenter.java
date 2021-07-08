@@ -5,6 +5,7 @@ import com.tdj_sj_webandroid.DDJNuclearGoodsActivity;
 import com.tdj_sj_webandroid.base.BasePresenter;
 import com.tdj_sj_webandroid.http.GsonResponseHandler;
 import com.tdj_sj_webandroid.http.HttpUtils;
+import com.tdj_sj_webandroid.model.CheckListBean;
 import com.tdj_sj_webandroid.model.CustomApiResult;
 import com.tdj_sj_webandroid.model.StorageManagement;
 import com.tdj_sj_webandroid.mvp.model.Model;
@@ -65,10 +66,22 @@ public class DDJNuclearGoodsPresenter extends BasePresenter<Model, DDJNuclearGoo
 
             }
         });
-
-
-
-
     }
 
+    public void getStockList(String code,String type) {
+        Map<String, String> map = new HashMap<>();
+        map.put("code", code);
+        map.put("type",type);
+        HttpUtils.onGet(getIView().getContext(), map, Constants.check_list, new GsonResponseHandler<CustomApiResult<CheckListBean>>() {
+            @Override
+            public void onError(ApiException e) {
+            }
+
+            @Override
+            public void onSuccess(CustomApiResult<CheckListBean> response) {
+                LogUtils.i(response);
+                getIView().getStockListSuccess(response);
+            }
+        });
+    }
 }

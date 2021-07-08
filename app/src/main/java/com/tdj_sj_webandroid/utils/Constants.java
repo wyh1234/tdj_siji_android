@@ -11,12 +11,12 @@ public class Constants {
 //    public final static String URL1="https://siji.51taodj.com/tdj-driver";
 //    public final static String URL="https://siji.51taodj.com/yushangxian-driver/";
 //    public final static String URL1="https://siji.51taodj.com/yushangxian-driver/";
-//    public final static String URL="https://siji.51taodj.com/test-driver/";
-//    public final static String URL1="https://siji.51taodj.com/test-driver";
+    public final static String URL="https://siji.51taodj.com/test-driver/";
+    public final static String URL1="https://siji.51taodj.com/test-driver";
 //    public final static String URL="http://47.111.135.109:8060/test-driver/";
 //    public final static String URL1="http://47.111.135.109:8060/test-driver";
-    public final static String URL="http://47.111.135.109:8060/yushangxian-driver/";
-    public final static String URL1="http://47.111.135.109:8060/yushangxian-driver/";
+//    public final static String URL="http://47.111.135.109:8060/yushangxian-driver/";
+//    public final static String URL1="http://47.111.135.109:8060/yushangxian-driver/";
 
 //public final static String URL="http://192.168.10.239:8089/";
 //    public final static String URL1="http://192.168.10.239:8089";
@@ -31,6 +31,8 @@ public class Constants {
     public final static String task="task/task.do";
     public final static String scann="order/scanner.do?";
     public final static String home="order/home.do";
+    public final static String stock_list="order/inStockList.do?";
+    public final static String check_list="driverScann/checkList.do";
     public final static String version="version/check.do?version=";
     public final static String addUserLocation="api/addUserLocation.do";
     public final static String driverScann="driverScann/scann.do?";
