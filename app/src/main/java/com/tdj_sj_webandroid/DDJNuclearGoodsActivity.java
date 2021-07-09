@@ -82,6 +82,8 @@ public class DDJNuclearGoodsActivity extends BaseActivity<DDJNuclearGoodsPresent
     private int num;
     @BindView(R.id.iv_clean)
     ImageView iv_clean;
+    private PopupWindow mPopWindow;
+
     public int getNum() {
         return num;
     }
@@ -171,6 +173,11 @@ public class DDJNuclearGoodsActivity extends BaseActivity<DDJNuclearGoodsPresent
                 if (! isScanner) {
                     if (s.length() == 13) {
                         mPresenter.getStockList(s.toString(),"in");
+                    }
+                    if (s.length() == 0){
+                        if (mPopWindow != null && mPopWindow.isShowing()){
+                            mPopWindow.dismiss();
+            }
                     }
                 }
             }
@@ -373,22 +380,45 @@ public class DDJNuclearGoodsActivity extends BaseActivity<DDJNuclearGoodsPresent
     }
 
     public void getStockListSuccess(CustomApiResult<CheckListBean> response) {
-        if (response.getErr() != 0) return;
-        CheckListBean data = response.getData();
-        if ("1".equals(data.getIsMultiple())) {
-            int qty = data.getQty();
-            List<String> inStockData = data.getInStockData();
-            String trim = search_edit.getText().toString().trim();
-            List<String> searchId = new ArrayList<>();
-            if (qty > 0) {
-                for (int i = 0; i < qty; i++) {
-                    searchId.add(trim + "-" + (i + 1));
+        if (response.getErr() == 0) {
+            CheckListBean data = response.getData();
+            if ("1".equals(data.getIsMultiple())) {
+                if (mPopWindow != null && mPopWindow.isShowing()) {
+                    mPopWindow.dismiss();
+                    iv_clean.setClickable(true);
+                    right_text.setClickable(true);
+                    tv_qx.setClickable(true);
+                }
+                int qty = data.getQty();
+                List<String> inStockData = data.getInStockData();
+                String trim = search_edit.getText().toString().trim();
+                List<String> searchId = new ArrayList<>();
+                if (qty > 0) {
+                    for (int i = 0; i < qty; i++) {
+                        searchId.add(trim + "-" + (i + 1));
+                    }
+                }
+
+                //改版,说是已经入库的也展示在下面
+//            List<String> listrem = listrem(searchId, inStockData);
+//            if (listrem.size() == 0) return;
+                if (searchId.size() == 0) return;
+                initPop(searchId, search_edit);
+            } else {
+                if (mPopWindow != null && mPopWindow.isShowing()) {
+                    mPopWindow.dismiss();
+                    iv_clean.setClickable(true);
+                    right_text.setClickable(true);
+                    tv_qx.setClickable(true);
                 }
             }
-
-            List<String> listrem = listrem(searchId, inStockData);
-            if (listrem.size() == 0) return;
-            initPop(listrem, search_edit);
+        }else {
+            if (mPopWindow != null && mPopWindow.isShowing()) {
+                mPopWindow.dismiss();
+                iv_clean.setClickable(true);
+                right_text.setClickable(true);
+                tv_qx.setClickable(true);
+            }
         }
     }
 
@@ -419,14 +449,14 @@ public class DDJNuclearGoodsActivity extends BaseActivity<DDJNuclearGoodsPresent
         RecyclerView rvPop = view.findViewById(R.id.rv_pop);
         NestedScrollView nestedscroll = view.findViewById(R.id.nestedscroll);
         LinearLayout ll_layout = view.findViewById(R.id.ll_layout);
-        final PopupWindow popWindow = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
-        popWindow.setOutsideTouchable(false);
-        popWindow.setFocusable(false);
-        popWindow.setTouchable(true);
+        mPopWindow = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+        mPopWindow.setOutsideTouchable(false);
+        mPopWindow.setFocusable(false);
+        mPopWindow.setTouchable(true);
 
-        popWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));    //要为popWindow设置一个背景才有效
+        mPopWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));    //要为popWindow设置一个背景才有效
         //设置popupWindow显示的位置，参数依次是参照View，x轴的偏移量，y轴的偏移量
-        popWindow.showAsDropDown(v, 0, 0);
+        mPopWindow.showAsDropDown(v, 0, 0);
 
         if(listrem.size() > 7){
             nestedscroll.setScrollbarFadingEnabled(false);
@@ -445,14 +475,14 @@ public class DDJNuclearGoodsActivity extends BaseActivity<DDJNuclearGoodsPresent
                 search_edit.setText("");
                 search_edit.setText(obj);
                 search_edit.setSelection(search_edit.getText().length());
-                popWindow.dismiss();
+                mPopWindow.dismiss();
                 iv_clean.setClickable(true);
                 right_text.setClickable(true);
                 tv_qx.setClickable(true);
             }
         });
 
-        if (popWindow.isShowing()){
+        if (mPopWindow.isShowing()){
             iv_clean.setClickable(false);
             right_text.setClickable(false);
             tv_qx.setClickable(false);

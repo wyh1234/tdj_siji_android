@@ -72,6 +72,8 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
     private List<StorageManagement> list=new ArrayList();
     private StorageManagementAdapter storageManagementAdapter;
     private int total=0;
+    private PopupWindow mPopWindow;
+
     @OnClick({R.id.tv_qx,R.id.right_text,R.id.btn_back,R.id.iv_clean})
     public void onClick(View view){
         switch (view.getId()){
@@ -168,6 +170,11 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
                 if (! isScanner) {
                     if (s.length() == 13) {
                         mPresenter.getStockList(s.toString(),"in");
+                    }
+                    if (s.length() == 0){
+                        if (mPopWindow != null && mPopWindow.isShowing()){
+                            mPopWindow.dismiss();
+                        }
                     }
                 }
             }
@@ -341,9 +348,15 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
 
 
     public void getStockListSuccess(CustomApiResult<StockListBean> response) {
-        if (response.getErr() != 0) return;
+        if (response.getErr() == 0){
         StockListBean data = response.getData();
         if ("1".equals(data.getIsMultiple())) {
+            if (mPopWindow != null && mPopWindow.isShowing()) {
+                mPopWindow.dismiss();
+                iv_clean.setClickable(true);
+                right_text.setClickable(true);
+                tv_qx.setClickable(true);
+            }
             int qty = data.getQty();
             List<String> inStockData = data.getInStockData();
             String trim = search_edit.getText().toString().trim();
@@ -354,9 +367,26 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
                 }
             }
 
-            List<String> listrem = listrem(searchId, inStockData);
-            if (listrem.size() == 0) return;
-            initPop(listrem, search_edit);
+            //改版,说是已经入库的也展示在下面
+//            List<String> listrem = listrem(searchId, inStockData);
+//            if (listrem.size() == 0) return;
+            if (searchId.size() == 0) return;
+            initPop(searchId, search_edit);
+        }else {
+            if (mPopWindow != null && mPopWindow.isShowing()){
+                mPopWindow.dismiss();
+                iv_clean.setClickable(true);
+                right_text.setClickable(true);
+                tv_qx.setClickable(true);
+            }
+        }
+        }else {
+            if (mPopWindow != null && mPopWindow.isShowing()) {
+                mPopWindow.dismiss();
+                iv_clean.setClickable(true);
+                right_text.setClickable(true);
+                tv_qx.setClickable(true);
+            }
         }
     }
 
@@ -385,14 +415,14 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
         RecyclerView rvPop = view.findViewById(R.id.rv_pop);
         NestedScrollView nestedscroll = view.findViewById(R.id.nestedscroll);
         LinearLayout ll_layout = view.findViewById(R.id.ll_layout);
-        final PopupWindow popWindow = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
-        popWindow.setOutsideTouchable(false);
-        popWindow.setFocusable(false);
-        popWindow.setTouchable(true);
+        mPopWindow = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+        mPopWindow.setOutsideTouchable(false);
+        mPopWindow.setFocusable(false);
+        mPopWindow.setTouchable(true);
 
-        popWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));    //要为popWindow设置一个背景才有效
+        mPopWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));    //要为popWindow设置一个背景才有效
         //设置popupWindow显示的位置，参数依次是参照View，x轴的偏移量，y轴的偏移量
-        popWindow.showAsDropDown(v, 0, 0);
+        mPopWindow.showAsDropDown(v, 0, 0);
 
         if(listrem.size() > 7){
             nestedscroll.setScrollbarFadingEnabled(false);
@@ -411,14 +441,14 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
                 search_edit.setText("");
                 search_edit.setText(obj);
                 search_edit.setSelection(search_edit.getText().length());
-                popWindow.dismiss();
+                mPopWindow.dismiss();
                 iv_clean.setClickable(true);
                 right_text.setClickable(true);
                 tv_qx.setClickable(true);
             }
         });
 
-        if (popWindow.isShowing()){
+        if (mPopWindow.isShowing()){
             iv_clean.setClickable(false);
             right_text.setClickable(false);
             tv_qx.setClickable(false);

@@ -179,7 +179,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:background="#f2f7fd"
-            android:text="单价"
+            android:text="售价"
             android:textSize="12sp"
             android:textColor="#3b9bff"
             android:layout_width="match_parent"
