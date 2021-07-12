@@ -169,6 +169,9 @@ public class DDJStorageManagementActivity extends BaseActivity<DDJStorageManagem
                     if (s.length() == 0){
                         if (mPopWindow != null && mPopWindow.isShowing()){
                             mPopWindow.dismiss();
+                            iv_clean.setClickable(true);
+                            right_text.setClickable(true);
+                            tv_qx.setClickable(true);
                         }
                     }
                 }
