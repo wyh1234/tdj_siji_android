@@ -8,6 +8,9 @@ import android.content.pm.ActivityInfo;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -19,15 +22,26 @@ import android.widget.TextView;
 
 import com.apkfuns.logutils.LogUtils;
 import com.gyf.barlibrary.ImmersionBar;
+import com.jph.takephoto.app.TakePhoto;
+import com.jph.takephoto.app.TakePhotoImpl;
+import com.jph.takephoto.model.InvokeParam;
+import com.jph.takephoto.model.TContextWrap;
+import com.jph.takephoto.model.TResult;
+import com.jph.takephoto.permission.InvokeListener;
+import com.jph.takephoto.permission.PermissionManager;
+import com.jph.takephoto.permission.TakePhotoInvocationHandler;
 import com.tdj_sj_webandroid.base.BaseActivity;
 import com.tdj_sj_webandroid.contract.TDJContract;
 import com.tdj_sj_webandroid.model.Resume;
 import com.tdj_sj_webandroid.mvp.presenter.WebViewPresenter;
 import com.tdj_sj_webandroid.utils.BitmapTools;
+import com.tdj_sj_webandroid.utils.Config;
 import com.tdj_sj_webandroid.utils.GeneralUtils;
 import com.tdj_sj_webandroid.utils.GifSizeFilter;
 import com.tdj_sj_webandroid.utils.IMyLocation;
+import com.tdj_sj_webandroid.utils.IOUtils;
 import com.tdj_sj_webandroid.utils.MyGlideEngine;
+import com.tdj_sj_webandroid.utils.TakePhotoUtils;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.filter.Filter;
@@ -46,7 +60,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.functions.Consumer;
 
-public class WebViewActivity extends BaseActivity<WebViewPresenter> implements IMyLocation, TDJContract.WebViewView {
+public class WebViewActivity extends BaseActivity<WebViewPresenter> implements IMyLocation, TDJContract.WebViewView, TakePhoto.TakeResultListener, InvokeListener {
     @BindView(R.id.tv_refresh)
     TextView tv_refresh;
     @BindView(R.id.view)
@@ -66,6 +80,10 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
     private static final int REQUEST_CODE_CHOOSE_GRIDE = 0X0002;
     private int index;
     private String urls;
+
+    private static final String TAG = WebViewActivity.class.getName();
+    private TakePhoto takePhoto;
+    private InvokeParam invokeParam;
 
     @Override
     protected WebViewPresenter loadPresenter() {
@@ -146,6 +164,66 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
 
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        getTakePhoto().onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        getTakePhoto().onSaveInstanceState(outState);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        //以下代码为处理Android6.0、7.0动态权限所需
+        PermissionManager.TPermissionType type = PermissionManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        PermissionManager.handlePermissionsResult(this, type, invokeParam, this);
+    }
+
+    /**
+     * 获取TakePhoto实例
+     *
+     * @return
+     */
+    public TakePhoto getTakePhoto() {
+        if (takePhoto == null) {
+            takePhoto = (TakePhoto) TakePhotoInvocationHandler.of(this).bind(new TakePhotoImpl(this, this));
+        }
+        return takePhoto;
+    }
+
+    @Override
+    public void takeSuccess(TResult result) {
+        String path = result.getImage().getCompressPath();
+        if (TextUtils.isEmpty(path)) return;
+        Log.i(TAG, "takeSuccess:" + path);
+        mPresenter.uploadImage(BitmapTools.saveBitmap(BitmapTools.getimage(new File(path).getPath()), new  File(path).getPath()));
+    }
+
+    @Override
+    public void takeFail(TResult result, String msg) {
+
+        Log.i(TAG, "takeFail:" + msg);
+    }
+
+    @Override
+    public void takeCancel() {
+        Log.i(TAG, getResources().getString(R.string.msg_operation_canceled));
+    }
+
+    @Override
+    public PermissionManager.TPermissionType invoke(InvokeParam invokeParam) {
+        PermissionManager.TPermissionType type = PermissionManager.checkPermission(TContextWrap.of(this), invokeParam.getMethod());
+        if (PermissionManager.TPermissionType.WAIT.equals(type)) {
+            this.invokeParam = invokeParam;
+        }
+        return type;
+    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -193,55 +271,17 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
 
 
     public class AndroidtoJs extends Object {
-        // 定义JS需要调用的方法
-        // 被JS调用的方法必须加入@JavascriptInterface注解
-            //定位
-
-
-
-/*        @JavascriptInterface
-        public void getPermission(){
-                @Override
-                    rxPermissions.requestEach(Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION).subscribe(new Consumer<Permission>() {
-                        @Override
-                        public void accept(Permission permission) throws Exception {
-                            index++;
-                            LogUtils.d(index);
-                            if (index==2){
-                                index=0;
-                                if (permission.granted) {
-                                    LogUtils.d(permission.granted);
-                                    wv_program.loadUrl("javascript:getPermission('" + true+ "')");
-                                }else if (permission.shouldShowRequestPermissionRationale) {
-                                    // 用户拒绝了该权限，没有选中『不再询问』（Never ask again）,那么下次再次启动时，还会提示请求权限的对话框 Log.d(TAG, permission.name + " is denied. More info should be provided.");
-                                    Toast.makeText(getContext(),"必须开启定位权限才能完成打卡操作",Toast.LENGTH_LONG).show();
-                                } else {
-                                    // 用户拒绝了该权限，并且选中『不再询问』 Log.d(TAG, permission.name + " is denied.");
-                                    Toast.makeText(getContext(),"必须开启定位权限才能完成打卡操作",Toast.LENGTH_LONG).show();
-
-                                }
-                            }
-
-                        }
-                    });
-                }
-
-        }*/
-
 
         @JavascriptInterface
-        public void goback()
-        {
+        public void goback() {
             finish();
-
         }
+
         @JavascriptInterface
-        public void backHomePage()
-        {
+        public void backHomePage() {
             finish();
-
-
         }
+
         @JavascriptInterface
         public void check(String id,String customer_code)
         {
@@ -258,10 +298,8 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
 
         }
         @JavascriptInterface
-        public void telephone(String phone)
-        {
+        public void telephone(String phone) {
             LogUtils.d(phone);
-
             Intent intent_service = new Intent(Intent.ACTION_DIAL);
             Uri data = Uri.parse("tel:" + phone);
             intent_service.setData(data);
@@ -269,12 +307,10 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
         }
 
         @JavascriptInterface
-        public void refreshPage()
-        {
+        public void refreshPage() {
             finish();
             initDetailsH5();
         }
-
 
         @JavascriptInterface
         public void mapNavi(String jsonObject)
@@ -287,11 +323,16 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-
-
-
         }
+
+        @JavascriptInterface
+        public void takePhoto() {
+            String fileName = System.currentTimeMillis() + ".jpg";
+            Uri imageUri = Uri.fromFile(IOUtils.createFile(Config.imageSaveDir, fileName));
+            TakePhotoUtils.getInstance().setCrop(false).setImageUri(imageUri).openCamera(getTakePhoto());
+        }
+
+
         @JavascriptInterface
         public void uploadImage() {
             //从相册中选择图片 此处使用知乎开源库Matisse
@@ -318,21 +359,19 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
                     }
                 }
             });
-
-
-
-
         }
-
 
     }
 
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        getTakePhoto().onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_CHOOSE_GRIDE && resultCode == RESULT_OK) {//storage/emulated/0/Pictures/JPEG_20181011_155709.jpg
             Log.e("OnActivityResult ", String.valueOf(Matisse.obtainPathResult(data).get(0)));
                 mPresenter.uploadImage(BitmapTools.saveBitmap(BitmapTools.getimage(new File(Matisse.obtainPathResult(data).get(0)).getPath()), new File(Matisse.obtainPathResult(data).get(0)).getPath()));
         }
     }
-    }
+}

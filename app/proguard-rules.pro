@@ -561,6 +561,14 @@ public static final int *;
     @org.greenrobot.eventbus.Subscribe <methods>;
 }
 -keep enum org.greenrobot.eventbus.ThreadMode { *; }
+-keep class com.jph.takephoto.** { *; }
+-dontwarn com.jph.takephoto.**
+
+-keep class com.darsh.multipleimageselect.** { *; }
+-dontwarn com.darsh.multipleimageselect.**
+
+-keep class com.soundcloud.android.crop.** { *; }
+-dontwarn com.soundcloud.android.crop.**
 
 # Only required if you use AsyncExecutor
 -keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
