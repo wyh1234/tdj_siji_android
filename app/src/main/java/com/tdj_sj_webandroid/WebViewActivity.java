@@ -8,9 +8,6 @@ import android.content.pm.ActivityInfo;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -22,30 +19,21 @@ import android.widget.TextView;
 
 import com.apkfuns.logutils.LogUtils;
 import com.gyf.barlibrary.ImmersionBar;
-import com.jph.takephoto.app.TakePhoto;
-import com.jph.takephoto.app.TakePhotoImpl;
-import com.jph.takephoto.model.InvokeParam;
-import com.jph.takephoto.model.TContextWrap;
-import com.jph.takephoto.model.TResult;
-import com.jph.takephoto.permission.InvokeListener;
-import com.jph.takephoto.permission.PermissionManager;
-import com.jph.takephoto.permission.TakePhotoInvocationHandler;
+import com.lxj.matisse.CaptureMode;
+import com.lxj.matisse.Matisse;
+import com.lxj.matisse.MimeType;
+import com.lxj.matisse.filter.Filter;
 import com.tdj_sj_webandroid.base.BaseActivity;
 import com.tdj_sj_webandroid.contract.TDJContract;
+import com.tdj_sj_webandroid.model.LocationBean;
 import com.tdj_sj_webandroid.model.Resume;
 import com.tdj_sj_webandroid.mvp.presenter.WebViewPresenter;
 import com.tdj_sj_webandroid.utils.BitmapTools;
-import com.tdj_sj_webandroid.utils.Config;
+import com.tdj_sj_webandroid.utils.Constants;
 import com.tdj_sj_webandroid.utils.GeneralUtils;
 import com.tdj_sj_webandroid.utils.GifSizeFilter;
 import com.tdj_sj_webandroid.utils.IMyLocation;
-import com.tdj_sj_webandroid.utils.IOUtils;
 import com.tdj_sj_webandroid.utils.MyGlideEngine;
-import com.tdj_sj_webandroid.utils.TakePhotoUtils;
-import com.zhihu.matisse.Matisse;
-import com.zhihu.matisse.MimeType;
-import com.zhihu.matisse.filter.Filter;
-import com.zhihu.matisse.internal.entity.CaptureStrategy;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -54,13 +42,14 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.functions.Consumer;
 
-public class WebViewActivity extends BaseActivity<WebViewPresenter> implements IMyLocation, TDJContract.WebViewView, TakePhoto.TakeResultListener, InvokeListener {
+public class WebViewActivity extends BaseActivity<WebViewPresenter> implements IMyLocation, TDJContract.WebViewView/*, TakePhoto.TakeResultListener, InvokeListener */{
     @BindView(R.id.tv_refresh)
     TextView tv_refresh;
     @BindView(R.id.view)
@@ -78,12 +67,15 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
         SimpleWebView wv_program;
     private WebSettings settings;
     private static final int REQUEST_CODE_CHOOSE_GRIDE = 0X0002;
+    private static final int REQUEST_CODE_CHOOSE = 0X0001;
     private int index;
     private String urls;
 
     private static final String TAG = WebViewActivity.class.getName();
-    private TakePhoto takePhoto;
-    private InvokeParam invokeParam;
+    private String mLat;
+    private String mLng;
+    //    private TakePhoto takePhoto;
+//    private InvokeParam invokeParam;
 
     @Override
     protected WebViewPresenter loadPresenter() {
@@ -97,6 +89,18 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
     @Override
     protected void initListener() {
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        registerEventBus(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterEventBus(this);
     }
 
     @Override
@@ -164,66 +168,66 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
 
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        getTakePhoto().onCreate(savedInstanceState);
-        super.onCreate(savedInstanceState);
+//    @Override
+//    public void onCreate(Bundle savedInstanceState) {
+//        getTakePhoto().onCreate(savedInstanceState);
+//        super.onCreate(savedInstanceState);
+//
+//    }
+//
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        getTakePhoto().onSaveInstanceState(outState);
+//        super.onSaveInstanceState(outState);
+//    }
+//
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        //以下代码为处理Android6.0、7.0动态权限所需
+//        PermissionManager.TPermissionType type = PermissionManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        PermissionManager.handlePermissionsResult(this, type, invokeParam, this);
+//    }
 
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        getTakePhoto().onSaveInstanceState(outState);
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        //以下代码为处理Android6.0、7.0动态权限所需
-        PermissionManager.TPermissionType type = PermissionManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        PermissionManager.handlePermissionsResult(this, type, invokeParam, this);
-    }
-
-    /**
-     * 获取TakePhoto实例
-     *
-     * @return
-     */
-    public TakePhoto getTakePhoto() {
-        if (takePhoto == null) {
-            takePhoto = (TakePhoto) TakePhotoInvocationHandler.of(this).bind(new TakePhotoImpl(this, this));
-        }
-        return takePhoto;
-    }
-
-    @Override
-    public void takeSuccess(TResult result) {
-        String path = result.getImage().getCompressPath();
-        if (TextUtils.isEmpty(path)) return;
-        Log.i(TAG, "takeSuccess:" + path);
-        mPresenter.uploadImage(BitmapTools.saveBitmap(BitmapTools.getimage(new File(path).getPath()), new  File(path).getPath()));
-    }
-
-    @Override
-    public void takeFail(TResult result, String msg) {
-
-        Log.i(TAG, "takeFail:" + msg);
-    }
-
-    @Override
-    public void takeCancel() {
-        Log.i(TAG, getResources().getString(R.string.msg_operation_canceled));
-    }
-
-    @Override
-    public PermissionManager.TPermissionType invoke(InvokeParam invokeParam) {
-        PermissionManager.TPermissionType type = PermissionManager.checkPermission(TContextWrap.of(this), invokeParam.getMethod());
-        if (PermissionManager.TPermissionType.WAIT.equals(type)) {
-            this.invokeParam = invokeParam;
-        }
-        return type;
-    }
+//    /**
+//     * 获取TakePhoto实例
+//     *
+//     * @return
+//     */
+//    public TakePhoto getTakePhoto() {
+//        if (takePhoto == null) {
+//            takePhoto = (TakePhoto) TakePhotoInvocationHandler.of(this).bind(new TakePhotoImpl(this, this));
+//        }
+//        return takePhoto;
+//    }
+//
+//    @Override
+//    public void takeSuccess(TResult result) {
+//        String path = result.getImage().getCompressPath();
+//        if (TextUtils.isEmpty(path)) return;
+//        Log.i(TAG, "takeSuccess:" + path);
+//        mPresenter.uploadImage(BitmapTools.saveBitmap(BitmapTools.getimage(new File(path).getPath()), new  File(path).getPath()));
+//    }
+//
+//    @Override
+//    public void takeFail(TResult result, String msg) {
+//
+//        Log.i(TAG, "takeFail:" + msg);
+//    }
+//
+//    @Override
+//    public void takeCancel() {
+//        Log.i(TAG, getResources().getString(R.string.msg_operation_canceled));
+//    }
+//
+//    @Override
+//    public PermissionManager.TPermissionType invoke(InvokeParam invokeParam) {
+//        PermissionManager.TPermissionType type = PermissionManager.checkPermission(TContextWrap.of(this), invokeParam.getMethod());
+//        if (PermissionManager.TPermissionType.WAIT.equals(type)) {
+//            this.invokeParam = invokeParam;
+//        }
+//        return type;
+//    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -326,10 +330,28 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
         }
 
         @JavascriptInterface
+        public String getLocation() {
+            getPermissions();
+            return Constants.latitude + "|" + Constants.longtitude;
+        }
+
+        @JavascriptInterface
         public void takePhoto() {
-            String fileName = System.currentTimeMillis() + ".jpg";
-            Uri imageUri = Uri.fromFile(IOUtils.createFile(Config.imageSaveDir, fileName));
-            TakePhotoUtils.getInstance().setCrop(false).setImageUri(imageUri).openCamera(getTakePhoto());
+//            File file = new File(StorageUtil.getDiskCacheImagePath(), System.currentTimeMillis() + ".jpg");
+//            if (!file.getParentFile().exists()) {
+//                file.getParentFile().mkdirs();
+//            }
+//            Uri imageUri = Uri.fromFile(file);
+//            TakePhotoUtils.getInstance()
+//                    .setCrop(false)
+//                    .setImageUri(imageUri)
+//                    .openCamera(getTakePhoto());
+            Matisse.from(WebViewActivity.this)
+//                    .jumpCapture()//直接跳拍摄，默认可以同时拍摄照片和视频
+                    .jumpCapture(CaptureMode.Image)//只拍照片
+                    //.jumpCapture(CaptureMode.Video)//只拍视频
+                    .isCrop(false) //开启裁剪
+                    .forResult(REQUEST_CODE_CHOOSE);
         }
 
 
@@ -347,14 +369,14 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
                                 .countable(true)//true:选中后显示数字;false:选中后显示对号
                                 .maxSelectable(1)
                                 .capture(true)
-                                .captureStrategy(new CaptureStrategy(true, "com.tdj_sj_webandroid.fileProvider")) //是否拍照功能，并设置拍照后图片的保存路径; FILE_PATH = 你项目的包名.fileprovider,必须配置不然会抛异常
+//                                .captureStrategy(new CaptureStrategy(true, "com.tdj_sj_webandroid.fileProvider")) //是否拍照功能，并设置拍照后图片的保存路径; FILE_PATH = 你项目的包名.fileprovider,必须配置不然会抛异常
                                 .addFilter(new GifSizeFilter(320, 320, 5 * Filter.K * Filter.K))
                                 .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
                                 .originalEnable(true)
                                 .maxOriginalSize(10)
                                 .thumbnailScale(0.85f)
                                 .imageEngine(new MyGlideEngine())
-                                .forResult(REQUEST_CODE_CHOOSE_GRIDE);
+                                .forResult(REQUEST_CODE_CHOOSE);
 
                     }
                 }
@@ -367,11 +389,32 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        getTakePhoto().onActivityResult(requestCode, resultCode, data);
+//        getTakePhoto().onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_CHOOSE_GRIDE && resultCode == RESULT_OK) {//storage/emulated/0/Pictures/JPEG_20181011_155709.jpg
-            Log.e("OnActivityResult ", String.valueOf(Matisse.obtainPathResult(data).get(0)));
-                mPresenter.uploadImage(BitmapTools.saveBitmap(BitmapTools.getimage(new File(Matisse.obtainPathResult(data).get(0)).getPath()), new File(Matisse.obtainPathResult(data).get(0)).getPath()));
+//        if (requestCode == REQUEST_CODE_CHOOSE_GRIDE && resultCode == RESULT_OK) {//storage/emulated/0/Pictures/JPEG_20181011_155709.jpg
+//            Log.e("OnActivityResult ", String.valueOf(Matisse.obtainPathResult(data).get(0)));
+//                mPresenter.uploadImage(BitmapTools.saveBitmap(BitmapTools.getimage(new File(Matisse.obtainPathResult(data).get(0)).getPath()), new File(Matisse.obtainPathResult(data).get(0)).getPath()));
+//        }
+        if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
+            //获取拍摄的图片路径，如果是录制视频则是视频的第一帧图片路径
+            String captureImagePath = Matisse.obtainCaptureImageResult(data);
+            if (captureImagePath != null && !captureImagePath.isEmpty()){
+                mPresenter.uploadImage(BitmapTools.saveBitmap(BitmapTools.getimage(new File(captureImagePath).getPath()), new File(captureImagePath).getPath()));
+            }else {
+                //获取选择图片或者视频的结果路径，如果开启裁剪的话，获取的是原图的地址
+                List<String> list = Matisse.obtainSelectPathResult(data);//文件形式路径
+                mPresenter.uploadImage(BitmapTools.saveBitmap(BitmapTools.getimage(new File(list.get(0)).getPath()), new File(list.get(0)).getPath()));
+            }
+
         }
     }
+
+    /*code 不同事件接受處理*/
+    @Subscribe( threadMode = ThreadMode.MAIN)
+    public void eventCode(LocationBean locationBean) {
+        LogUtils.i(locationBean);
+        mLat = String.valueOf(locationBean.getLatitude());
+        mLng = String.valueOf(locationBean.getLongitude());
+    }
+
 }

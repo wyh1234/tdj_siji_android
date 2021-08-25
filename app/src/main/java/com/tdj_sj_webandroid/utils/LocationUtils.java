@@ -52,6 +52,8 @@ public class LocationUtils {
                     locationBean.setLatitude(aMapLocation.getLatitude());
                     locationBean.setAddress(aMapLocation.getAddress());
                     EventBus.getDefault().post(locationBean);
+                    Constants.longtitude = aMapLocation.getLongitude();
+                    Constants.latitude = aMapLocation.getLatitude();
                 }else {
                     LogUtils.i("location<<<failed", "定位失败\n错误码：" + aMapLocation.getErrorCode()
                             + "\n错误信息:" + aMapLocation.getErrorInfo()

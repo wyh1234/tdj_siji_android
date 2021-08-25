@@ -6,7 +6,7 @@ import android.net.Uri;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Priority;
-import com.zhihu.matisse.engine.ImageEngine;
+import com.lxj.matisse.engine.ImageEngine;
 
 public class MyGlideEngine implements ImageEngine {
     @Override

@@ -1,47 +1,28 @@
 package com.tdj_sj_webandroid;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.location.LocationManager;
-import android.util.Log;
 import android.view.KeyEvent;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.apkfuns.logutils.LogUtils;
 import com.gyf.barlibrary.ImmersionBar;
-import com.tbruyelle.rxpermissions2.Permission;
-import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.tdj_sj_webandroid.base.BaseActivity;
 import com.tdj_sj_webandroid.mvp.presenter.IPresenter;
-import com.tdj_sj_webandroid.utils.BitmapTools;
 import com.tdj_sj_webandroid.utils.Constants;
 import com.tdj_sj_webandroid.utils.GeneralUtils;
-import com.tdj_sj_webandroid.utils.GifSizeFilter;
 import com.tdj_sj_webandroid.utils.IMyLocation;
-import com.tdj_sj_webandroid.utils.MyGlideEngine;
 import com.tdj_sj_webandroid.utils.MyLocationManager;
-import com.zhihu.matisse.Matisse;
-import com.zhihu.matisse.MimeType;
-import com.zhihu.matisse.filter.Filter;
-import com.zhihu.matisse.internal.entity.CaptureStrategy;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.functions.Consumer;
 
 public class MianActivity extends BaseActivity implements IMyLocation {
     @BindView(R.id.tv_refresh)
@@ -70,7 +51,6 @@ public class MianActivity extends BaseActivity implements IMyLocation {
     @Override
     protected void initView() {
         ButterKnife.bind(this);
-
 
         ImmersionBar.with(this).statusBarDarkFont(true) .keyboardEnable(true)  //解决软键盘与底部输入框冲突问题，默认为false，还有一个重载方法，可以指定软键盘mode
                 .init();

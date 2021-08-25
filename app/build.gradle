@@ -10,8 +10,8 @@ android {
         minSdkVersion 23
         multiDexEnabled true
         targetSdkVersion 28
-        versionCode 1
-        versionName "3.0"
+        versionCode 202108090
+        versionName "3.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         ndk {
@@ -113,7 +113,8 @@ dependencies {
     implementation 'com.github.ForgetAll:LoadingDialog:v1.0.1'
     implementation 'com.apkfuns.logutils:library:1.5.1.1'
 
-    implementation 'com.zhihu.android:matisse:0.5.2-beta2'
+//    implementation 'com.zhihu.android:matisse:0.5.2-beta2'
+    implementation 'com.lxj:matisse:1.0.5'
     implementation 'com.gyf.immersionbar:immersionbar:2.3.3'
     implementation 'com.github.ForgetAll:LoadingDialog:v1.0.1'
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.3'
@@ -131,7 +132,7 @@ dependencies {
 
     implementation 'com.github.bumptech.glide:glide:4.3.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.3.1'
-    implementation 'com.jph.takephoto:takephoto_library:4.0.3'
+//    implementation 'com.jph.takephoto:takephoto_library:4.0.3'
 
     api 'com.android.support:multidex:1.0.3'
     implementation files('libs/Android_SCAN_SDKV1.05PRO.jar')

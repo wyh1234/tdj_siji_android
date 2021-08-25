@@ -18,12 +18,12 @@ package com.tdj_sj_webandroid.utils;
 import android.content.Context;
 import android.graphics.Point;
 
+import com.lxj.matisse.MimeType;
+import com.lxj.matisse.filter.Filter;
+import com.lxj.matisse.internal.entity.IncapableCause;
+import com.lxj.matisse.internal.entity.Item;
+import com.lxj.matisse.internal.utils.PhotoMetadataUtils;
 import com.tdj_sj_webandroid.R;
-import com.zhihu.matisse.MimeType;
-import com.zhihu.matisse.filter.Filter;
-import com.zhihu.matisse.internal.entity.IncapableCause;
-import com.zhihu.matisse.internal.entity.Item;
-import com.zhihu.matisse.internal.utils.PhotoMetadataUtils;
 
 import java.util.HashSet;
 import java.util.Set;

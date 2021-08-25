@@ -2,12 +2,6 @@ package com.tdj_sj_webandroid.utils;
 
 import android.net.Uri;
 
-import com.jph.takephoto.app.TakePhoto;
-import com.jph.takephoto.compress.CompressConfig;
-import com.jph.takephoto.model.CropOptions;
-import com.jph.takephoto.model.LubanOptions;
-import com.jph.takephoto.model.TakePhotoOptions;
-
 
 public class TakePhotoUtils {
 
@@ -94,76 +88,76 @@ public class TakePhotoUtils {
     }
 
 
-    //拍照
-    public void openCamera(TakePhoto takePhoto) {
-        configCompress(takePhoto);
-        if (isCrop) takePhoto.onPickFromCaptureWithCrop(imageUri, getCropOptions());
-        else takePhoto.onPickFromCapture(imageUri);
-    }
-
-    //从相册选择完成后是否裁切, maxSelectCount 最多选择几张，如果选择多张则自动调用takephoto的相册
-    public void openPhotoAlbum(TakePhoto takePhoto, int maxSelectCount, boolean isUseOwnAlbum) {
-        if (maxSelectCount < 1) {
-//            UIUtils.showToastSafesShort("已选择的图片达到上限");
-            return;
-        }
-        configCompress(takePhoto);
-        configTakePhotoOption(takePhoto, isUseOwnAlbum);
-
-        if (isCrop) {
-            if (maxSelectCount > 1)
-                takePhoto.onPickMultipleWithCrop(maxSelectCount, getCropOptions());
-            else takePhoto.onPickFromGalleryWithCrop(imageUri, getCropOptions());
-        } else {
-            if (maxSelectCount > 1) takePhoto.onPickMultiple(maxSelectCount);
-            else takePhoto.onPickFromGallery();
-        }
-
-
-    }
-
-
-    //是否使用takephoto自带相册
-    private void configTakePhotoOption(TakePhoto takePhoto, boolean isUse) {
-        TakePhotoOptions.Builder builder = new TakePhotoOptions.Builder();
-        //是否使用自带相册
-        builder.setWithOwnGallery(isUse);
-        //纠正拍照的照片旋转角度
-        builder.setCorrectImage(true);
-
-        takePhoto.setTakePhotoOptions(builder.create());
-    }
-
-    //是否压缩
-    //  默认压缩,不保存原图
-    private void configCompress(TakePhoto takePhoto) {
-        //不使用压缩
-        //takePhoto.onEnableCompress(null, false);
-
-        //最大大小
-        int maxSize = maxSizeKb * 1024;
-
-        CompressConfig config;
-
-        //是否使用自带压缩工具
-        if (isOwnCompressTool) {
-            config = new CompressConfig.Builder().setMaxSize(maxSize).setMaxPixel(wCompress >= hCompress ? wCompress : hCompress).enableReserveRaw(enableRawFile).create();
-        } else {
-            LubanOptions option = new LubanOptions.Builder().setMaxHeight(hCompress).setMaxWidth(wCompress).setMaxSize(maxSize).create();
-            config = CompressConfig.ofLuban(option);
-            config.enableReserveRaw(enableRawFile);
-        }
-
-        takePhoto.onEnableCompress(config, showProgressBar);
-    }
-
-    //是否裁切 默认使用自带裁切工具
-    private CropOptions getCropOptions() {
-        if (!isCrop) return null;
-        CropOptions.Builder builder = new CropOptions.Builder();
-        if (isSize) builder.setOutputX(wCrop).setOutputY(hCrop);
-        else builder.setAspectX(wCrop).setAspectY(hCrop);
-        builder.setWithOwnCrop(isCorpOwnTool);
-        return builder.create();
-    }
+//    //拍照
+//    public void openCamera(TakePhoto takePhoto) {
+//        configCompress(takePhoto);
+//        if (isCrop) takePhoto.onPickFromCaptureWithCrop(imageUri, getCropOptions());
+//        else takePhoto.onPickFromCapture(imageUri);
+//    }
+//
+//    //从相册选择完成后是否裁切, maxSelectCount 最多选择几张，如果选择多张则自动调用takephoto的相册
+//    public void openPhotoAlbum(TakePhoto takePhoto, int maxSelectCount, boolean isUseOwnAlbum) {
+//        if (maxSelectCount < 1) {
+////            UIUtils.showToastSafesShort("已选择的图片达到上限");
+//            return;
+//        }
+//        configCompress(takePhoto);
+//        configTakePhotoOption(takePhoto, isUseOwnAlbum);
+//
+//        if (isCrop) {
+//            if (maxSelectCount > 1)
+//                takePhoto.onPickMultipleWithCrop(maxSelectCount, getCropOptions());
+//            else takePhoto.onPickFromGalleryWithCrop(imageUri, getCropOptions());
+//        } else {
+//            if (maxSelectCount > 1) takePhoto.onPickMultiple(maxSelectCount);
+//            else takePhoto.onPickFromGallery();
+//        }
+//
+//
+//    }
+//
+//
+//    //是否使用takephoto自带相册
+//    private void configTakePhotoOption(TakePhoto takePhoto, boolean isUse) {
+//        TakePhotoOptions.Builder builder = new TakePhotoOptions.Builder();
+//        //是否使用自带相册
+//        builder.setWithOwnGallery(isUse);
+//        //纠正拍照的照片旋转角度
+//        builder.setCorrectImage(true);
+//
+//        takePhoto.setTakePhotoOptions(builder.create());
+//    }
+//
+//    //是否压缩
+//    //  默认压缩,不保存原图
+//    private void configCompress(TakePhoto takePhoto) {
+//        //不使用压缩
+//        //takePhoto.onEnableCompress(null, false);
+//
+//        //最大大小
+//        int maxSize = maxSizeKb * 1024;
+//
+//        CompressConfig config;
+//
+//        //是否使用自带压缩工具
+//        if (isOwnCompressTool) {
+//            config = new CompressConfig.Builder().setMaxSize(maxSize).setMaxPixel(wCompress >= hCompress ? wCompress : hCompress).enableReserveRaw(enableRawFile).create();
+//        } else {
+//            LubanOptions option = new LubanOptions.Builder().setMaxHeight(hCompress).setMaxWidth(wCompress).setMaxSize(maxSize).create();
+//            config = CompressConfig.ofLuban(option);
+//            config.enableReserveRaw(enableRawFile);
+//        }
+//
+//        takePhoto.onEnableCompress(config, showProgressBar);
+//    }
+//
+//    //是否裁切 默认使用自带裁切工具
+//    private CropOptions getCropOptions() {
+//        if (!isCrop) return null;
+//        CropOptions.Builder builder = new CropOptions.Builder();
+//        if (isSize) builder.setOutputX(wCrop).setOutputY(hCrop);
+//        else builder.setAspectX(wCrop).setAspectY(hCrop);
+//        builder.setWithOwnCrop(isCorpOwnTool);
+//        return builder.create();
+//    }
 }

@@ -5,21 +5,15 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 
-import com.amap.api.location.AMapLocationListener;
 import com.apkfuns.logutils.LogUtils;
 import com.github.nukc.stateview.StateView;
-import com.google.android.gms.maps.model.LatLng;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.tdj_sj_webandroid.AppAplication;
-import com.tdj_sj_webandroid.DDJStorageManagementActivity;
 import com.tdj_sj_webandroid.R;
-import com.tdj_sj_webandroid.StorageManagementActivity;
 import com.tdj_sj_webandroid.http.GsonResponseHandler;
 import com.tdj_sj_webandroid.http.HttpUtils;
-import com.tdj_sj_webandroid.model.AppUpdate;
 import com.tdj_sj_webandroid.model.CustomApiResult;
 import com.tdj_sj_webandroid.model.LocationBean;
 import com.tdj_sj_webandroid.mvp.presenter.IPresenter;
@@ -73,8 +67,7 @@ public abstract class BaseActivity<P extends IPresenter> extends FragmentActivit
         initView();
         //初始化监听
         initListener();
-        //加载网络（或者本地）数据
-        initData();
+
 //        Log.i("父类","父类方法");
 
         rxPermissions=new RxPermissions(this);
@@ -85,7 +78,8 @@ public abstract class BaseActivity<P extends IPresenter> extends FragmentActivit
         if (!aBoolean){
             getPermissions();
         }
-
+        //加载网络（或者本地）数据
+        initData();
     }
     /**StateView的根布局，默认是整个界面，如果需要变换可以重写此方法*/
     public View getStateViewRoot() {

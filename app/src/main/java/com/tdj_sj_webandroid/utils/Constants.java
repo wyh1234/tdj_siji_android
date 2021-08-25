@@ -9,10 +9,10 @@ import android.widget.Toast;
 public class Constants {
 //    public final static String URL="https://siji.51taodj.com/tdj-driver/";
 //    public final static String URL1="https://siji.51taodj.com/tdj-driver";
-    public final static String URL="https://siji.51taodj.com/yushangxian-driver/";
-    public final static String URL1="https://siji.51taodj.com/yushangxian-driver/";
-//    public final static String URL="https://siji.51taodj.com/test-driver/";
-//    public final static String URL1="https://siji.51taodj.com/test-driver";
+//    public final static String URL="https://siji.51taodj.com/yushangxian-driver/";
+//    public final static String URL1="https://siji.51taodj.com/yushangxian-driver/";
+    public final static String URL="https://siji.51taodj.com/test-driver/";
+    public final static String URL1="https://siji.51taodj.com/test-driver";
 //    public final static String URL="http://47.111.135.109:8060/test-driver/";
 //    public final static String URL1="http://47.111.135.109:8060/test-driver";
 //    public final static String URL="http://47.111.135.109:8060/yushangxian-driver/";
@@ -45,6 +45,9 @@ public class Constants {
     public final static String getSijiCount="storeDiyFee/getSijiCount.do?";
     public final static String getSijiCountByStore="storeDiyFee/getSijiCountByStore.do?";
 
+    public static double longtitude = 0d;//经度
+
+    public static double latitude = 0d;//纬度
 
     public static boolean chackEdtextNoEmpty(Context context,EditText editText,String str){
         String edstr = editText.getText().toString().trim();
