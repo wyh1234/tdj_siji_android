@@ -165,6 +165,19 @@ public class MianActivity extends BaseActivity implements IMyLocation {
 
         }
 
+        @JavascriptInterface
+        public void getLocationBack() {
+            getPermissions();
+
+                wv_program.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        wv_program.loadUrl("javascript:getLocation(\""+ (Constants.longtitude) +"\",\""+ (Constants.latitude) +"\")");
+//                     wv_program.loadUrl("javascript:getLocation(\""+(Constants.longtitude) + "','" + (Constants.latitude)+ "\")");
+                    }
+                });
+
+        }
 
 
     }

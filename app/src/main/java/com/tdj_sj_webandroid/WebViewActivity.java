@@ -107,7 +107,7 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
     protected void initView() {
         ImmersionBar.with(this).statusBarDarkFont(true).init();
         ButterKnife.bind(this);
-
+        wv_program.getSettings().setJavaScriptEnabled(true);
         wv_program.addJavascriptInterface(new AndroidtoJs(), "android");//AndroidtoJS类对象映射到js的test对象
         initDetailsH5();
 
@@ -330,7 +330,22 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
         }
 
         @JavascriptInterface
+        public void getLocationBack() {
+            getPermissions();
+                wv_program.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        wv_program.loadUrl("javascript:getLocation(\""+ (Constants.longtitude) +"\",\""+ (Constants.latitude) +"\")");
+//                     wv_program.loadUrl("javascript:getLocation(\""+(Constants.longtitude) + "','" + (Constants.latitude)+ "\")");
+                    }
+                });
+
+
+        }
+
+        @JavascriptInterface
         public String getLocation() {
+            LogUtils.d("getLocation");
             getPermissions();
             return Constants.latitude + "|" + Constants.longtitude;
         }

@@ -3,16 +3,12 @@ package com.tdj_sj_webandroid.fragment;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.apkfuns.logutils.LogUtils;
-import com.gyf.barlibrary.ImmersionBar;
 import com.tdj_sj_webandroid.AppAplication;
 import com.tdj_sj_webandroid.MainTabActivity;
 import com.tdj_sj_webandroid.MianActivity;
@@ -48,6 +44,7 @@ public class MyFragment extends BaseFrgment {
     @Override
     protected void initView(View view) {
         ButterKnife.bind(this, view);
+        wv_program.getSettings().setJavaScriptEnabled(true);
         wv_program.addJavascriptInterface(new AndroidtoJs(), "android");//AndroidtoJS类对象映射到js的test对象
         initDetailsH5();
     }
@@ -175,6 +172,20 @@ public class MyFragment extends BaseFrgment {
         public void  scannerHistory(){
             Intent intent=new Intent(getContext(), ScannerHistoryActivity.class);
             startActivity(intent);
+        }
+
+        @JavascriptInterface
+        public void getLocationBack() {
+            activity.getPermissions();
+
+                wv_program.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        wv_program.loadUrl("javascript:getLocation(\""+ (Constants.longtitude) +"\",\""+ (Constants.latitude) +"\")");
+//                     wv_program.loadUrl("javascript:getLocation(\""+(Constants.longtitude) + "','" + (Constants.latitude)+ "\")");
+                    }
+                });
+
         }
 
     }

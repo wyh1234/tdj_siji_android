@@ -37,7 +37,7 @@ public class LocationUtils {
         return LocationHolder.INSTANCE;
     }
 
-    public void startLocalService() {
+    public void startLocalService(final LocationListener listener) {
         //初始化定位
         mLocationClient = new AMapLocationClient(AppAplication.getAppContext());
         //设置定位回调监听
@@ -52,6 +52,8 @@ public class LocationUtils {
                     locationBean.setLatitude(aMapLocation.getLatitude());
                     locationBean.setAddress(aMapLocation.getAddress());
                     EventBus.getDefault().post(locationBean);
+                    if (listener != null)
+                        listener.getLocationSuccess(aMapLocation.getLongitude(),aMapLocation.getLatitude());
                     Constants.longtitude = aMapLocation.getLongitude();
                     Constants.latitude = aMapLocation.getLatitude();
                 }else {

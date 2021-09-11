@@ -21,6 +21,7 @@ import com.tdj_sj_webandroid.mvp.view.IView;
 import com.tdj_sj_webandroid.utils.Constants;
 import com.tdj_sj_webandroid.utils.Density;
 import com.tdj_sj_webandroid.utils.GeneralUtils;
+import com.tdj_sj_webandroid.utils.LocationListener;
 import com.tdj_sj_webandroid.utils.LocationUtils;
 import com.zhouyou.http.exception.ApiException;
 
@@ -85,18 +86,23 @@ public abstract class BaseActivity<P extends IPresenter> extends FragmentActivit
     public View getStateViewRoot() {
         return view;
     }
-    public void getPermissions(){
+    public String getPermissions(){
         rxPermissions.request( Manifest.permission.ACCESS_COARSE_LOCATION).subscribe(new Consumer<Boolean>() {
             @Override
             public void accept(Boolean b) throws Exception {
                 aBoolean=b;
                 if (b){
-                    LocationUtils.getInstance().startLocalService();
+                    LocationUtils.getInstance().startLocalService(new LocationListener() {
+                        @Override
+                        public String getLocationSuccess(double lon, double lat) {
+                            return lon + "|" + lat;
+                        }
+                    });
                 }
 
             }
         });
-
+        return null;
     }
 
     protected abstract P loadPresenter();
