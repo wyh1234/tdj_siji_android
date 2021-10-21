@@ -2,8 +2,6 @@ package com.tdj_sj_webandroid.bluetooth;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -145,7 +143,7 @@ public class LyGoodsActivity extends BaseActivity<LyGoodsPresenter> implements O
         LinearLayoutManager layout = new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL, false);
         rk_list.setLayoutManager(layout);
-        storageManagementAdapter=new NuclearGoodsAdapter(this,list);
+//        storageManagementAdapter=new NuclearGoodsAdapter(this,list);
         rk_list.setAdapter(storageManagementAdapter);
         getData(1);
     }

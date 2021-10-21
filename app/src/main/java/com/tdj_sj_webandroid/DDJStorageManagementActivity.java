@@ -66,6 +66,9 @@ public class DDJStorageManagementActivity extends BaseActivity<DDJStorageManagem
     TextView tv_title1;
     @BindView(R.id.iv_clean)
     ImageView iv_clean;
+    @BindView(R.id.ll)
+    LinearLayout ll;
+
     public int pageNo = 1;//翻页计数器
     private BroadcastReceiver scanReceiver;
     private boolean b = false;
@@ -244,10 +247,10 @@ public class DDJStorageManagementActivity extends BaseActivity<DDJStorageManagem
                             iterator.remove();
                         }
                     }
-                    storageManagementAdapter.notifyDataSetChanged();
+                    showEmpty(list.size() <= 0);
                     LogUtils.i(total);
-                    tv_num.setText("已入库：" + (--total));
-                }
+                    tv_num.setText("入库计数：" + (--total));
+                }else showEmpty(true);
                 PlayVoice.playVoice(this,R.raw.quxiaochenggong);
 
             } else {
@@ -255,8 +258,8 @@ public class DDJStorageManagementActivity extends BaseActivity<DDJStorageManagem
                 if (result.getErr() == 0) {
 
                     list.add(0, result.getData());
-                    storageManagementAdapter.notifyDataSetChanged();
-                    tv_num.setText("已入库：" + (++total));
+                    showEmpty(false);
+                    tv_num.setText("入库计数：" + (++total));
 
                 }
 
@@ -266,6 +269,7 @@ public class DDJStorageManagementActivity extends BaseActivity<DDJStorageManagem
             if (b) {
                 b = false;
             }
+            showEmpty(list.size() <= 0);
         }
         if (result.getErr() == 1) {
             PlayVoice.playVoice(this,R.raw.saomashibai);
@@ -323,24 +327,36 @@ public class DDJStorageManagementActivity extends BaseActivity<DDJStorageManagem
 
             if (response.getData().size() > 0) {
                 list.addAll(response.getData());
-                tv_num.setText("已入库：" + list.size());
-                storageManagementAdapter.notifyDataSetChanged();
+                tv_num.setText("入库计数：" + list.size());
+                showEmpty(false);
 
             } else {
                 if (response.getPn() != 1) {
                     Toast.makeText(this, "数据加载完毕", Toast.LENGTH_LONG).show();
                 }
+                showEmpty(true);
             }
             total = response.getTotal();
-            tv_num.setText("已入库：" + response.getTotal());
+            tv_num.setText("入库计数：" + response.getTotal());
 
         } else {
+            showEmpty(true);
             if (response.getPn() != 1) {
                 Toast.makeText(this, "数据加载完毕", Toast.LENGTH_LONG).show();
             }
         }
 
 
+    }
+
+    public View getStateViewRoot() {
+        return ll;
+    }
+
+    private void showEmpty(boolean isEmpty){
+        if(isEmpty) mStateView.showEmpty();
+        else mStateView.showContent();
+        storageManagementAdapter.notifyDataSetChanged();
     }
 
     @Override

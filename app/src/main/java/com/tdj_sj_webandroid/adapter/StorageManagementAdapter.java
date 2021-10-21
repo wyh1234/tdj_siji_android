@@ -24,8 +24,8 @@ public class StorageManagementAdapter  extends BaseRecyclerViewAdapter<StorageMa
     protected void onBindData(RecyclerViewHolder holder, final StorageManagement bean, final int position) {
         ((TextView) holder.getView(R.id.order_no_tv)).setText(bean.getSku());
         ((TextView)holder.getView(R.id.order_name_tv)).setText(bean.getProductName());
-        ((TextView)holder.getView(R.id.order_pice_tv)).setText(bean.getPrice()+"元");
-        ((TextView)holder.getView(R.id.order_num_tv)).setText(bean.getQty()+bean.getUnit());
+        ((TextView)holder.getView(R.id.order_pice_tv)).setText(bean.getSpecification());
+        ((TextView)holder.getView(R.id.order_num_tv)).setText(bean.getQty());
         ((TextView)holder.getView(R.id.order_stastus_tv)).setText("入库");
         ((TextView)holder.getView(R.id.order_pice_tv)).setOnClickListener(new View.OnClickListener() {
             @Override

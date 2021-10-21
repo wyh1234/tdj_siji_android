@@ -27,14 +27,17 @@ import com.tdj_sj_webandroid.base.BaseActivity;
 import com.tdj_sj_webandroid.contract.TDJContract;
 import com.tdj_sj_webandroid.model.BackHomePage;
 import com.tdj_sj_webandroid.model.ConfirmPlan;
+import com.tdj_sj_webandroid.model.LocationBean;
 import com.tdj_sj_webandroid.model.Resume;
-import com.tdj_sj_webandroid.mvp.presenter.WebViewPresenter;
+import com.tdj_sj_webandroid.mvp.presenter.WebViewToPresenter;
 import com.tdj_sj_webandroid.utils.BitmapTools;
 import com.tdj_sj_webandroid.utils.Constants;
 import com.tdj_sj_webandroid.utils.GeneralUtils;
 import com.tdj_sj_webandroid.utils.GifSizeFilter;
 import com.tdj_sj_webandroid.utils.IMyLocation;
+import com.tdj_sj_webandroid.utils.LocationUtils;
 import com.tdj_sj_webandroid.utils.MyGlideEngine;
+import com.tdj_sj_webandroid.utils.ToastUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -51,7 +54,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.functions.Consumer;
 
-public class WebViewActivity extends BaseActivity<WebViewPresenter> implements IMyLocation, TDJContract.WebViewView/*, TakePhoto.TakeResultListener, InvokeListener */{
+public class WebViewToActivity extends BaseActivity<WebViewToPresenter> implements IMyLocation, TDJContract.WebViewView{
     @BindView(R.id.tv_refresh)
     TextView tv_refresh;
     @BindView(R.id.view)
@@ -74,8 +77,8 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
     private String urls;
 
     @Override
-    protected WebViewPresenter loadPresenter() {
-        return new WebViewPresenter();
+    protected WebViewToPresenter loadPresenter() {
+        return new WebViewToPresenter();
     }
     @Override
     protected void initData() {
@@ -195,7 +198,7 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
 
     @Override
     public Context getContext() {
-        return WebViewActivity.this;
+        return WebViewToActivity.this;
     }
 
     @Override
@@ -277,40 +280,33 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
             }
         }
 
-//        @JavascriptInterface
-//        public void getLocationBack() {
-//            try {
-//                if (isFirstGetLocation) {
-//                    LogUtils.i( "onMapEvent: 进方法了");
-//                    LocationUtils.getInstance().stopLocalService();
-//                    getPermissions(true,true);
-//                    isFirstGetLocation = false;
-//                }
-//            }catch (Exception e){
-//                e.printStackTrace();
-//                ToastUtils.showToast(WebViewActivity.this,e.getMessage());
-//            }
-//
-//        }
-
         @JavascriptInterface
-        public String getLocation() {
-            LogUtils.d("getLocation");
-            getPermissions(false,true);
-            return Constants.latitude + "|" + Constants.longtitude;
+        public void getLocationBack() {
+            try {
+                if (isFirstGetLocation) {
+                    LogUtils.i( "onMapEvent: 进方法了");
+                    LocationUtils.getInstance().stopLocalService();
+                    getPermissions(true,true);
+                    isFirstGetLocation = false;
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+                ToastUtils.showToast(WebViewToActivity.this,e.getMessage());
+            }
+
         }
 
         @JavascriptInterface
         public void redirectPage(String url){
-            WebViewActivity.this.finish();
-            Intent intent=new Intent(getContext(), WebViewToActivity.class);
+            WebViewToActivity.this.finish();
+            Intent intent=new Intent(getContext(), WebViewActivity.class);
             intent.putExtra("url", Constants.URL1+ url);
             startActivity(intent);
         }
 
         @JavascriptInterface
         public void takePhoto() {
-            Matisse.from(WebViewActivity.this)
+            Matisse.from(WebViewToActivity.this)
 //                    .jumpCapture()//直接跳拍摄，默认可以同时拍摄照片和视频
                     .jumpCapture(CaptureMode.Image)//只拍照片
                     //.jumpCapture(CaptureMode.Video)//只拍视频
@@ -327,7 +323,7 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
                 public void accept(Boolean b) throws Exception {
                     Log.i("permission",b+"");
                     if (b) {
-                        Matisse.from(WebViewActivity.this)
+                        Matisse.from(WebViewToActivity.this)
                                 .choose(MimeType.ofImage())
                                 .theme(R.style.Matisse_Dracula)
                                 .countable(true)//true:选中后显示数字;false:选中后显示对号
@@ -368,18 +364,18 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
     }
 
 
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void onMapEvent(LocationBean locationBean){
-//        double latitude = locationBean.getLatitude();
-//        double longitude = locationBean.getLongitude();
-//        if (locationBean.isBack() && locationBean.isWbeView()) {
-//            wv_program.post(new Runnable() {
-//                @Override
-//                public void run() {
-//                    wv_program.loadUrl("javascript:getLocation(\"" + (longitude) + "\",\"" + (latitude) + "\")");
-//                }
-//            });
-//        }
-//    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMapEvent(LocationBean locationBean){
+        double latitude = locationBean.getLatitude();
+        double longitude = locationBean.getLongitude();
+        if (locationBean.isBack() && locationBean.isWbeView()) {
+            wv_program.post(new Runnable() {
+                @Override
+                public void run() {
+                    wv_program.loadUrl("javascript:getLocation(\"" + (longitude) + "\",\"" + (latitude) + "\")");
+                }
+            });
+        }
+    }
 
 }

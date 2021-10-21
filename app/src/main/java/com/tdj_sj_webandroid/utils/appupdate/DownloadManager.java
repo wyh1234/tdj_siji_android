@@ -7,6 +7,8 @@ import android.widget.Toast;
 
 import com.apkfuns.logutils.LogUtils;
 
+import org.apache.maven.artifact.versioning.ComparableVersion;
+
 
 /**
  * 文件名:    DownloadManager
@@ -198,7 +200,8 @@ public class DownloadManager {
             context.startService(new Intent(context, DownloadService.class));
         } else {
             //对版本进行判断，是否显示升级对话框
-            if (apkVersionCode > ApkUtil.getVersionCode(context)) {
+//            if (apkVersionCode > ApkUtil.getVersionCode(context)) {
+            if (new ComparableVersion(apkVersionName).compareTo(new ComparableVersion(ApkUtil.getVersionName(context))) > 0) {
                 UpdateDialog dialog = new UpdateDialog(context);
                 dialog.show();
             } else {

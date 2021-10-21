@@ -21,7 +21,6 @@ import com.tdj_sj_webandroid.mvp.view.IView;
 import com.tdj_sj_webandroid.utils.Constants;
 import com.tdj_sj_webandroid.utils.Density;
 import com.tdj_sj_webandroid.utils.GeneralUtils;
-import com.tdj_sj_webandroid.utils.LocationListener;
 import com.tdj_sj_webandroid.utils.LocationUtils;
 import com.zhouyou.http.exception.ApiException;
 
@@ -77,7 +76,7 @@ public abstract class BaseActivity<P extends IPresenter> extends FragmentActivit
             mStateView.setEmptyResource(R.layout.page_empty);
         }
         if (!aBoolean){
-            getPermissions();
+            getPermissions(false,false);
         }
         //加载网络（或者本地）数据
         initData();
@@ -86,23 +85,19 @@ public abstract class BaseActivity<P extends IPresenter> extends FragmentActivit
     public View getStateViewRoot() {
         return view;
     }
-    public String getPermissions(){
-        rxPermissions.request( Manifest.permission.ACCESS_COARSE_LOCATION).subscribe(new Consumer<Boolean>() {
-            @Override
-            public void accept(Boolean b) throws Exception {
-                aBoolean=b;
-                if (b){
-                    LocationUtils.getInstance().startLocalService(new LocationListener() {
-                        @Override
-                        public String getLocationSuccess(double lon, double lat) {
-                            return lon + "|" + lat;
-                        }
-                    });
-                }
 
-            }
-        });
-        return null;
+    public void getPermissions(boolean isBack,boolean isWeb){
+
+            rxPermissions.request( Manifest.permission.ACCESS_COARSE_LOCATION).subscribe(new Consumer<Boolean>() {
+                @Override
+                public void accept(Boolean b) throws Exception {
+                    aBoolean=b;
+                    if (b){
+                        LocationUtils.getInstance().startLocalService(isBack,isWeb);
+                    }
+                }
+            });
+
     }
 
     protected abstract P loadPresenter();
@@ -117,8 +112,6 @@ public abstract class BaseActivity<P extends IPresenter> extends FragmentActivit
 
 
     private void initCommonData() {
-
-
         if (mPresenter != null)
             mPresenter.attachView(this);
     }
@@ -139,9 +132,6 @@ public abstract class BaseActivity<P extends IPresenter> extends FragmentActivit
         view = View.inflate(this, getLayoutId(), null);
         return view;
     }
-
-
-
 
     @Override
     protected void onDestroy() {
@@ -175,11 +165,7 @@ public abstract class BaseActivity<P extends IPresenter> extends FragmentActivit
     protected void onStop() {
         super.onStop();
         LogUtils.i("onStop");
-
-
     }
-
-
 
     @Override
     protected void onStart() {
@@ -215,14 +201,9 @@ public abstract class BaseActivity<P extends IPresenter> extends FragmentActivit
             @Override
             public void onSuccess(CustomApiResult customApiResult) {
                 LogUtils.i(customApiResult);
-
-
             }
         });
-
-
     }
-
 
     public boolean isEventBusRegisted(Object subscribe) {
         return EventBus.getDefault().isRegistered(subscribe);

@@ -35,6 +35,7 @@
 
             <TextView
                 android:id="@+id/tv_qx"
+                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
@@ -75,10 +76,70 @@
         android:background="#f6f6f6"
         android:layout_width="match_parent"
         android:layout_height="1dp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="#F2F2F2"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center|left"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:id="@+id/tv_isD"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:textColor="#FF0404"
+            android:textStyle="bold"
+            android:textSize="20sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="新"
+            android:id="@+id/tv_isFirst"
+            android:gravity="center"
+            android:visibility="gone"
+            android:background="@drawable/news_red"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:id="@+id/tv_customerId"
+            android:gravity="center"
+            android:paddingLeft="@dimen/dp_4"
+            android:paddingRight="@dimen/dp_4"
+            android:background="@drawable/news"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:textColor="@color/white"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:maxLines="1"
+            android:id="@+id/tv_customerName"
+            android:ellipsize="end"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:textColor="#333333"
+            android:textStyle="bold"
+            android:textSize="17sp"/>
+
+    </LinearLayout>
+
     <LinearLayout
         android:id="@+id/search_edit_group"
         android:layout_height="40dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginBottom="@dimen/dp_10"
         android:layout_width="match_parent"
         android:gravity="center_vertical"
         android:orientation="horizontal"
@@ -98,7 +159,7 @@
                 android:background="@null"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:hint="请输入条形码"
+                android:hint="请输入二维码"
                 android:imeOptions="actionDone"
                 android:paddingStart="15dp"
                 android:singleLine="true"
@@ -133,11 +194,139 @@
         android:visibility="gone"
         android:textColor="@color/bg2"
         android:layout_height="40dp" />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
-    <TextView
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="#F2F2F2"/>
+
+    <LinearLayout
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+
+        <LinearLayout
+            android:id="@+id/ll_all"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="50dp"
+            android:orientation="vertical">
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:text="子订单数(总票数)"
+                android:textColor="#333333"
+                android:layout_height="25dp" />
+            <TextView
+                android:layout_weight="1"
+                android:id="@+id/tv_all"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:text="0"
+                android:textColor="#333333"
+                android:layout_height="25dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:id="@+id/line1"
+                android:visibility="gone"
+                android:background="#3B9BFF"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_unStock"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="50dp"
+            android:orientation="vertical">
+
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:text="待核货数(票数)"
+            android:textColor="#FF0404"
+            android:layout_height="25dp" />
+
+            <LinearLayout
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/tv_unStock"
+                    android:layout_width="wrap_content"
+                    android:text="0"
+                    android:textColor="#FF0404"
+                    android:layout_height="25dp" />
+
+<!--                <TextView-->
+<!--                    android:id="@+id/tv_un"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:text="0"-->
+<!--                    android:textColor="#FF0404"-->
+<!--                    android:layout_height="25dp" />-->
+            </LinearLayout>
+
+            <View
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:id="@+id/line2"
+                android:background="#3B9BFF"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_inStock"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="50dp"
+            android:orientation="vertical">
+
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:text="已核货数(票数)"
+            android:textColor="#FF0404"
+            android:layout_height="25dp" />
+
+            <LinearLayout
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/tv_inStock"
+                    android:layout_width="wrap_content"
+                    android:text="0"
+                    android:textColor="#FF0404"
+                    android:layout_height="25dp" />
+
+<!--                <TextView-->
+<!--                    android:id="@+id/tv_in"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:text="0"-->
+<!--                    android:textColor="#FF0404"-->
+<!--                    android:layout_height="25dp" />-->
+            </LinearLayout>
+
+
+            <View
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:id="@+id/line3"
+                android:background="#3B9BFF"/>
+        </LinearLayout>
+
+
+        <TextView
+        android:visibility="gone"
         android:layout_weight="1"
         android:id="@+id/tv_num"
         android:layout_width="match_parent"
@@ -146,6 +335,7 @@
         android:textColor="#3b9bff"
         android:layout_height="50dp" />
         <TextView
+            android:visibility="gone"
             android:layout_weight="1"
             android:id="@+id/tv_num_s"
             android:layout_width="match_parent"
@@ -159,7 +349,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp">
         <TextView
-            android:layout_weight="0.8"
+            android:layout_weight="1"
             android:gravity="center"
             android:text="编号"
             android:background="#f2f7fd"
@@ -167,7 +357,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
         <TextView
-            android:layout_weight="0.6"
+            android:layout_weight="1"
             android:gravity="center"
             android:textSize="12sp"
             android:text="商品名称"
@@ -179,7 +369,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:background="#f2f7fd"
-            android:text="售价"
+            android:text="规格"
             android:textSize="12sp"
             android:textColor="#3b9bff"
             android:layout_width="match_parent"
@@ -204,12 +394,6 @@
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:layout_height="match_parent">
-    <com.scwang.smartrefresh.layout.SmartRefreshLayout
-        android:id="@+id/refreshLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:srlEnablePreviewInEditMode="true"
-        app:srlEnableRefresh="false">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rk_list"
@@ -217,12 +401,5 @@
             android:layout_height="wrap_content">
 
         </android.support.v7.widget.RecyclerView>
-
-
-        <com.scwang.smartrefresh.layout.footer.ClassicsFooter
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:srlClassicsSpinnerStyle="Translate" />
-    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
     </LinearLayout>
 </LinearLayout>

@@ -148,13 +148,9 @@ public class MianActivity extends BaseActivity implements IMyLocation {
                  finish();
                 }
 
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-
-
         }
 
         @JavascriptInterface
@@ -164,21 +160,6 @@ public class MianActivity extends BaseActivity implements IMyLocation {
             wv_program.goBack();
 
         }
-
-        @JavascriptInterface
-        public void getLocationBack() {
-            getPermissions();
-
-                wv_program.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        wv_program.loadUrl("javascript:getLocation(\""+ (Constants.longtitude) +"\",\""+ (Constants.latitude) +"\")");
-//                     wv_program.loadUrl("javascript:getLocation(\""+(Constants.longtitude) + "','" + (Constants.latitude)+ "\")");
-                    }
-                });
-
-        }
-
 
     }
 

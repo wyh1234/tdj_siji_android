@@ -7,12 +7,12 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class Constants {
-//    public final static String URL="https://siji.51taodj.com/tdj-driver/";
-//    public final static String URL1="https://siji.51taodj.com/tdj-driver";
+    public final static String URL="https://siji.51taodj.com/tdj-driver/";
+    public final static String URL1="https://siji.51taodj.com/tdj-driver";
 //    public final static String URL="https://siji.51taodj.com/yushangxian-driver/";
 //    public final static String URL1="https://siji.51taodj.com/yushangxian-driver/";
-    public final static String URL="https://siji.51taodj.com/test-driver/";
-    public final static String URL1="https://siji.51taodj.com/test-driver";
+//    public final static String URL="https://siji.51taodj.com/test-driver/";
+//    public final static String URL1="https://siji.51taodj.com/test-driver";
 //    public final static String URL="http://47.111.135.109:8060/test-driver/";
 //    public final static String URL1="http://47.111.135.109:8060/test-driver";
 //    public final static String URL="http://47.111.135.109:8060/yushangxian-driver/";
@@ -27,6 +27,7 @@ public class Constants {
     public final static String menus="user/menus.do";
     public final static String login="user/login.do";
     public final static String mine_do="mine.do";
+    public final static String map_do="/task/map.do";
     public final static String retreat="home/retreat.do?orderNo=";
     public final static String task="task/task.do";
     public final static String scann="order/scanner.do?";

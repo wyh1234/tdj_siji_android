@@ -66,6 +66,9 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
     TextView tv_title1;
     @BindView(R.id.iv_clean)
     ImageView iv_clean;
+    @BindView(R.id.ll)
+    LinearLayout ll;
+
     public int pageNo = 1;//翻页计数器
     private BroadcastReceiver scanReceiver;
     private boolean b=false;
@@ -245,19 +248,17 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
                             iterator.remove();
                         }
                     }
-                    LogUtils.i(list);
-                    storageManagementAdapter.notifyDataSetChanged();
-                    LogUtils.i(total);
-                    tv_num.setText("已入库："+(--total));
-                }
+                    showEmpty(list.size() <= 0);
+                    tv_num.setText("入库计数："+(--total));
+                }else showEmpty(true);
             PlayVoice.playVoice(this,R.raw.quxiaochenggong);
         }else {
             PlayVoice.playVoice(this,R.raw.rukuchenggong);
             if (result.getErr()==0){
 
                 list.add(0,result.getData());
-                storageManagementAdapter.notifyDataSetChanged();
-                tv_num.setText("已入库："+(++total));
+                showEmpty(false);
+                tv_num.setText("入库计数："+(++total));
 
             }
 
@@ -268,6 +269,7 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
             if (b){
                 b=false;
             }
+            showEmpty(list.size() <= 0);
         }
         if (result.getErr()==1){
             PlayVoice.playVoice(this,R.raw.saomashibai);
@@ -324,24 +326,30 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
 
             if (response.getData().size()>0){
                 list.addAll(response.getData());
-                tv_num.setText("已入库："+list.size());
-                storageManagementAdapter.notifyDataSetChanged();
+                tv_num.setText("入库计数："+list.size());
+                showEmpty(false);
 
             }else {
+                showEmpty(true);
                 if (response.getPn()!=1){
                     Toast.makeText(this,"数据加载完毕",Toast.LENGTH_LONG).show();
                 }
             }
             total=response.getTotal();
-            tv_num.setText("已入库："+response.getTotal());
+            tv_num.setText("入库计数："+response.getTotal());
 
         }else {
+            showEmpty(true);
             if (response.getPn()!=1){
                 Toast.makeText(this,"数据加载完毕",Toast.LENGTH_LONG).show();
             }
         }
 
 
+    }
+
+    public View getStateViewRoot() {
+        return ll;
     }
 
     @Override
@@ -391,6 +399,13 @@ public class StorageManagementActivity extends BaseActivity<StorageManagementPre
                 tv_qx.setClickable(true);
             }
         }
+    }
+
+    private void showEmpty(boolean isEmpty){
+        if(isEmpty) mStateView.showEmpty();
+        else mStateView.showContent();
+        storageManagementAdapter.notifyDataSetChanged();
+
     }
 
     /**

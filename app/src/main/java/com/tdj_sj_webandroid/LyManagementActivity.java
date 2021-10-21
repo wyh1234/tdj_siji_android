@@ -1,12 +1,9 @@
 package com.tdj_sj_webandroid;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -30,7 +27,6 @@ import com.tdj_sj_webandroid.utils.PlayVoice;
 import com.zhouyou.http.exception.ApiException;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -153,34 +149,34 @@ public class LyManagementActivity extends BaseActivity<LyManagementPresenter> im
     public void get_scann_Success(CustomApiResult<StorageManagement> result) {
         tv_qx.setTextColor(getResources().getColor(R.color.text_gonees));
         if (result.getErr() == 0) {
-            if (b) {
-                b = false;
-                if (list.size() > 0) {
-                    Iterator<StorageManagement> iterator = list.iterator();
-                    while (iterator.hasNext()) {
-                        StorageManagement item = iterator.next();
-                        if (item.getSku().equals(result.getData().getSku())) {
-                            iterator.remove();
-                        }
-                    }
-                    storageManagementAdapter.notifyDataSetChanged();
-                    LogUtils.i(total);
-                    tv_num.setText("已入库：" + (--total));
-                }
-                PlayVoice.playVoice(this, R.raw.quxiaochenggong);
-
-            } else {
-                PlayVoice.playVoice(this, R.raw.rukuchenggong);
-                if (result.getErr() == 0) {
-
-                    list.add(0, result.getData());
-                    storageManagementAdapter.notifyDataSetChanged();
-                    tv_num.setText("已入库：" + (++total));
-
-                }
-
-
-            }
+//            if (b) {
+//                b = false;
+//                if (list.size() > 0) {
+//                    Iterator<StorageManagement> iterator = list.iterator();
+//                    while (iterator.hasNext()) {
+//                        StorageManagement item = iterator.next();
+//                        if (item.getSku().equals(result.getData().getSku())) {
+//                            iterator.remove();
+//                        }
+//                    }
+//                    storageManagementAdapter.notifyDataSetChanged();
+//                    LogUtils.i(total);
+//                    tv_num.setText("已入库：" + (--total));
+//                }
+//                PlayVoice.playVoice(this, R.raw.quxiaochenggong);
+//
+//            } else {
+//                PlayVoice.playVoice(this, R.raw.rukuchenggong);
+//                if (result.getErr() == 0) {
+//
+//                    list.add(0, result.getData());
+//                    storageManagementAdapter.notifyDataSetChanged();
+//                    tv_num.setText("已入库：" + (++total));
+//
+//                }
+//
+//
+//            }
         } else {
             if (b) {
                 b = false;

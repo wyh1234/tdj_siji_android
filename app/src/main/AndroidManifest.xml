@@ -91,6 +91,9 @@
             android:name=".WebViewActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".WebViewToActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".NuclearGoodsActivity"
             android:screenOrientation="portrait" />
         <activity

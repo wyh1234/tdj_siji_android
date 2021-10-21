@@ -46,6 +46,7 @@
         <TextView
             android:id="@+id/order_stastus_tv"
             android:layout_weight="1"
+            android:visibility="gone"
             android:textSize="12sp"
             android:textColor="@color/text_gone"
             android:gravity="center"

@@ -7,13 +7,13 @@ import com.tdj_sj_webandroid.http.GsonResponseHandler;
 import com.tdj_sj_webandroid.http.HttpUtils;
 import com.tdj_sj_webandroid.model.CheckListBean;
 import com.tdj_sj_webandroid.model.CustomApiResult;
+import com.tdj_sj_webandroid.model.StorageManage;
 import com.tdj_sj_webandroid.model.StorageManagement;
 import com.tdj_sj_webandroid.mvp.model.Model;
 import com.tdj_sj_webandroid.utils.Constants;
 import com.zhouyou.http.exception.ApiException;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class NuclearGoodsPresenter extends BasePresenter<Model, NuclearGoodsActivity> {
@@ -49,13 +49,13 @@ public class NuclearGoodsPresenter extends BasePresenter<Model, NuclearGoodsActi
         map.put("ps","10");
         map.put("pn",String.valueOf(pn));
         map.put("customer_id",customer_id+"");
-        HttpUtils.onGet(getIView().getContext(), map, Constants.driverScann_list, new GsonResponseHandler<CustomApiResult<List<StorageManagement>>>() {
+        HttpUtils.onGet(getIView().getContext(), map, Constants.driverScann_list, new GsonResponseHandler<CustomApiResult<StorageManage>>() {
             @Override
             public void onError(ApiException e) {
             }
 
             @Override
-            public void onSuccess(CustomApiResult<List<StorageManagement>> response) {
+            public void onSuccess(CustomApiResult<StorageManage> response) {
                 LogUtils.i(response);
                 getIView().get_scann__home_Success(response);
 

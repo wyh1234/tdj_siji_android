@@ -21,19 +21,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.apkfuns.logutils.LogUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.gyf.barlibrary.ImmersionBar;
-import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
 import com.tdj_sj_webandroid.adapter.NuclearGoodsAdapter;
 import com.tdj_sj_webandroid.adapter.SearchPopAdapter;
 import com.tdj_sj_webandroid.base.BaseActivity;
 import com.tdj_sj_webandroid.model.CheckListBean;
 import com.tdj_sj_webandroid.model.CustomApiResult;
 import com.tdj_sj_webandroid.model.Resume;
+import com.tdj_sj_webandroid.model.StorageManage;
 import com.tdj_sj_webandroid.model.StorageManagement;
 import com.tdj_sj_webandroid.mvp.presenter.DDJNuclearGoodsPresenter;
 import com.tdj_sj_webandroid.utils.GeneralUtils;
@@ -50,7 +48,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class DDJNuclearGoodsActivity extends BaseActivity<DDJNuclearGoodsPresenter> implements OnLoadmoreListener {
+public class DDJNuclearGoodsActivity extends BaseActivity<DDJNuclearGoodsPresenter> {
     @BindView(R.id.btn_back)
     ImageView btn_back;
     @BindView(R.id.search_edit)
@@ -61,8 +59,6 @@ public class DDJNuclearGoodsActivity extends BaseActivity<DDJNuclearGoodsPresent
     TextView tv_num;
     @BindView(R.id.rk_list)
     RecyclerView rk_list;
-    @BindView(R.id.refreshLayout)
-    RefreshLayout refreshLayout;
     @BindView(R.id.tv_qx)
     TextView tv_qx;
     @BindView(R.id.tv_title1)
@@ -73,16 +69,46 @@ public class DDJNuclearGoodsActivity extends BaseActivity<DDJNuclearGoodsPresent
     LinearLayout ll;
     @BindView(R.id.tv_num_s)
     TextView tv_num_s;
+    @BindView(R.id.tv_all)
+    TextView tv_all;
+    @BindView(R.id.tv_unStock)
+    TextView tv_unStock;
+    @BindView(R.id.tv_inStock)
+    TextView tv_inStock;
+    @BindView(R.id.tv_isD)
+    TextView tv_isD;
+    @BindView(R.id.tv_isFirst)
+    TextView tv_isFirst;
+    @BindView(R.id.tv_customerName)
+    TextView tv_customerName;
+    @BindView(R.id.tv_customerId)
+    TextView tv_customerId;
+    @BindView(R.id.ll_all)
+    LinearLayout ll_all;
+    @BindView(R.id.ll_inStock)
+    LinearLayout ll_inStock;
+    @BindView(R.id.ll_unStock)
+    LinearLayout ll_unStock;
+
     public int pageNo = 1;//翻页计数器
     private BroadcastReceiver scanReceiver;
-    private List<StorageManagement> list = new ArrayList();
+    private List<StorageManage.ResInStockCheckedListBean> list = new ArrayList();
     private NuclearGoodsAdapter storageManagementAdapter;
-    private int total = 0;
     private boolean b = false;
     private int num;
     @BindView(R.id.iv_clean)
     ImageView iv_clean;
     private PopupWindow mPopWindow;
+    private int mType = 0;
+    private StorageManage mData;
+
+    public StorageManage getData() {
+        return mData;
+    }
+
+    public void setData(StorageManage data) {
+        mData = data;
+    }
 
     public int getNum() {
         return num;
@@ -102,6 +128,7 @@ public class DDJNuclearGoodsActivity extends BaseActivity<DDJNuclearGoodsPresent
                 tv_qx.setTextColor(getResources().getColor(R.color.text_));
                 break;
             case R.id.right_text:
+                tv_msg.setVisibility(View.GONE);
                 if (TextUtils.isEmpty(search_edit.getText().toString())) {
                     return;
                 }
@@ -193,10 +220,10 @@ public class DDJNuclearGoodsActivity extends BaseActivity<DDJNuclearGoodsPresent
 
     }
 
+
     @Override
     protected void initView() {
         ButterKnife.bind(this);
-        refreshLayout.setOnLoadmoreListener(this);
         ImmersionBar.with(this).statusBarDarkFont(true).keyboardEnable(true)  //解决软键盘与底部输入框冲突问题，默认为false，还有一个重载方法，可以指定软键盘mode
                 .init();
         LinearLayoutManager layout = new LinearLayoutManager(getContext(),
@@ -206,8 +233,8 @@ public class DDJNuclearGoodsActivity extends BaseActivity<DDJNuclearGoodsPresent
         rk_list.setAdapter(storageManagementAdapter);
         getData(1);
         setNum(getIntent().getIntExtra("num",0));
+        }
 
-    }
 
     protected void getData(int pn) {
         mPresenter.get_scann(pn, getIntent().getStringExtra("customer_id"));
@@ -217,11 +244,6 @@ public class DDJNuclearGoodsActivity extends BaseActivity<DDJNuclearGoodsPresent
     @Override
     protected int getLayoutId() {
         return R.layout.nuclear_goods_layout;
-    }
-
-    @Override
-    public void onLoadmore(RefreshLayout refreshlayout) {
-        getData(++pageNo);
     }
 
     public Context getContext() {
@@ -247,66 +269,58 @@ public class DDJNuclearGoodsActivity extends BaseActivity<DDJNuclearGoodsPresent
         }
         return super.dispatchTouchEvent(ev);
     }
+
     public void get_scann_Success(CustomApiResult<StorageManagement> result) {
         isScanner = false;
         tv_qx.setTextColor(getResources().getColor(R.color.text_gonees));
-        if (result.getErr() == 0) {
-            if (b) {
-                b = false;
-                if (list.size() > 0) {
+        if (result.getErr()==0){
+            if (b){
+                b=false;
+                if (list.size()>0){
 
-                    Iterator<StorageManagement> iterator = list.iterator();
+                    Iterator<StorageManage.ResInStockCheckedListBean> iterator = list.iterator();
                     while (iterator.hasNext()) {
-                        StorageManagement item = iterator.next();
+                        StorageManage.ResInStockCheckedListBean item = iterator.next();
                         if (item.getSku().equals(result.getData().getSku())) {
                             iterator.remove();
                         }
                     }
-                    LogUtils.i(list);
-                    storageManagementAdapter.notifyDataSetChanged();
-                    LogUtils.i(total);
-                    tv_num.setText("已核货：" + (--total));
+                    showEmpty(list.size() <= 0);
                 }
                 PlayVoice.playVoice(this,R.raw.quxiaoshichenggonggai);
-            } else {
+
+            }else {
+
                 PlayVoice.playVoice(this,R.raw.hehuochenggong);
-                if (result.getErr() == 0) {
-                    list.add(0, result.getData());
-                    storageManagementAdapter.notifyDataSetChanged();
-                    tv_num.setText("已核货：" + (++total));
-
-
-
-                }
-
+                refreshViewByData(result);
+                showEmpty(list.size() <= 0);
 
             }
-        } else {
-            if (b) {
-                b = false;
+        }else {
+            if (b){
+                b=false;
             }
         }
-        if (result.getErr() == 1) {
+        if (result.getErr()==1){
             PlayVoice.playVoice(this,R.raw.hehuoshibai);
         }
-
-        if (result.getErr() == 8 || result.getErr() == 2) {
+        if (result.getErr() == 8||result.getErr() == 2){
             PlayVoice.playVoice(this,R.raw.quxiaoshibaigai);
         }
-        if (result.getErr() == 4) {
+        if (result.getErr() == 4){
             PlayVoice.playVoice(this,R.raw.saomashibaigai);
-
         }
         if (result.getErr() == 6) {
             PlayVoice.playVoice(this,R.raw.yijinghehuo);
         }
-        tv_msg.setVisibility(View.GONE);
-        if (result.getErr() == 5) {
+        if (result.getErr()==5){
             PlayVoice.playVoice(this,R.raw.chuanxian);
         }
+
         if (result.getErr()==13){
             PlayVoice.playVoice(this,R.raw.gaidingdanyiquxiao);
         }
+
         if (!GeneralUtils.isNullOrZeroLenght(result.getMsg())){
             tv_msg.setVisibility(View.VISIBLE);
             tv_msg.setText(result.getMsg());
@@ -316,40 +330,105 @@ public class DDJNuclearGoodsActivity extends BaseActivity<DDJNuclearGoodsPresent
         }else {
             mStateView.showEmpty();
         }
-
-        tv_num_s.setText("未核货："+(num-total));
     }
 
-    public void get_scann__home_Success(CustomApiResult<List<StorageManagement>> response) {
-        if (refreshLayout.isEnableLoadmore()) {
-            refreshLayout.finishLoadmore();
+
+    private void refreshViewByData(CustomApiResult<StorageManagement> result){
+        boolean isCheck = false;
+        boolean isEquals = false;
+        StorageManagement resultData = result.getData();
+
+        StorageManage data = getData();
+        if (list.size() > 0){
+            for (StorageManage.ResInStockCheckedListBean item : list) {
+                if (item.getSku().equals(result.getData().getSku())) {
+                    isEquals = true;
+                    break;
+                }
+            }
+            if (!isEquals){
+                list.add(0, new StorageManage.ResInStockCheckedListBean(resultData.getQty(), resultData.getSpecification()
+                        , resultData.getSku(), resultData.getProductName()));
+            }
+        }else {
+            list.add(0,new StorageManage.ResInStockCheckedListBean(resultData.getQty(),resultData.getSpecification()
+                    ,resultData.getSku(),resultData.getProductName()));
         }
+
+            String sku = resultData.getSku().substring(0, 13);
+
+            List<StorageManage.ResInStockCheckedListBean> resCheckedList = data.getResCheckedList();
+            for (StorageManage.ResInStockCheckedListBean res : resCheckedList) {
+                if (res.getSku().contains(sku)) {
+                    isCheck = true;
+                    break;
+                }
+            }
+
+            if (isCheck){
+                tv_unStock.setText(data.getUncheckedOrderNum() + " (" + (data.getUncheckedNum() -1) +")");
+                tv_inStock.setText(data.getCheckedOrderNum() + " (" + (data.getCheckedNum() + 1) +")");
+            }else {
+                tv_unStock.setText((data.getUncheckedOrderNum() -1) + " (" + (data.getUncheckedNum() -1) +")");
+                tv_inStock.setText((data.getCheckedOrderNum() + 1) + " (" + (data.getCheckedNum() + 1) +")");
+                data.setUncheckedOrderNum(data.getUncheckedOrderNum() -1);
+                data.setCheckedOrderNum(data.getCheckedOrderNum() + 1);
+            }
+            data.setUncheckedNum(data.getUncheckedNum() - 1);
+            data.setCheckedNum(data.getCheckedNum() + 1);
+            resCheckedList.add(new StorageManage.ResInStockCheckedListBean(resultData.getQty(),resultData.getSpecification()
+            ,resultData.getSku(),resultData.getProductName()));
+            setData(data);
+
+    }
+
+
+    public void get_scann__home_Success(CustomApiResult<StorageManage> response) {
+
         tv_title1.setText(response.getRegionNo());
         if (response.getErr() == 0) {
 
-            if (response.getData().size()>0){
-                list.addAll(response.getData());
-                tv_num.setText("已核货：" + list.size());
-                tv_num_s.setText("未核货："+(num-list.size()));
-                storageManagementAdapter.notifyDataSetChanged();
-                mStateView.showContent();
-            } else {
-                if (pageNo != 1) {
-                    Toast.makeText(this, "数据加载完毕", Toast.LENGTH_LONG).show();
+            mData = response.getData();
+            setData(mData);
+
+            if (mData != null){
+                if (mData.getIsC() == 2){
+                    tv_isD.setText("SV");
+                }else if (mData.getIsC() == 0){
+                    switch (mData.getIsD()){
+                        case 0:
+                            tv_isD.setVisibility(View.GONE);
+                            break;
+                        case 1:
+                            tv_isD.setText("V");
+                            break;
+                    }
                 }else {
-                    mStateView.showEmpty();
+                    tv_isD.setVisibility(View.GONE);
+                }
+
+                if (mData.getIsFirst() == 1) tv_isFirst.setVisibility(View.VISIBLE);
+                else tv_isFirst.setVisibility(View.GONE);
+
+                tv_customerId.setText(mData.getCustomerId()+"");
+                tv_customerName.setText(mData.getCustomerName());
+                tv_all.setText( mData.getOrderNum() + " (" + mData.getNum() +")");
+                tv_unStock.setText(mData.getUncheckedOrderNum() + " (" +mData.getUncheckedNum() +")");
+                tv_inStock.setText(mData.getCheckedOrderNum() + " (" +mData.getCheckedNum() +")");
+                list.clear();
+                if (mType == 0) {
+                    list.addAll(mData.getResCheckedList());
                 }
             }
-            total = response.getTotal();
-            tv_num.setText("已核货：" + response.getTotal());
-            tv_num_s.setText("未核货："+(num-response.getTotal()));
+            showEmpty(list.size() <= 0);
 
-        } else {
-            if (pageNo != 1) {
-                Toast.makeText(this, "数据加载完毕", Toast.LENGTH_LONG).show();
-            }
         }
+    }
 
+    private void showEmpty(boolean isEmpty){
+        if(isEmpty) mStateView.showEmpty();
+        else mStateView.showContent();
+        storageManagementAdapter.notifyDataSetChanged();
 
     }
 
@@ -496,5 +575,4 @@ public class DDJNuclearGoodsActivity extends BaseActivity<DDJNuclearGoodsPresent
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, getResources().getDisplayMetrics());
 
     }
-
 }

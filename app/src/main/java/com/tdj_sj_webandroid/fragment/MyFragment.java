@@ -44,7 +44,6 @@ public class MyFragment extends BaseFrgment {
     @Override
     protected void initView(View view) {
         ButterKnife.bind(this, view);
-        wv_program.getSettings().setJavaScriptEnabled(true);
         wv_program.addJavascriptInterface(new AndroidtoJs(), "android");//AndroidtoJS类对象映射到js的test对象
         initDetailsH5();
     }
@@ -129,14 +128,13 @@ public class MyFragment extends BaseFrgment {
             GeneralUtils.removeToken(AppAplication.getAppContext());
             Intent intent = new Intent(getContext(), MianActivity.class);
            startActivity(intent);
-
+           activity.finish();
 
         }
         @JavascriptInterface
         public void backHomePage()
         {
             activity.setTabSelection(0);
-
 
         }
         @JavascriptInterface
@@ -172,20 +170,6 @@ public class MyFragment extends BaseFrgment {
         public void  scannerHistory(){
             Intent intent=new Intent(getContext(), ScannerHistoryActivity.class);
             startActivity(intent);
-        }
-
-        @JavascriptInterface
-        public void getLocationBack() {
-            activity.getPermissions();
-
-                wv_program.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        wv_program.loadUrl("javascript:getLocation(\""+ (Constants.longtitude) +"\",\""+ (Constants.latitude) +"\")");
-//                     wv_program.loadUrl("javascript:getLocation(\""+(Constants.longtitude) + "','" + (Constants.latitude)+ "\")");
-                    }
-                });
-
         }
 
     }

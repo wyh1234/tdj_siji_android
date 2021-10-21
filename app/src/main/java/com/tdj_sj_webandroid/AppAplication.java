@@ -2,15 +2,16 @@ package com.tdj_sj_webandroid;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 
 import com.tdj_sj_webandroid.utils.Constants;
 import com.tdj_sj_webandroid.utils.Density;
-import com.tdj_sj_webandroid.utils.GeneralUtils;
 import com.tencent.smtt.sdk.QbSdk;
 import com.zhouyou.http.EasyHttp;
 import com.zhouyou.http.cache.converter.SerializableDiskConverter;
+
+import io.reactivex.functions.Consumer;
+import io.reactivex.plugins.RxJavaPlugins;
 
 public class AppAplication extends Application {
     private static Application app = null;
@@ -37,7 +38,12 @@ public class AppAplication extends Application {
                 .setCacheVersion(1);//缓存版本为1
 
 
+        RxJavaPlugins.setErrorHandler(new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
 
+            }
+        });
 
     }
     /**

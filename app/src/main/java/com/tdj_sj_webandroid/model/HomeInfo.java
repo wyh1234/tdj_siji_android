@@ -13,6 +13,15 @@ public class HomeInfo {
     private String title;
     private List<MenusBean> menus;
     private List<NoticeList> noticeList;
+    private int phase;
+
+    public int getPhase() {
+        return phase;
+    }
+
+    public void setPhase(int phase) {
+        this.phase = phase;
+    }
 
     public List<NoticeList> getNoticeList() {
         return noticeList;

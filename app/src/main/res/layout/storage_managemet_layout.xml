@@ -130,7 +130,7 @@
         android:id="@+id/tv_num"
         android:layout_width="match_parent"
         android:gravity="center"
-        android:text="已入库：0"
+        android:text="入库计数：0"
         android:textColor="#3B9BFF"
         android:layout_height="40dp" />
 
@@ -158,7 +158,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:background="#F2F7FD"
-            android:text="单价"
+            android:text="规格"
             android:textSize="12sp"
             android:textColor="#3B9BFF"
             android:layout_width="match_parent"
@@ -176,6 +176,7 @@
             android:layout_weight="1"
             android:text="状态"
             android:background="#F2F7FD"
+            android:visibility="gone"
             android:textSize="12sp"
             android:textColor="#3B9BFF"
             android:gravity="center"
@@ -187,22 +188,29 @@
         android:layout_width="match_parent"
         android:background="#f6f6f6"
         android:layout_height="1dp"/>
-        <com.scwang.smartrefresh.layout.SmartRefreshLayout
+    <LinearLayout
+        android:id="@+id/ll"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="match_parent">
+
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
             android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:srlEnablePreviewInEditMode="true"
             app:srlEnableRefresh="false">
-        <android.support.v7.widget.RecyclerView
+
+            <android.support.v7.widget.RecyclerView
             android:id="@+id/rk_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"/>
 
-        </android.support.v7.widget.RecyclerView>
             <com.scwang.smartrefresh.layout.footer.ClassicsFooter
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:srlClassicsSpinnerStyle="Translate" />
         </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
+    </LinearLayout>
 </LinearLayout>

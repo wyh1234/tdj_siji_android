@@ -4,6 +4,25 @@ public class LocationBean {
     private double Longitude;
     private double Latitude;
     private String address;
+    private boolean isBack;
+
+    public boolean isWbeView() {
+        return isWbeView;
+    }
+
+    public void setWbeView(boolean wbeView) {
+        isWbeView = wbeView;
+    }
+
+    private boolean isWbeView;
+
+    public boolean isBack() {
+        return isBack;
+    }
+
+    public void setBack(boolean back) {
+        isBack = back;
+    }
 
     public String getAddress() {
         return address;

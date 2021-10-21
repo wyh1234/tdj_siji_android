@@ -10,8 +10,8 @@ android {
         minSdkVersion 23
         multiDexEnabled true
         targetSdkVersion 28
-        versionCode 202108090
-        versionName "3.4"
+        versionCode 202110120
+        versionName "3.7"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         ndk {
@@ -50,6 +50,10 @@ android {
         exclude 'classes.dex'
         exclude '**.**'
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 
     buildTypes {
         debug {
@@ -67,6 +71,8 @@ android {
             shrinkResources true
 //            资源文件对齐
             zipAlignEnabled true
+
+            debuggable true
             signingConfig signingConfigs.release
         }
     }
@@ -89,6 +95,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
+    implementation 'org.apache.maven:maven-artifact:3.8.1'
 
     implementation 'com.android.support:appcompat-v7:28.0.0'
 //    implementation 'com.android.support:support-v4:28.0.0'

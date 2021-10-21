@@ -37,33 +37,40 @@ public class LocationUtils {
         return LocationHolder.INSTANCE;
     }
 
-    public void startLocalService(final LocationListener listener) {
+    public void startLocalService(boolean isBack,boolean isWeb) {
         //初始化定位
-        mLocationClient = new AMapLocationClient(AppAplication.getAppContext());
-        //设置定位回调监听
-        mLocationOption = getDefaultOption();
-        mLocationClient.setLocationOption(mLocationOption);
-        mLocationClient.setLocationListener(new AMapLocationListener() {
-            @Override
-            public void onLocationChanged(AMapLocation aMapLocation) {
-                if (aMapLocation.getErrorCode() == 0) {
-                    LocationBean locationBean = new LocationBean();
-                    locationBean.setLongitude(aMapLocation.getLongitude());
-                    locationBean.setLatitude(aMapLocation.getLatitude());
-                    locationBean.setAddress(aMapLocation.getAddress());
-                    EventBus.getDefault().post(locationBean);
-                    if (listener != null)
-                        listener.getLocationSuccess(aMapLocation.getLongitude(),aMapLocation.getLatitude());
-                    Constants.longtitude = aMapLocation.getLongitude();
-                    Constants.latitude = aMapLocation.getLatitude();
-                }else {
-                    LogUtils.i("location<<<failed", "定位失败\n错误码：" + aMapLocation.getErrorCode()
-                            + "\n错误信息:" + aMapLocation.getErrorInfo()
-                            + "\n错误描述:" + aMapLocation.getLocationDetail());
+        if (mLocationClient == null) {
+            mLocationClient = new AMapLocationClient(AppAplication.getAppContext());
+        }
+            //设置定位回调监听
+        if (mLocationOption == null) {
+            mLocationOption = getDefaultOption();
+        }
+            mLocationClient.setLocationOption(mLocationOption);
+            mLocationClient.setLocationListener(new AMapLocationListener() {
+                @Override
+                public void onLocationChanged(AMapLocation aMapLocation) {
+                    if (aMapLocation.getErrorCode() == 0) {
+                        LocationBean locationBean = new LocationBean();
+                        locationBean.setLongitude(aMapLocation.getLongitude());
+                        locationBean.setLatitude(aMapLocation.getLatitude());
+                        locationBean.setAddress(aMapLocation.getAddress());
+                        locationBean.setBack(isBack);
+                        locationBean.setWbeView(isWeb);
+                        if (isBack)
+                            EventBus.getDefault().post(locationBean);
+                        else {
+                            Constants.longtitude = aMapLocation.getLongitude();
+                            Constants.latitude = aMapLocation.getLatitude();
+                        }
+                    } else {
+                        LogUtils.i("location<<<failed", "定位失败\n错误码：" + aMapLocation.getErrorCode()
+                                + "\n错误信息:" + aMapLocation.getErrorInfo()
+                                + "\n错误描述:" + aMapLocation.getLocationDetail());
+                    }
                 }
-            }
-        });
-        mLocationClient.startLocation();
+            });
+            mLocationClient.startLocation();
 
 
     }
@@ -81,10 +88,10 @@ public class LocationUtils {
 
     private AMapLocationClientOption getDefaultOption() {
         AMapLocationClientOption mOption = new AMapLocationClientOption();
-        mOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Battery_Saving);//可选，设置定位模式，可选的模式有高精度、仅设备、仅网络。默认为高精度模式
-        mOption.setGpsFirst(false);//可选，设置是否gps优先，只在高精度模式下有效。默认关闭
+        mOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);//可选，设置定位模式，可选的模式有高精度、仅设备、仅网络。默认为高精度模式
+        mOption.setGpsFirst(true);//可选，设置是否gps优先，只在高精度模式下有效。默认关闭
         mOption.setHttpTimeOut(30000);//可选，设置网络请求超时时间。默认为30秒。在仅设备模式下无效
-        mOption.setInterval(180000);//可选，设置定位间隔。默认为2秒
+        mOption.setInterval(3000);//可选，设置定位间隔。默认为2秒
         mOption.setNeedAddress(true);//可选，设置是否返回逆地理地址信息。默认是true
         mOption.setOnceLocation(false);//可选，设置是否单次定位。默认是false
         mOption.setOnceLocationLatest(false);//可选，设置是否等待wifi刷新，默认为false.如果设置为true,会自动变为单次定位，持续定位时不要使用

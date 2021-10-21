@@ -12,7 +12,7 @@
         tools:ignore="MissingConstraints">
         <TextView
             android:id="@+id/order_no_tv"
-            android:layout_weight="0.8"
+            android:layout_weight="1"
             android:gravity="center"
 
             android:textColor="@color/text_gone"
@@ -20,7 +20,7 @@
             android:layout_height="match_parent" />
         <TextView
             android:id="@+id/order_name_tv"
-            android:layout_weight="0.6"
+            android:layout_weight="1"
             android:gravity="center"
             android:textSize="12sp"
             android:maxLines="2"
@@ -29,21 +29,27 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
         <TextView
-            android:id="@+id/order_pice_tv"
+            android:id="@+id/order_specification"
             android:layout_weight="1"
             android:gravity="center"
             android:textSize="12sp"
+            android:maxLines="2"
+            android:ellipsize="end"
             android:textColor="@color/text_gone"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
         <TextView
-            android:id="@+id/order_num_tv"
+            android:id="@+id/order_qty"
             android:layout_weight="1"
-            android:textSize="12sp"
             android:gravity="center"
+            android:textSize="12sp"
+            android:maxLines="2"
+            android:ellipsize="end"
             android:textColor="@color/text_gone"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
 
     </LinearLayout>
     <View

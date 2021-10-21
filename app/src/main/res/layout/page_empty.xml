@@ -6,16 +6,17 @@
     <ImageView
         android:id="@+id/iv"
         android:layout_width="wrap_content"
-        android:src="@mipmap/saoma_bg"
+        android:src="@mipmap/zanwushuju_"
         android:layout_centerHorizontal="true"
         android:layout_height="wrap_content" />
     <TextView
         android:layout_below="@+id/iv"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:textColor="#3b9bff"
+        android:layout_marginTop="30dp"
+        android:textSize="17sp"
+        android:textColor="#999999"
         android:layout_width="wrap_content"
-        android:text="请扫描条形码进行核货"
+        android:text="暂无数据"
         android:layout_height="wrap_content" />
 
 </RelativeLayout>

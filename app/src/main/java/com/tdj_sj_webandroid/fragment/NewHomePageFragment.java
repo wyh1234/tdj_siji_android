@@ -33,15 +33,20 @@ import com.tdj_sj_webandroid.base.BaseFrgment;
 import com.tdj_sj_webandroid.bluetooth.MainActivity;
 import com.tdj_sj_webandroid.contract.TDJContract;
 import com.tdj_sj_webandroid.model.AppUpdate;
+import com.tdj_sj_webandroid.model.ConfirmPlan;
 import com.tdj_sj_webandroid.model.HomeInfo;
 import com.tdj_sj_webandroid.mvp.presenter.NewHomePageFragmentPresenter;
 import com.tdj_sj_webandroid.utils.Constants;
 import com.tdj_sj_webandroid.utils.GeneralUtils;
+import com.tdj_sj_webandroid.utils.ToPlanDialog;
 import com.tdj_sj_webandroid.utils.appupdate.DownloadManager;
 import com.tdj_sj_webandroid.utils.appupdate.OnDownloadListener;
 import com.tdj_sj_webandroid.utils.appupdate.UpdateConfiguration;
 import com.yzq.zxinglibrary.android.CaptureActivity;
 import com.yzq.zxinglibrary.common.Constant;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -81,6 +86,7 @@ public class NewHomePageFragment extends BaseFrgment<NewHomePageFragmentPresente
     public void onAttach(Context context) {
         super.onAttach(context);
         activity = (MainTabActivity) context;
+        registerEventBus(this);
     }
     public HomeInfo getHomeInfo() {
         return homeInfo;
@@ -186,10 +192,26 @@ public class NewHomePageFragment extends BaseFrgment<NewHomePageFragmentPresente
     public void onItemClick(View v, HomeInfo.MenusBean menusBean) {
         LogUtils.e(""+menusBean);
         if (menusBean.getMenuDesc()==null){
-            Intent intent=new Intent(getContext(), WebViewActivity.class);
-            intent.putExtra("url", Constants.URL1+menusBean.getMenuUrl());
-            startActivity(intent);
-        }else if  (menusBean.getMenuDesc().equals("sm")){
+                Intent intent=new Intent(getContext(), WebViewActivity.class);
+                intent.putExtra("url", Constants.URL1+menusBean.getMenuUrl());
+                startActivity(intent);
+        }else if (menusBean.getMenuDesc().equals("hhzc")){
+
+                if (getHomeInfo().getPhase() == 0) {
+                    ToPlanDialog toPlanDialog = ToPlanDialog.newInstance();
+                    if (!toPlanDialog.isAdded()) {
+                        getActivity().getSupportFragmentManager()
+                                .beginTransaction()
+                                .add(toPlanDialog, "toPlanDialog")
+                                .commitAllowingStateLoss();
+                    }
+                } else {
+                    Intent intent = new Intent(getContext(), WebViewActivity.class);
+                    intent.putExtra("url", Constants.URL1 + menusBean.getMenuUrl());
+                    startActivity(intent);
+                }
+
+        } else if  (menusBean.getMenuDesc().equals("sm")){
             rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE,Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe(new Consumer<Boolean>() {
                 @Override
                 public void accept(Boolean b) throws Exception {
@@ -363,6 +385,21 @@ public class NewHomePageFragment extends BaseFrgment<NewHomePageFragmentPresente
     public void stop(){
         if (swipeRefreshLayout != null && swipeRefreshLayout.isRefreshing()) {
             swipeRefreshLayout.setRefreshing(false);
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        LogUtils.e("onDetach");
+        unregisterEventBus(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void event(ConfirmPlan event){
+        if (event.getIndex() > 3 || event.getIndex() < 0) return;
+        if (event.isConf()){
+            mPresenter.get_menus();
         }
     }
 }

@@ -1,31 +1,27 @@
 package com.tdj_sj_webandroid.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.view.View;
 import android.widget.TextView;
 
 import com.tdj_sj_webandroid.R;
-import com.tdj_sj_webandroid.WebViewActivity;
-import com.tdj_sj_webandroid.model.StorageManagement;
-import com.tdj_sj_webandroid.utils.Constants;
+import com.tdj_sj_webandroid.model.StorageManage;
 
 import java.util.List;
 
-public class NuclearGoodsAdapter extends BaseRecyclerViewAdapter<StorageManagement> {
+public class NuclearGoodsAdapter extends BaseRecyclerViewAdapter<StorageManage.ResInStockCheckedListBean> {
     private Context context;
 
-    public NuclearGoodsAdapter(Context context, List<StorageManagement> data) {
+    public NuclearGoodsAdapter(Context context, List<StorageManage.ResInStockCheckedListBean> data) {
         super(context, data, R.layout.rk_list_items);
         this.context = context;
     }
 
     @Override
-    protected void onBindData(RecyclerViewHolder holder, final StorageManagement bean, final int position) {
+    protected void onBindData(RecyclerViewHolder holder, final StorageManage.ResInStockCheckedListBean bean, final int position) {
         ((TextView) holder.getView(R.id.order_no_tv)).setText(bean.getSku());
         ((TextView) holder.getView(R.id.order_name_tv)).setText(bean.getProductName());
-        ((TextView) holder.getView(R.id.order_pice_tv)).setText(bean.getPrice() + "元");
-        ((TextView) holder.getView(R.id.order_num_tv)).setText(bean.getQty() + bean.getUnit());
+        ((TextView) holder.getView(R.id.order_qty)).setText(bean.getQty());
+        ((TextView) holder.getView(R.id.order_specification)).setText(bean.getSpecification());
 
     }
 }
