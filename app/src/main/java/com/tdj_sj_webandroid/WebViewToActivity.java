@@ -11,6 +11,8 @@ import android.os.Build;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.widget.ImageView;
@@ -299,6 +301,7 @@ public class WebViewToActivity extends BaseActivity<WebViewToPresenter> implemen
         @JavascriptInterface
         public void redirectPage(String url){
             WebViewToActivity.this.finish();
+            LocationUtils.getInstance().stopLocalService();
             Intent intent=new Intent(getContext(), WebViewActivity.class);
             intent.putExtra("url", Constants.URL1+ url);
             startActivity(intent);
@@ -378,4 +381,33 @@ public class WebViewToActivity extends BaseActivity<WebViewToPresenter> implemen
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (wv_program != null){
+            ViewParent parent = wv_program.getParent();
+            if (parent != null){
+                ((ViewGroup)parent).removeView(wv_program);
+            }
+            wv_program.stopLoading();
+            //退出时调用此方法，移除绑定的服务，否则某些特定系统会报错mSearchWebView.getSettings().setJavaScriptEnabled(false);
+
+            wv_program.clearHistory();
+
+            wv_program.clearView();
+
+            wv_program.removeAllViews();
+
+            try{
+                wv_program.destroy();
+
+            }catch(Throwable ex) {
+
+                ex.printStackTrace();
+
+            }
+
+        }
+
+    }
 }

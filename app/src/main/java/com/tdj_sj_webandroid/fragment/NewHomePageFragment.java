@@ -38,6 +38,7 @@ import com.tdj_sj_webandroid.model.HomeInfo;
 import com.tdj_sj_webandroid.mvp.presenter.NewHomePageFragmentPresenter;
 import com.tdj_sj_webandroid.utils.Constants;
 import com.tdj_sj_webandroid.utils.GeneralUtils;
+import com.tdj_sj_webandroid.utils.LocationUtils;
 import com.tdj_sj_webandroid.utils.ToPlanDialog;
 import com.tdj_sj_webandroid.utils.appupdate.DownloadManager;
 import com.tdj_sj_webandroid.utils.appupdate.OnDownloadListener;
@@ -380,6 +381,7 @@ public class NewHomePageFragment extends BaseFrgment<NewHomePageFragmentPresente
     @Override
     public void onRefresh() {
         mPresenter.get_menus();
+        LocationUtils.getInstance().stopLocalService();
     }
 
     public void stop(){

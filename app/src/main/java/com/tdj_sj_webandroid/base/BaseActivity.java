@@ -10,26 +10,16 @@ import android.view.WindowManager;
 import com.apkfuns.logutils.LogUtils;
 import com.github.nukc.stateview.StateView;
 import com.tbruyelle.rxpermissions2.RxPermissions;
-import com.tdj_sj_webandroid.AppAplication;
 import com.tdj_sj_webandroid.R;
-import com.tdj_sj_webandroid.http.GsonResponseHandler;
-import com.tdj_sj_webandroid.http.HttpUtils;
-import com.tdj_sj_webandroid.model.CustomApiResult;
 import com.tdj_sj_webandroid.model.LocationBean;
 import com.tdj_sj_webandroid.mvp.presenter.IPresenter;
 import com.tdj_sj_webandroid.mvp.view.IView;
-import com.tdj_sj_webandroid.utils.Constants;
 import com.tdj_sj_webandroid.utils.Density;
-import com.tdj_sj_webandroid.utils.GeneralUtils;
 import com.tdj_sj_webandroid.utils.LocationUtils;
-import com.zhouyou.http.exception.ApiException;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import io.reactivex.functions.Consumer;
 
@@ -183,7 +173,7 @@ public abstract class BaseActivity<P extends IPresenter> extends FragmentActivit
         if (this instanceof StorageManagementActivity||this instanceof DDJStorageManagementActivity){
             return;
         }*/
-        if (GeneralUtils.isNullOrZeroLenght(GeneralUtils.getToken(AppAplication.getAppContext())) ){
+        /*if (GeneralUtils.isNullOrZeroLenght(GeneralUtils.getToken(AppAplication.getAppContext())) ){
             return;
         }
         Map<String, String> map=new HashMap<>();
@@ -202,7 +192,7 @@ public abstract class BaseActivity<P extends IPresenter> extends FragmentActivit
             public void onSuccess(CustomApiResult customApiResult) {
                 LogUtils.i(customApiResult);
             }
-        });
+        });*/
     }
 
     public boolean isEventBusRegisted(Object subscribe) {

@@ -31,6 +31,7 @@ import com.tdj_sj_webandroid.utils.BitmapTools;
 import com.tdj_sj_webandroid.utils.Constants;
 import com.tdj_sj_webandroid.utils.GeneralUtils;
 import com.tdj_sj_webandroid.utils.GifSizeFilter;
+import com.tdj_sj_webandroid.utils.LocationUtils;
 import com.tdj_sj_webandroid.utils.MyGlideEngine;
 import com.tdj_sj_webandroid.utils.ToastUtils;
 import com.zhouyou.http.exception.ApiException;
@@ -172,6 +173,7 @@ public class MapFragment extends BaseFrgment {
         public void getLocationBack() {
             try {
                 if (isFirstGetLocation) {
+                    LocationUtils.getInstance().stopLocalService();
                     activity.getPermissions(true,false);
                     isFirstGetLocation = false;
                 }

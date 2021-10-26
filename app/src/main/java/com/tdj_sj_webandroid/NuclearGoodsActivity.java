@@ -324,7 +324,7 @@ public class NuclearGoodsActivity extends BaseActivity<NuclearGoodsPresenter>{
         if (result.getErr()==13){
             PlayVoice.playVoice(this,R.raw.gaidingdanyiquxiao);
         }
-
+        tv_msg.setVisibility(View.GONE);
         if (!GeneralUtils.isNullOrZeroLenght(result.getMsg())){
             tv_msg.setVisibility(View.VISIBLE);
             tv_msg.setText(result.getMsg());

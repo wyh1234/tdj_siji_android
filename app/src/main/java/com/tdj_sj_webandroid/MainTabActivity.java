@@ -21,6 +21,7 @@ import com.tdj_sj_webandroid.fragment.PsFragment;
 import com.tdj_sj_webandroid.model.BackHomePage;
 import com.tdj_sj_webandroid.model.ConfirmPlan;
 import com.tdj_sj_webandroid.mvp.presenter.IPresenter;
+import com.tdj_sj_webandroid.utils.LocationUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -219,6 +220,7 @@ public class MainTabActivity extends BaseActivity {
                 break;
         }
         transaction.commit();
+        LocationUtils.getInstance().stopLocalService();
     }
 
     private void resetBtn() {

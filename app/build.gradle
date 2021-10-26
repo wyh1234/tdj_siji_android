@@ -10,8 +10,8 @@ android {
         minSdkVersion 23
         multiDexEnabled true
         targetSdkVersion 28
-        versionCode 202110120
-        versionName "3.7"
+        versionCode 202110260
+        versionName "3.9"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         ndk {
@@ -47,6 +47,7 @@ android {
     packagingOptions {
         //解决编译时com.android.builder.merge.DuplicateRelativeFileException: More than one file was found with OS independent path 'META-INF/rxjava.properties'这个错误
         exclude 'META-INF/rxjava.properties'
+        exclude 'META-INF/DEPENDENCIES'
         exclude 'classes.dex'
         exclude '**.**'
     }
