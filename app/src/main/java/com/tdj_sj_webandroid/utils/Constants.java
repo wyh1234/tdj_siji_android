@@ -7,10 +7,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class Constants {
-    public final static String URL="https://siji.51taodj.com/tdj-driver/";
-    public final static String URL1="https://siji.51taodj.com/tdj-driver";
-//    public final static String URL="https://siji.51taodj.com/yushangxian-driver/";
-//    public final static String URL1="https://siji.51taodj.com/yushangxian-driver/";
+//    public final static String URL="https://siji.51taodj.com/tdj-driver/";
+//    public final static String URL1="https://siji.51taodj.com/tdj-driver";
+    public final static String URL="https://siji.51taodj.com/yushangxian-driver/";
+    public final static String URL1="https://siji.51taodj.com/yushangxian-driver/";
 //    public final static String URL="https://siji.51taodj.com/test-driver/";
 //    public final static String URL1="https://siji.51taodj.com/test-driver";
 //    public final static String URL="http://47.111.135.109:8060/test-driver/";

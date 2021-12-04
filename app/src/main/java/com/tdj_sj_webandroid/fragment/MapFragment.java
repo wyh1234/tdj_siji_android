@@ -309,6 +309,8 @@ public class MapFragment extends BaseFrgment {
     public void onStop() {
         super.onStop();
         unregisterEventBus(MapFragment.this);
+
+        LocationUtils.getInstance().stopLocalService();
     }
 
 }

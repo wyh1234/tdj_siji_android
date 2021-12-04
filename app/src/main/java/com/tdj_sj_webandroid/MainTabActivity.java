@@ -133,6 +133,7 @@ public class MainTabActivity extends BaseActivity {
     public void setTabSelection(int index) {
         resetBtn();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
+        LocationUtils.getInstance().stopLocalService();
         switch (index) {
             case 0:
                 home_imag.setImageResource(R.mipmap.shouye);
@@ -220,7 +221,6 @@ public class MainTabActivity extends BaseActivity {
                 break;
         }
         transaction.commit();
-        LocationUtils.getInstance().stopLocalService();
     }
 
     private void resetBtn() {
@@ -232,8 +232,6 @@ public class MainTabActivity extends BaseActivity {
         my_tv.setTextColor(getResources().getColor(R.color.text_gone));
         map_image.setImageResource(R.mipmap.mapmap_h);
         map_tv.setTextColor(getResources().getColor(R.color.text_gone));
-
-
     }
 
 //    @Override
