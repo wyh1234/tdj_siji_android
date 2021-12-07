@@ -1,5 +1,6 @@
 plugins {
     id 'com.android.application'
+    id 'kotlin-android'
 }
 
 
@@ -15,7 +16,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         ndk {
-            abiFilters "armeabi", "armeabi-v7a", "x86", "mips","x86_64","mips64","arm64-v8a"
+            abiFilters "armeabi", "armeabi-v7a", "x86", "mips", "x86_64", "mips64", "arm64-v8a"
         }
         //支持androidX
         ext {
@@ -87,6 +88,12 @@ android {
             jniLibs.srcDirs = ['libs']
         }
     }
+
+    buildFeatures {
+        dataBinding true
+        viewBinding true
+    }
+
 }
 
 dependencies {
@@ -115,6 +122,7 @@ dependencies {
 
 
     implementation 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.4@aar'
+
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
     implementation 'io.reactivex.rxjava2:rxjava:2.0.5'
     implementation 'com.zhouyou:rxeasyhttp:2.1.5'
@@ -149,4 +157,8 @@ dependencies {
     implementation files('libs/ScannerAPI.jar')
     implementation files('libs/sunmiscan.jar')
     implementation files('libs/tbs_sdk_thirdapp_v3.6.0.1310_43612_sharewithdownload_withoutGame_obfs_20180706_163319.jar')
+
+    //kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
 }
