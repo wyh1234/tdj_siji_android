@@ -37,40 +37,44 @@ public class LocationUtils {
         return LocationHolder.INSTANCE;
     }
 
-    public void startLocalService(boolean isBack,boolean isWeb) {
+    public void startLocalService(boolean isBack, boolean isWeb) {
         //初始化定位
         if (mLocationClient == null) {
-            mLocationClient = new AMapLocationClient(AppAplication.getAppContext());
+            try {
+                mLocationClient = new AMapLocationClient(AppAplication.getAppContext());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-            //设置定位回调监听
+        //设置定位回调监听
         if (mLocationOption == null) {
             mLocationOption = getDefaultOption();
         }
-            mLocationClient.setLocationOption(mLocationOption);
-            mLocationClient.setLocationListener(new AMapLocationListener() {
-                @Override
-                public void onLocationChanged(AMapLocation aMapLocation) {
-                    if (aMapLocation.getErrorCode() == 0) {
-                        LocationBean locationBean = new LocationBean();
-                        locationBean.setLongitude(aMapLocation.getLongitude());
-                        locationBean.setLatitude(aMapLocation.getLatitude());
-                        locationBean.setAddress(aMapLocation.getAddress());
-                        locationBean.setBack(isBack);
-                        locationBean.setWbeView(isWeb);
-                        if (isBack)
-                            EventBus.getDefault().post(locationBean);
-                        else {
-                            Constants.longtitude = aMapLocation.getLongitude();
-                            Constants.latitude = aMapLocation.getLatitude();
-                        }
-                    } else {
-                        LogUtils.i("location<<<failed", "定位失败\n错误码：" + aMapLocation.getErrorCode()
-                                + "\n错误信息:" + aMapLocation.getErrorInfo()
-                                + "\n错误描述:" + aMapLocation.getLocationDetail());
+        mLocationClient.setLocationOption(mLocationOption);
+        mLocationClient.setLocationListener(new AMapLocationListener() {
+            @Override
+            public void onLocationChanged(AMapLocation aMapLocation) {
+                if (aMapLocation.getErrorCode() == 0) {
+                    LocationBean locationBean = new LocationBean();
+                    locationBean.setLongitude(aMapLocation.getLongitude());
+                    locationBean.setLatitude(aMapLocation.getLatitude());
+                    locationBean.setAddress(aMapLocation.getAddress());
+                    locationBean.setBack(isBack);
+                    locationBean.setWbeView(isWeb);
+                    if (isBack)
+                        EventBus.getDefault().post(locationBean);
+                    else {
+                        Constants.longtitude = aMapLocation.getLongitude();
+                        Constants.latitude = aMapLocation.getLatitude();
                     }
+                } else {
+                    LogUtils.i("location<<<failed", "定位失败\n错误码：" + aMapLocation.getErrorCode()
+                            + "\n错误信息:" + aMapLocation.getErrorInfo()
+                            + "\n错误描述:" + aMapLocation.getLocationDetail());
                 }
-            });
-            mLocationClient.startLocation();
+            }
+        });
+        mLocationClient.startLocation();
 
 
     }
@@ -83,7 +87,6 @@ public class LocationUtils {
             mLocationOption = null;
         }
     }
-
 
 
     private AMapLocationClientOption getDefaultOption() {
@@ -110,13 +113,13 @@ public class LocationUtils {
 
         Notification.Builder builder = null;
         Notification notification = null;
-        if(android.os.Build.VERSION.SDK_INT >= 26) {
+        if (android.os.Build.VERSION.SDK_INT >= 26) {
             //Android O上对Notification进行了修改，如果设置的targetSDKVersion>=26建议使用此种方式创建通知栏
             if (null == notificationManager) {
                 notificationManager = (NotificationManager) AppAplication.getAppContext().getSystemService(Context.NOTIFICATION_SERVICE);
             }
-            String channelId =  AppAplication.getAppContext().getPackageName();
-            if(!isCreateChannel) {
+            String channelId = AppAplication.getAppContext().getPackageName();
+            if (!isCreateChannel) {
                 NotificationChannel notificationChannel = new NotificationChannel(channelId,
                         NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
                 notificationChannel.enableLights(true);//是否在桌面icon右上角展示小圆点
@@ -125,9 +128,9 @@ public class LocationUtils {
                 notificationManager.createNotificationChannel(notificationChannel);
                 isCreateChannel = true;
             }
-            builder = new Notification.Builder( AppAplication.getAppContext(), channelId);
+            builder = new Notification.Builder(AppAplication.getAppContext(), channelId);
         } else {
-            builder = new Notification.Builder( AppAplication.getAppContext());
+            builder = new Notification.Builder(AppAplication.getAppContext());
         }
         builder.setSmallIcon(R.mipmap.tdj_logo)
                 .setContentTitle("淘好运")
@@ -145,18 +148,17 @@ public class LocationUtils {
 
     /**
      * 判断两个点之间的距离大于规定的距离
-     * */
-    private boolean IsDistanceMoreOneMile(LatLng last, LatLng news){
-        if(last==null){
+     */
+    private boolean IsDistanceMoreOneMile(LatLng last, LatLng news) {
+        if (last == null) {
             LogUtils.i("第一次为空");
             return true;
         }
-        float mi= (float) getDistance(last, news);
-        LogUtils.i("两次的间隔为："+mi);
-        if(mi>2.0f){
+        float mi = (float) getDistance(last, news);
+        LogUtils.i("两次的间隔为：" + mi);
+        if (mi > 2.0f) {
             return true;
-        }
-        else
+        } else
             return false;
     }
 
@@ -164,10 +166,10 @@ public class LocationUtils {
      * 判断当前时间是否在规定的时间段范围内
      * */
     public static boolean isCurrentInTimeScope() {
-        int beginHour=5;
-        int beginMin=0;
-        int endHour=23;
-        int endMin=0;
+        int beginHour = 5;
+        int beginMin = 0;
+        int endHour = 23;
+        int endMin = 0;
         boolean result = false;
         final long aDayInMillis = 1000 * 60 * 60 * 24;
         final long currentTimeMillis = System.currentTimeMillis();
@@ -194,7 +196,7 @@ public class LocationUtils {
             // 普通情况(比如 8:00 - 14:00)
             result = !now.before(startTime) && !now.after(endTime); // startTime <= now <= endTime
         }
-        Log.i("LocationService","是否在时间间隔中"+result);
+        Log.i("LocationService", "是否在时间间隔中" + result);
         return result;
     }
 
