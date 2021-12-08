@@ -7,50 +7,54 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class Constants {
+    //正式环境
 //    public final static String URL="https://siji.51taodj.com/tdj-driver/";
 //    public final static String URL1="https://siji.51taodj.com/tdj-driver";
-    public final static String URL="https://siji.51taodj.com/yushangxian-driver/";
-    public final static String URL1="https://siji.51taodj.com/yushangxian-driver/";
+    //预上线
+    public final static String URL = "https://siji.51taodj.com/yushangxian-driver/";
+    public final static String URL1 = "https://siji.51taodj.com/yushangxian-driver/";
+    //测试环境
 //    public final static String URL="https://siji.51taodj.com/test-driver/";
 //    public final static String URL1="https://siji.51taodj.com/test-driver";
+    //其他测试环境
 //    public final static String URL="http://47.111.135.109:8060/test-driver/";
 //    public final static String URL1="http://47.111.135.109:8060/test-driver";
 //    public final static String URL="http://47.111.135.109:8060/yushangxian-driver/";
 //    public final static String URL1="http://47.111.135.109:8060/yushangxian-driver/";
 
-//public final static String URL="http://192.168.10.239:8089/";
+    //public final static String URL="http://192.168.10.239:8089/";
 //    public final static String URL1="http://192.168.10.239:8089";
 //public final static String URL="https://siji.51taodj.com/
 // test-driver/";
 //    public final static String URL1="https://siji.51taodj.com/test-driver";
-    public final static String upload="home/imgUpload.do";
-    public final static String menus="user/menus.do";
-    public final static String login="user/login.do";
-    public final static String mine_do="mine.do";
-    public final static String map_do="/task/map.do";
-    public final static String retreat="home/retreat.do?orderNo=";
-    public final static String task="task/task.do";
-    public final static String scann="order/scanner.do?";
-    public final static String home="order/home.do";
-    public final static String stock_list="order/inStockList.do?";
-    public final static String check_list="driverScann/checkList.do";
-    public final static String version="version/check.do?version=";
-    public final static String addUserLocation="api/addUserLocation.do";
-    public final static String driverScann="driverScann/scann.do?";
-    public final static String driverScann_list="driverScann/list.do?";
-    public final static String checkGoods="checkGoods/center.do?type=";
-    public final static String problem="checkGoods/problem.do?type=";
-    public final static String statis="checkGoods/statis.do?type=";
-    public final static String diy="diy/scanner.do?";
-    public final static String diy_home="diy/home.do?";
-    public final static String getSijiCount="storeDiyFee/getSijiCount.do?";
-    public final static String getSijiCountByStore="storeDiyFee/getSijiCountByStore.do?";
+    public final static String upload = "home/imgUpload.do";
+    public final static String menus = "user/menus.do";
+    public final static String login = "user/login.do";
+    public final static String mine_do = "mine.do";
+    public final static String map_do = "/task/map.do";
+    public final static String retreat = "home/retreat.do?orderNo=";
+    public final static String task = "task/task.do";
+    public final static String scann = "order/scanner.do?";
+    public final static String home = "order/home.do";
+    public final static String stock_list = "order/inStockList.do?";
+    public final static String check_list = "driverScann/checkList.do";
+    public final static String version = "version/check.do?version=";
+    public final static String addUserLocation = "api/addUserLocation.do";
+    public final static String driverScann = "driverScann/scann.do?";
+    public final static String driverScann_list = "driverScann/list.do?";
+    public final static String checkGoods = "checkGoods/center.do?type=";
+    public final static String problem = "checkGoods/problem.do?type=";
+    public final static String statis = "checkGoods/statis.do?type=";
+    public final static String diy = "diy/scanner.do?";
+    public final static String diy_home = "diy/home.do?";
+    public final static String getSijiCount = "storeDiyFee/getSijiCount.do?";
+    public final static String getSijiCountByStore = "storeDiyFee/getSijiCountByStore.do?";
 
     public static double longtitude = 0d;//经度
 
     public static double latitude = 0d;//纬度
 
-    public static boolean chackEdtextNoEmpty(Context context,EditText editText,String str){
+    public static boolean chackEdtextNoEmpty(Context context, EditText editText, String str) {
         String edstr = editText.getText().toString().trim();
         if (edstr.length() == 0) {
             ToastMessage(context, str);
