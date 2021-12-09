@@ -5,11 +5,14 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -36,6 +39,7 @@ import com.tdj_sj_webandroid.utils.Constants;
 import com.tdj_sj_webandroid.utils.GeneralUtils;
 import com.tdj_sj_webandroid.utils.GifSizeFilter;
 import com.tdj_sj_webandroid.utils.IMyLocation;
+import com.tdj_sj_webandroid.utils.ImageWaterMarkUtil;
 import com.tdj_sj_webandroid.utils.MyGlideEngine;
 
 import org.greenrobot.eventbus.EventBus;
@@ -45,6 +49,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +59,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.functions.Consumer;
 
-public class WebViewActivity extends BaseActivity<WebViewPresenter> implements IMyLocation, TDJContract.WebViewView/*, TakePhoto.TakeResultListener, InvokeListener */{
+public class WebViewActivity extends BaseActivity<WebViewPresenter> implements IMyLocation, TDJContract.WebViewView/*, TakePhoto.TakeResultListener, InvokeListener */ {
     @BindView(R.id.tv_refresh)
     TextView tv_refresh;
     @BindView(R.id.view)
@@ -65,20 +71,23 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
     @BindView(R.id.tv_title)
     TextView tv_title;
 
-   /* @BindView(R.id.myProgressBar)
-    ProgressBar myProgressBar;*/
+    /* @BindView(R.id.myProgressBar)
+     ProgressBar myProgressBar;*/
     @BindView(R.id.wv_program)
-        SimpleWebView wv_program;
+    SimpleWebView wv_program;
     private WebSettings settings;
     private static final int REQUEST_CODE_CHOOSE_GRIDE = 0X0002;
     private static final int REQUEST_CODE_CHOOSE = 0X0001;
     private int index;
     private String urls;
+    //时间格式
+    private final SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
 
     @Override
     protected WebViewPresenter loadPresenter() {
         return new WebViewPresenter();
     }
+
     @Override
     protected void initData() {
 
@@ -109,7 +118,7 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
         wv_program.addJavascriptInterface(new AndroidtoJs(), "android");//AndroidtoJS类对象映射到js的test对象
         initDetailsH5();
 
-        if (getIntent().getStringExtra("title")!=null){
+        if (getIntent().getStringExtra("title") != null) {
             view.setVisibility(View.VISIBLE);
             tv_title.setText(getIntent().getStringExtra("title"));
             title.setVisibility(View.VISIBLE);
@@ -134,23 +143,23 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
     @SuppressLint("SetJavaScriptEnabled")
     private void initDetailsH5() {
 
-        Map<String,String> map=new HashMap<>();
-        map.put("token",GeneralUtils.getToken(getApplication()));
-        if (getIntent().getStringExtra("url")!=null){
-            wv_program.loadUrl(getIntent().getStringExtra("url"),map);
+        Map<String, String> map = new HashMap<>();
+        map.put("token", GeneralUtils.getToken(getApplication()));
+        if (getIntent().getStringExtra("url") != null) {
+            wv_program.loadUrl(getIntent().getStringExtra("url"), map);
         }
-    wv_program.setWebViewClient(new SimpleWebView.SimpleWebViewClient() {
+        wv_program.setWebViewClient(new SimpleWebView.SimpleWebViewClient() {
             @Override
             public void onPageFinished(com.tencent.smtt.sdk.WebView webView, String url) {
                 super.onPageFinished(webView, url);
-                urls=url;
+                urls = url;
                 LogUtils.e(url);//https://siji.51taodj.com/test-driver/driverScann/center.do
 //                toolbarTitle.setText(webView.getTitle());//获取WebView 的标题，设置到toolbar中去
             }
 
             @Override
             public boolean shouldOverrideUrlLoading(com.tencent.smtt.sdk.WebView webView, String url) {
-                LogUtils.e(url+"2222222");
+                LogUtils.e(url + "2222222");
 
                 if (url.contains("Activity/")) {
 
@@ -185,13 +194,13 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
     }
 
     /*code 不同事件接受處理*/
-    @Subscribe( threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void Resume(Resume resume) {
-        Map<String,String> map=new HashMap<>();
-        map.put("token",GeneralUtils.getToken(getApplication()));
+        Map<String, String> map = new HashMap<>();
+        map.put("token", GeneralUtils.getToken(getApplication()));
         LogUtils.e(GeneralUtils.isNullOrZeroLenght(urls));
-        if (!GeneralUtils.isNullOrZeroLenght(urls)){
-            wv_program.loadUrl(urls,map);
+        if (!GeneralUtils.isNullOrZeroLenght(urls)) {
+            wv_program.loadUrl(urls, map);
         }
     }
 
@@ -222,21 +231,21 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
         }
 
         @JavascriptInterface
-        public void check(String id,String customer_code,String type)
-        {
+        public void check(String id, String customer_code, String type) {
             LogUtils.e(id);
             Intent intent;
-            if (Build.MODEL.equals("NLS-MT90")){
+            if (Build.MODEL.equals("NLS-MT90")) {
                 intent = new Intent(getContext(), NuclearGoodsActivity.class);
-           }else {
+            } else {
                 intent = new Intent(getContext(), DDJNuclearGoodsActivity.class);
             }
-            intent.putExtra("customer_id",id);
-            intent.putExtra("customer_code",customer_code);
-            intent.putExtra("type",Integer.valueOf(type));
+            intent.putExtra("customer_id", id);
+            intent.putExtra("customer_code", customer_code);
+            intent.putExtra("type", Integer.valueOf(type));
             startActivity(intent);
 
         }
+
         @JavascriptInterface
         public void telephone(String phone) {
             LogUtils.d(phone);
@@ -261,19 +270,18 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
 
         @JavascriptInterface
         public void confirmPlan(int index) {
-            EventBus.getDefault().post(new ConfirmPlan(index,true));
+            EventBus.getDefault().post(new ConfirmPlan(index, true));
 //            MainTabActivity.lunchMainTabAc(WebViewActivity.this,index);
             finish();
         }
 
         @JavascriptInterface
-        public void mapNavi(String jsonObject)
-        {
+        public void mapNavi(String jsonObject) {
             LogUtils.d(jsonObject);
 
             try {
-                JSONObject jsonObject1=new JSONObject(jsonObject);
-                GeneralUtils.goToGaodeMap(getContext(),jsonObject1.getDouble("lat"),jsonObject1.getDouble("lng"),jsonObject1.getString("name"));
+                JSONObject jsonObject1 = new JSONObject(jsonObject);
+                GeneralUtils.goToGaodeMap(getContext(), jsonObject1.getDouble("lat"), jsonObject1.getDouble("lng"), jsonObject1.getString("name"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -298,15 +306,15 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
         @JavascriptInterface
         public String getLocation() {
             LogUtils.d("getLocation");
-            getPermissions(false,true);
+            getPermissions(false, true);
             return Constants.latitude + "|" + Constants.longtitude;
         }
 
         @JavascriptInterface
-        public void redirectPage(String url){
+        public void redirectPage(String url) {
             WebViewActivity.this.finish();
-            Intent intent=new Intent(getContext(), WebViewToActivity.class);
-            intent.putExtra("url", Constants.URL1+ url);
+            Intent intent = new Intent(getContext(), WebViewToActivity.class);
+            intent.putExtra("url", Constants.URL1 + url);
             startActivity(intent);
         }
 
@@ -324,10 +332,10 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
         @JavascriptInterface
         public void uploadImage() {
             //从相册中选择图片 此处使用知乎开源库Matisse
-            rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE,Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe(new Consumer<Boolean>() {
+            rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe(new Consumer<Boolean>() {
                 @Override
                 public void accept(Boolean b) throws Exception {
-                    Log.i("permission",b+"");
+                    Log.i("permission", b + "");
                     if (b) {
                         Matisse.from(WebViewActivity.this)
                                 .choose(MimeType.ofImage())
@@ -358,14 +366,19 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
         if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
             //获取拍摄的图片路径，如果是录制视频则是视频的第一帧图片路径
             String captureImagePath = Matisse.obtainCaptureImageResult(data);
-            if (captureImagePath != null && !captureImagePath.isEmpty()){
-                mPresenter.uploadImage(BitmapTools.saveBitmap(BitmapTools.getimage(new File(captureImagePath).getPath()), new File(captureImagePath).getPath()));
-            }else {
+            if (captureImagePath != null && !captureImagePath.isEmpty()) {
+                BitmapTools.ReturnObject object = BitmapTools.getImageTwo(new File(captureImagePath).getPath());
+                Bitmap dataBitmap = addImageWatermark(object);
+                mPresenter.uploadImage(BitmapTools.saveBitmap(dataBitmap, new File(captureImagePath).getPath()));
+                // mPresenter.uploadImage(BitmapTools.saveBitmap(BitmapTools.getimage(new File(captureImagePath).getPath()), new File(captureImagePath).getPath()));
+            } else {
                 //获取选择图片或者视频的结果路径，如果开启裁剪的话，获取的是原图的地址
                 List<String> list = Matisse.obtainSelectPathResult(data);//文件形式路径
-                mPresenter.uploadImage(BitmapTools.saveBitmap(BitmapTools.getimage(new File(list.get(0)).getPath()), new File(list.get(0)).getPath()));
+                BitmapTools.ReturnObject object = BitmapTools.getImageTwo(new File(list.get(0)).getPath());
+                Bitmap dataBitmap = addImageWatermark(object);
+                mPresenter.uploadImage(BitmapTools.saveBitmap(dataBitmap, new File(list.get(0)).getPath()));
+                // mPresenter.uploadImage(BitmapTools.saveBitmap(BitmapTools.getimage(new File(list.get(0)).getPath()), new File(list.get(0)).getPath()));
             }
-
         }
     }
 
@@ -384,13 +397,40 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
 //        }
 //    }
 
+    /**
+     * 退补换 货增加时间戳水印,合并两个bitMap
+     */
+    public Bitmap addImageWatermark(BitmapTools.ReturnObject sourceObject) {
+        Date curDate = new Date(System.currentTimeMillis());
+        String strTime = formatter.format(curDate);
+        View view = LayoutInflater.from(this).inflate(R.layout.date_water_mark_view, null, false);
+        TextView textView = view.findViewById(R.id.tvTime);
+        textView.setText(strTime);
+        //textView转bitMap
+        textView.setDrawingCacheEnabled(true);
+        int widthSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        int heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        textView.measure(widthSpec, heightSpec);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 8);
+        //+50补偿sourceObject.bitmap.getWidth()的宽度无法填充满
+        textView.layout(0, 0, sourceObject.bitmap.getWidth() + 50, textView.getMeasuredHeight());
+        Bitmap tvBitMap = Bitmap.createBitmap(textView.getDrawingCache());
+        tvBitMap.getWidth();
+        Bitmap resultBit = ImageWaterMarkUtil.createWaterMaskCenterBottom(sourceObject.bitmap, tvBitMap);
+        //ImageView viewSHow = (ImageView) findViewById(R.id.vvv);
+        //viewSHow.setImageBitmap(resultBit);
+        //释放资源
+        textView.destroyDrawingCache();
+        return resultBit;
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (wv_program != null){
+        if (wv_program != null) {
             ViewParent parent = wv_program.getParent();
-            if (parent != null){
-                ((ViewGroup)parent).removeView(wv_program);
+            if (parent != null) {
+                ((ViewGroup) parent).removeView(wv_program);
             }
             wv_program.stopLoading();
             //退出时调用此方法，移除绑定的服务，否则某些特定系统会报错mSearchWebView.getSettings().setJavaScriptEnabled(false);
@@ -401,10 +441,10 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
 
             wv_program.removeAllViews();
 
-            try{
+            try {
                 wv_program.destroy();
 
-            }catch(Throwable ex) {
+            } catch (Throwable ex) {
 
                 ex.printStackTrace();
 
