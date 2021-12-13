@@ -4,4 +4,7 @@
     <external-path
         name="app_update"
         path="AppUpdate" />
+    <external-path
+        name="external_files"
+        path="." />
 </paths>

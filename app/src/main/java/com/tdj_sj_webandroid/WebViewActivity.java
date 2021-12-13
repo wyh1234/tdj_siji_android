@@ -5,10 +5,15 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
@@ -41,6 +46,7 @@ import com.tdj_sj_webandroid.utils.GifSizeFilter;
 import com.tdj_sj_webandroid.utils.IMyLocation;
 import com.tdj_sj_webandroid.utils.ImageWaterMarkUtil;
 import com.tdj_sj_webandroid.utils.MyGlideEngine;
+import com.tdj_sj_webandroid.utils.ToastUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -49,6 +55,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -82,6 +89,10 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
     private String urls;
     //时间格式
     private final SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
+    //拍照
+    private static final int REQUEST_IMAGE_CAPTURE = 10;
+    //拍照图片保存路径
+    private String currentPhotoPath;
 
     @Override
     protected WebViewPresenter loadPresenter() {
@@ -328,41 +339,75 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
                     .forResult(REQUEST_CODE_CHOOSE);
         }
 
-
         @JavascriptInterface
         public void uploadImage() {
-            //从相册中选择图片 此处使用知乎开源库Matisse
-            rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe(new Consumer<Boolean>() {
-                @Override
-                public void accept(Boolean b) throws Exception {
-                    Log.i("permission", b + "");
-                    if (b) {
-                        Matisse.from(WebViewActivity.this)
-                                .choose(MimeType.ofImage())
-                                .theme(R.style.Matisse_Dracula)
-                                .countable(true)//true:选中后显示数字;false:选中后显示对号
-                                .maxSelectable(1)
-                                .capture(true)
-//                                .captureStrategy(new CaptureStrategy(true, "com.tdj_sj_webandroid.fileProvider")) //是否拍照功能，并设置拍照后图片的保存路径; FILE_PATH = 你项目的包名.fileprovider,必须配置不然会抛异常
-                                .addFilter(new GifSizeFilter(320, 320, 5 * Filter.K * Filter.K))
-                                .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
-                                .originalEnable(true)
-                                .maxOriginalSize(10)
-                                .thumbnailScale(0.85f)
-                                .imageEngine(new MyGlideEngine())
-                                .forResult(REQUEST_CODE_CHOOSE);
-
+//            //从相册中选择图片 此处使用知乎开源库Matisse
+//            rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe(new Consumer<Boolean>() {
+//                @Override
+//                public void accept(Boolean b) throws Exception {
+//                    Log.i("permission", b + "");
+//                    if (b) {
+//                        Matisse.from(WebViewActivity.this)
+//                                .choose(MimeType.ofImage())
+//                                .theme(R.style.Matisse_Dracula)
+//                                .countable(true)//true:选中后显示数字;false:选中后显示对号
+//                                .maxSelectable(1)
+//                                .capture(true)
+////                                .captureStrategy(new CaptureStrategy(true, "com.tdj_sj_webandroid.fileProvider")) //是否拍照功能，并设置拍照后图片的保存路径; FILE_PATH = 你项目的包名.fileprovider,必须配置不然会抛异常
+//                                .addFilter(new GifSizeFilter(320, 320, 5 * Filter.K * Filter.K))
+//                                .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+//                                .originalEnable(true)
+//                                .maxOriginalSize(10)
+//                                .thumbnailScale(0.85f)
+//                                .imageEngine(new MyGlideEngine())
+//                                .forResult(REQUEST_CODE_CHOOSE);
+//                    }
+//                }
+//            });
+            //判断相机是否可用,只开启拍照。若想又拍照又相册选图片请开启上面的代码
+            final boolean deviceHasCameraFlag = getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA);
+            if (deviceHasCameraFlag) {
+                rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean b) throws Exception {
+                        Log.i("permission", b + "");
+                        if (b) {
+                            dispatchTakePictureIntent();
+                        } else {
+                            ToastUtils.showToast(WebViewActivity.this, "没有相机使用权限");
+                        }
                     }
-                }
-            });
+                });
+            } else {
+                ToastUtils.showToast(WebViewActivity.this, "相机不可使用");
+            }
         }
-
     }
 
+    //打开相机拍照
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File photoFile = null;
+        try {
+            photoFile = createImageFile();
+        } catch (IOException ex) {
+            // Error occurred while creating the File
+        }
+        // Continue only if the File was successfully created
+        if (photoFile != null) {
+            //AndroidManifest.xml提供的authorities和下面保持一致
+            Uri photoURI = FileProvider.getUriForFile(this,
+                    BuildConfig.APPLICATION_ID + ".fileProvider",
+                    photoFile);
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        //知乎开源库Matisse 又拍照,又相册选择,暂时未使用
         if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
             //获取拍摄的图片路径，如果是录制视频则是视频的第一帧图片路径
             String captureImagePath = Matisse.obtainCaptureImageResult(data);
@@ -370,16 +415,40 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
                 BitmapTools.ReturnObject object = BitmapTools.getImageTwo(new File(captureImagePath).getPath());
                 Bitmap dataBitmap = addImageWatermark(object);
                 mPresenter.uploadImage(BitmapTools.saveBitmap(dataBitmap, new File(captureImagePath).getPath()));
-                // mPresenter.uploadImage(BitmapTools.saveBitmap(BitmapTools.getimage(new File(captureImagePath).getPath()), new File(captureImagePath).getPath()));
             } else {
                 //获取选择图片或者视频的结果路径，如果开启裁剪的话，获取的是原图的地址
                 List<String> list = Matisse.obtainSelectPathResult(data);//文件形式路径
                 BitmapTools.ReturnObject object = BitmapTools.getImageTwo(new File(list.get(0)).getPath());
                 Bitmap dataBitmap = addImageWatermark(object);
                 mPresenter.uploadImage(BitmapTools.saveBitmap(dataBitmap, new File(list.get(0)).getPath()));
-                // mPresenter.uploadImage(BitmapTools.saveBitmap(BitmapTools.getimage(new File(list.get(0)).getPath()), new File(list.get(0)).getPath()));
             }
         }
+        //只拍照,调用系统相机
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            //压缩图片
+            BitmapTools.ReturnObject object = BitmapTools.getImageTwo(currentPhotoPath);
+            //添加水印
+            Bitmap dataBitmap = addImageWatermark(object);
+            //上传图片
+            mPresenter.uploadImage(BitmapTools.saveBitmap(dataBitmap, currentPhotoPath));
+        }
+    }
+
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
     }
 
 
