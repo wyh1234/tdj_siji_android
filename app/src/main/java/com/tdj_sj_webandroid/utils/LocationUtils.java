@@ -38,6 +38,9 @@ public class LocationUtils {
     }
 
     public void startLocalService(boolean isBack, boolean isWeb) {
+        //隐私政策合规
+        AMapLocationClient.updatePrivacyShow(AppAplication.getAppContext(), true, true);
+        AMapLocationClient.updatePrivacyAgree(AppAplication.getAppContext(), true);
         //初始化定位
         if (mLocationClient == null) {
             try {

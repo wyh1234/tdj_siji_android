@@ -48,8 +48,6 @@ public abstract class BaseActivity<P extends IPresenter> extends FragmentActivit
 //            mImmersionBar=ImmersionBar.with(this);
 //            LogUtils.i(ImmersionBar.getStatusBarHeight(this));
         //沉浸式状态栏
-
-
         mPresenter = loadPresenter();
         //绑定v层
         initCommonData();
@@ -58,13 +56,9 @@ public abstract class BaseActivity<P extends IPresenter> extends FragmentActivit
         //初始化监听
         initListener();
 
-//        Log.i("父类","父类方法");
-
         rxPermissions=new RxPermissions(this);
         mStateView = StateView.inject(getStateViewRoot());
-        if (mStateView != null){
-            mStateView.setEmptyResource(R.layout.page_empty);
-        }
+        mStateView.setEmptyResource(R.layout.page_empty);
         if (!aBoolean){
             getPermissions(false,false);
         }
@@ -91,6 +85,7 @@ public abstract class BaseActivity<P extends IPresenter> extends FragmentActivit
     }
 
     protected abstract P loadPresenter();
+
     public static int getStatusBarHeight(Context context) {
         int statusBarHeight = 0;
         int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
@@ -99,7 +94,6 @@ public abstract class BaseActivity<P extends IPresenter> extends FragmentActivit
         }
         return statusBarHeight;
     }
-
 
     private void initCommonData() {
         if (mPresenter != null)
@@ -113,7 +107,6 @@ public abstract class BaseActivity<P extends IPresenter> extends FragmentActivit
     protected abstract void initView();
 
     protected abstract int getLayoutId();
-
 
     /**
      * @return 显示的内容
