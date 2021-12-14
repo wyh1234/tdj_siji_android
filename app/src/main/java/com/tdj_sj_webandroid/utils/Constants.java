@@ -49,6 +49,8 @@ public class Constants {
     public final static String diy_home = "diy/home.do?";
     public final static String getSijiCount = "storeDiyFee/getSijiCount.do?";
     public final static String getSijiCountByStore = "storeDiyFee/getSijiCountByStore.do?";
+    //上传图片携带时间戳水印
+    public final static String uploadWithMark = "home/imgUploadWithMark.do";
 
     public static double longtitude = 0d;//经度
 

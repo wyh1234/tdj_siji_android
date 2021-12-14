@@ -24,7 +24,7 @@ public class WebViewPresenter extends BasePresenter<Model, WebViewActivity> impl
     @Override
     public void uploadImage(File file) {
         LogUtils.i(file);
-        HttpUtils.onUploadOne(getIView().getContext(), file, Constants.upload, new JsonResponseHandler() {
+        HttpUtils.onUploadOne(getIView().getContext(), file, Constants.uploadWithMark, new JsonResponseHandler() {
             @Override
             public void onError(ApiException e) {
 
@@ -36,7 +36,6 @@ public class WebViewPresenter extends BasePresenter<Model, WebViewActivity> impl
                     if (response.getInt("err") == 200) {
                         if (response.getString("data") != null) {
                             getIView().uploadImage_Success(response.getString("data"));
-
                         }
                     }
                 } catch (JSONException e) {

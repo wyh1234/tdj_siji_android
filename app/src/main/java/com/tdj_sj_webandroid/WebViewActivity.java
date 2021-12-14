@@ -421,10 +421,10 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             //压缩图片
             BitmapTools.ReturnObject object = BitmapTools.getImageTwo(currentPhotoPath);
-            //添加水印
-            Bitmap dataBitmap = addImageWatermark(object);
+            //添加水印(改为接口上传添加时间水印)
+            //Bitmap dataBitmap = addImageWatermark(object);
             //上传图片
-            mPresenter.uploadImage(BitmapTools.saveBitmap(dataBitmap, currentPhotoPath));
+            mPresenter.uploadImage(BitmapTools.saveBitmap(object.bitmap, currentPhotoPath));
         }
     }
 
