@@ -85,8 +85,6 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
     private final SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
     //拍照
     private static final int REQUEST_IMAGE_CAPTURE = 10;
-    //拍照图片保存路径
-    private String currentPhotoPath;
 
     @Override
     protected WebViewPresenter loadPresenter() {
@@ -325,12 +323,6 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
 
         @JavascriptInterface
         public void takePhoto() {
-//            Matisse.from(WebViewActivity.this)
-////                    .jumpCapture()//直接跳拍摄，默认可以同时拍摄照片和视频
-//                    .jumpCapture(CaptureMode.Image)//只拍照片
-//                    //.jumpCapture(CaptureMode.Video)//只拍视频
-//                    .isCrop(false) //开启裁剪
-//                    .forResult(REQUEST_IMAGE_CAPTURE);
             TakePictureMethod();
         }
 
@@ -362,46 +354,33 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
             TakePictureMethod();
         }
 
-        public void TakePictureMethod() {
-            //判断相机是否可用,只开启拍照。若想又拍照又相册选图片请开启上面的代码
-            final boolean deviceHasCameraFlag = getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA);
-            if (deviceHasCameraFlag) {
-                rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(Boolean b) throws Exception {
-                        Log.i("permission", b + "");
-                        if (b) {
-                            dispatchTakePictureIntent();
-                        } else {
-                            ToastUtils.showToast(WebViewActivity.this, "没有相机使用权限");
-                        }
+    }
+
+    public void TakePictureMethod() {
+        //判断相机是否可用,只开启拍照。若想又拍照又相册选图片请开启上面的代码
+        final boolean deviceHasCameraFlag = getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA);
+        if (deviceHasCameraFlag) {
+            rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe(new Consumer<Boolean>() {
+                @Override
+                public void accept(Boolean b) throws Exception {
+                    Log.i("permission", b + "");
+                    if (b) {
+                        Matisse.from(WebViewActivity.this)
+//                    .jumpCapture()//直接跳拍摄，默认可以同时拍摄照片和视频
+                                .jumpCapture(CaptureMode.Image)//只拍照片
+                                //.jumpCapture(CaptureMode.Video)//只拍视频
+                                .isCrop(false) //开启裁剪
+                                .forResult(REQUEST_IMAGE_CAPTURE);
+                    } else {
+                        ToastUtils.showToast(WebViewActivity.this, "没有相机使用权限");
                     }
-                });
-            } else {
-                ToastUtils.showToast(WebViewActivity.this, "相机不可使用");
-            }
+                }
+            });
+        } else {
+            ToastUtils.showToast(WebViewActivity.this, "相机不可使用");
         }
     }
 
-    //打开相机拍照
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        File photoFile = null;
-        try {
-            photoFile = createImageFile();
-        } catch (IOException ex) {
-            // Error occurred while creating the File
-        }
-        // Continue only if the File was successfully created
-        if (photoFile != null) {
-            //AndroidManifest.xml提供的authorities和下面保持一致
-            Uri photoURI = FileProvider.getUriForFile(this,
-                    BuildConfig.APPLICATION_ID + ".fileProvider",
-                    photoFile);
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        }
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -424,32 +403,19 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
         }
         //只拍照,调用系统相机
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            //压缩图片
-            BitmapTools.ReturnObject object = BitmapTools.getImageTwo(currentPhotoPath);
-            //添加水印(改为接口上传添加时间水印)
-            //Bitmap dataBitmap = addImageWatermark(object);
-            //上传图片
-            mPresenter.uploadImage(BitmapTools.saveBitmap(object.bitmap, currentPhotoPath));
+            //获取拍摄的图片路径，如果是录制视频则是视频的第一帧图片路径
+            String captureImagePath = Matisse.obtainCaptureImageResult(data);
+            if (captureImagePath != null && !captureImagePath.isEmpty()) {
+                BitmapTools.ReturnObject object = BitmapTools.getImageTwo(new File(captureImagePath).getPath());
+                mPresenter.uploadImage(BitmapTools.saveBitmap(object.bitmap, new File(captureImagePath).getPath()));
+            } else {
+                //获取选择图片或者视频的结果路径，如果开启裁剪的话，获取的是原图的地址
+                List<String> list = Matisse.obtainSelectPathResult(data);//文件形式路径
+                BitmapTools.ReturnObject object = BitmapTools.getImageTwo(new File(list.get(0)).getPath());
+                mPresenter.uploadImage(BitmapTools.saveBitmap(object.bitmap, new File(list.get(0)).getPath()));
+            }
         }
     }
-
-
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        currentPhotoPath = image.getAbsolutePath();
-        return image;
-    }
-
 
 //    @Subscribe(threadMode = ThreadMode.MAIN)
 //    public void onMapEvent(LocationBean locationBean){
