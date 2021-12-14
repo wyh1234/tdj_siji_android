@@ -325,12 +325,13 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
 
         @JavascriptInterface
         public void takePhoto() {
-            Matisse.from(WebViewActivity.this)
-//                    .jumpCapture()//直接跳拍摄，默认可以同时拍摄照片和视频
-                    .jumpCapture(CaptureMode.Image)//只拍照片
-                    //.jumpCapture(CaptureMode.Video)//只拍视频
-                    .isCrop(false) //开启裁剪
-                    .forResult(REQUEST_CODE_CHOOSE);
+//            Matisse.from(WebViewActivity.this)
+////                    .jumpCapture()//直接跳拍摄，默认可以同时拍摄照片和视频
+//                    .jumpCapture(CaptureMode.Image)//只拍照片
+//                    //.jumpCapture(CaptureMode.Video)//只拍视频
+//                    .isCrop(false) //开启裁剪
+//                    .forResult(REQUEST_IMAGE_CAPTURE);
+            TakePictureMethod();
         }
 
         @JavascriptInterface
@@ -358,6 +359,10 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
 //                    }
 //                }
 //            });
+            TakePictureMethod();
+        }
+
+        public void TakePictureMethod() {
             //判断相机是否可用,只开启拍照。若想又拍照又相册选图片请开启上面的代码
             final boolean deviceHasCameraFlag = getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA);
             if (deviceHasCameraFlag) {
