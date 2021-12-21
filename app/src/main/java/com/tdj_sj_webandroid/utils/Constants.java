@@ -8,20 +8,22 @@ import android.widget.Toast;
 
 public class Constants {
     //正式环境
-//    public final static String URL="https://siji.51taodj.com/tdj-driver/";
-//    public final static String URL1="https://siji.51taodj.com/tdj-driver";
-    //预上线
-//    public final static String URL = "https://siji.51taodj.com/yushangxian-driver/";
-//    public final static String URL1 = "https://siji.51taodj.com/yushangxian-driver/";
+//    public final static String URL = "https://siji.51taodj.com/tdj-driver/";
+//    public final static String URL1 = "https://siji.51taodj.com/tdj-driver";
+    //新的预上线
+    public final static String URL = "https://siji.51taodj.com/ysx-driver/";
+    public final static String URL1 = "https://siji.51taodj.com/ysx-driver/";
     //测试环境
-    public final static String URL="https://siji.51taodj.com/test-driver/";
-    public final static String URL1="https://siji.51taodj.com/test-driver";
+    //   public final static String URL="https://siji.51taodj.com/test-driver/";
+    //    public final static String URL1="https://siji.51taodj.com/test-driver";
     //其他测试环境
 //    public final static String URL="http://47.111.135.109:8060/test-driver/";
 //    public final static String URL1="http://47.111.135.109:8060/test-driver";
 //    public final static String URL="http://47.111.135.109:8060/yushangxian-driver/";
 //    public final static String URL1="http://47.111.135.109:8060/yushangxian-driver/";
-
+    //旧的预上线
+    //   public final static String URL = "https://siji.51taodj.com/yushangxian-driver/";
+    //  public final static String URL1 = "https://siji.51taodj.com/yushangxian-driver/";
     //public final static String URL="http://192.168.10.239:8089/";
 //    public final static String URL1="http://192.168.10.239:8089";
 //public final static String URL="https://siji.51taodj.com/
