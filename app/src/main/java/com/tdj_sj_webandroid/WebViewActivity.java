@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.LocationManager;
@@ -29,6 +30,8 @@ import com.apkfuns.logutils.LogUtils;
 import com.gyf.barlibrary.ImmersionBar;
 import com.lxj.matisse.CaptureMode;
 import com.lxj.matisse.Matisse;
+import com.lxj.matisse.MimeType;
+import com.lxj.matisse.filter.Filter;
 import com.tdj_sj_webandroid.base.BaseActivity;
 import com.tdj_sj_webandroid.contract.TDJContract;
 import com.tdj_sj_webandroid.model.BackHomePage;
@@ -38,8 +41,10 @@ import com.tdj_sj_webandroid.mvp.presenter.WebViewPresenter;
 import com.tdj_sj_webandroid.utils.BitmapTools;
 import com.tdj_sj_webandroid.utils.Constants;
 import com.tdj_sj_webandroid.utils.GeneralUtils;
+import com.tdj_sj_webandroid.utils.GifSizeFilter;
 import com.tdj_sj_webandroid.utils.IMyLocation;
 import com.tdj_sj_webandroid.utils.ImageWaterMarkUtil;
+import com.tdj_sj_webandroid.utils.MyGlideEngine;
 import com.tdj_sj_webandroid.utils.ToastUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -328,35 +333,39 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
 
         @JavascriptInterface
         public void uploadImage() {
-//            //从相册中选择图片 此处使用知乎开源库Matisse
-//            rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe(new Consumer<Boolean>() {
-//                @Override
-//                public void accept(Boolean b) throws Exception {
-//                    Log.i("permission", b + "");
-//                    if (b) {
-//                        Matisse.from(WebViewActivity.this)
-//                                .choose(MimeType.ofImage())
-//                                .theme(R.style.Matisse_Dracula)
-//                                .countable(true)//true:选中后显示数字;false:选中后显示对号
-//                                .maxSelectable(1)
-//                                .capture(true)
-////                                .captureStrategy(new CaptureStrategy(true, "com.tdj_sj_webandroid.fileProvider")) //是否拍照功能，并设置拍照后图片的保存路径; FILE_PATH = 你项目的包名.fileprovider,必须配置不然会抛异常
-//                                .addFilter(new GifSizeFilter(320, 320, 5 * Filter.K * Filter.K))
-//                                .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
-//                                .originalEnable(true)
-//                                .maxOriginalSize(10)
-//                                .thumbnailScale(0.85f)
-//                                .imageEngine(new MyGlideEngine())
-//                                .forResult(REQUEST_CODE_CHOOSE);
-//                    }
-//                }
-//            });
             TakePictureMethod();
         }
 
     }
 
     public void TakePictureMethod() {
+        //又拍照又相册选图片
+        //从相册中选择图片 此处使用知乎开源库Matisse
+        rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe(new Consumer<Boolean>() {
+            @Override
+            public void accept(Boolean b) throws Exception {
+                Log.i("permission", b + "");
+                if (b) {
+                    Matisse.from(WebViewActivity.this)
+                            .choose(MimeType.ofImage())
+                            .theme(R.style.Matisse_Dracula)
+                            .countable(true)//true:选中后显示数字;false:选中后显示对号
+                            .maxSelectable(1)
+                            .capture(true)
+//                                .captureStrategy(new CaptureStrategy(true, "com.tdj_sj_webandroid.fileProvider")) //是否拍照功能，并设置拍照后图片的保存路径; FILE_PATH = 你项目的包名.fileprovider,必须配置不然会抛异常
+                            .addFilter(new GifSizeFilter(320, 320, 5 * Filter.K * Filter.K))
+                            .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+                            .originalEnable(true)
+                            .maxOriginalSize(10)
+                            .thumbnailScale(0.85f)
+                            .imageEngine(new MyGlideEngine())
+                            .forResult(REQUEST_CODE_CHOOSE);
+                }
+            }
+        });
+    }
+
+    public void TakePictureMethodSingle() {
         //判断相机是否可用,只开启拍照。若想又拍照又相册选图片请开启上面的代码
         final boolean deviceHasCameraFlag = getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA);
         if (deviceHasCameraFlag) {
@@ -391,14 +400,13 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
             String captureImagePath = Matisse.obtainCaptureImageResult(data);
             if (captureImagePath != null && !captureImagePath.isEmpty()) {
                 BitmapTools.ReturnObject object = BitmapTools.getImageTwo(new File(captureImagePath).getPath());
-                Bitmap dataBitmap = addImageWatermark(object);
-                mPresenter.uploadImage(BitmapTools.saveBitmap(dataBitmap, new File(captureImagePath).getPath()));
+                mPresenter.uploadImage(BitmapTools.saveBitmap(object.bitmap, new File(captureImagePath).getPath()));
             } else {
                 //获取选择图片或者视频的结果路径，如果开启裁剪的话，获取的是原图的地址
                 List<String> list = Matisse.obtainSelectPathResult(data);//文件形式路径
                 BitmapTools.ReturnObject object = BitmapTools.getImageTwo(new File(list.get(0)).getPath());
                 Bitmap dataBitmap = addImageWatermark(object);
-                mPresenter.uploadImage(BitmapTools.saveBitmap(dataBitmap, new File(list.get(0)).getPath()));
+                mPresenter.uploadImage(BitmapTools.saveBitmap(object.bitmap, new File(list.get(0)).getPath()));
             }
         }
         //只拍照,调用系统相机
@@ -432,7 +440,7 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
 //    }
 
     /**
-     * 退补换 货增加时间戳水印,合并两个bitMap
+     * 退补换 货增加时间戳水印,合并两个bitMap(已改为接口添水印,可删除)
      */
     public Bitmap addImageWatermark(BitmapTools.ReturnObject sourceObject) {
         Date curDate = new Date(System.currentTimeMillis());
