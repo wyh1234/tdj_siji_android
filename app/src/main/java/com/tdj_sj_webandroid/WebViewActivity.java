@@ -91,6 +91,8 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
     //拍照
     private static final int REQUEST_IMAGE_CAPTURE = 10;
 
+    private String currentPhotoPath;
+
     @Override
     protected WebViewPresenter loadPresenter() {
         return new WebViewPresenter();
@@ -356,7 +358,7 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
                             .addFilter(new GifSizeFilter(320, 320, 5 * Filter.K * Filter.K))
                             .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
                             .originalEnable(true)
-                            .maxOriginalSize(10)
+                            .maxOriginalSize(20)//原图大小
                             .thumbnailScale(0.85f)
                             .imageEngine(new MyGlideEngine())
                             .forResult(REQUEST_CODE_CHOOSE);
@@ -396,17 +398,21 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
         super.onActivityResult(requestCode, resultCode, data);
         //知乎开源库Matisse 又拍照,又相册选择,暂时未使用
         if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
+            try {
+                createImageFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             //获取拍摄的图片路径，如果是录制视频则是视频的第一帧图片路径
             String captureImagePath = Matisse.obtainCaptureImageResult(data);
             if (captureImagePath != null && !captureImagePath.isEmpty()) {
                 BitmapTools.ReturnObject object = BitmapTools.getImageTwo(new File(captureImagePath).getPath());
-                mPresenter.uploadImage(BitmapTools.saveBitmap(object.bitmap, new File(captureImagePath).getPath()));
+                mPresenter.uploadImage(BitmapTools.saveBitmap(object.bitmap, currentPhotoPath));
             } else {
                 //获取选择图片或者视频的结果路径，如果开启裁剪的话，获取的是原图的地址
                 List<String> list = Matisse.obtainSelectPathResult(data);//文件形式路径
                 BitmapTools.ReturnObject object = BitmapTools.getImageTwo(new File(list.get(0)).getPath());
-                Bitmap dataBitmap = addImageWatermark(object);
-                mPresenter.uploadImage(BitmapTools.saveBitmap(object.bitmap, new File(list.get(0)).getPath()));
+                mPresenter.uploadImage(BitmapTools.saveBitmap(object.bitmap, currentPhotoPath));
             }
         }
         //只拍照,调用系统相机
@@ -464,6 +470,22 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
         //释放资源
         textView.destroyDrawingCache();
         return resultBit;
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "TDJ_JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
     }
 
     @Override
