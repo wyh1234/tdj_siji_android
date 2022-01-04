@@ -353,12 +353,12 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
                             .theme(R.style.Matisse_Dracula)
                             .countable(true)//true:选中后显示数字;false:选中后显示对号
                             .maxSelectable(1)
-                            .capture(true)
+                            .capture(true)//开启拍摄按钮
 //                                .captureStrategy(new CaptureStrategy(true, "com.tdj_sj_webandroid.fileProvider")) //是否拍照功能，并设置拍照后图片的保存路径; FILE_PATH = 你项目的包名.fileprovider,必须配置不然会抛异常
                             .addFilter(new GifSizeFilter(320, 320, 5 * Filter.K * Filter.K))
                             .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
                             .originalEnable(true)
-                            .maxOriginalSize(20)//原图大小
+                            .maxOriginalSize(70)//原图大小
                             .thumbnailScale(0.85f)
                             .imageEngine(new MyGlideEngine())
                             .forResult(REQUEST_CODE_CHOOSE);
@@ -411,7 +411,12 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
             } else {
                 //获取选择图片或者视频的结果路径，如果开启裁剪的话，获取的是原图的地址
                 List<String> list = Matisse.obtainSelectPathResult(data);//文件形式路径
+                File file = new File(new File(list.get(0)).getPath());
+                long length = file.length() / 1024;
+                // Log.d("aazzzz", "原图大小  " + length + "kb");
                 BitmapTools.ReturnObject object = BitmapTools.getImageTwo(new File(list.get(0)).getPath());
+                long length2 = BitmapTools.saveBitmap(object.bitmap, currentPhotoPath).length() / 1024;
+                //Log.d("aazzzz", "压缩后大小  " + length2 + "kb");
                 mPresenter.uploadImage(BitmapTools.saveBitmap(object.bitmap, currentPhotoPath));
             }
         }
@@ -472,6 +477,9 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
         return resultBit;
     }
 
+    /**
+     * 图片压缩后的保存文件夹,防止压缩后的图片替换了原图
+     */
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
