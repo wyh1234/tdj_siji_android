@@ -347,7 +347,7 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
         rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe(new Consumer<Boolean>() {
             @Override
             public void accept(Boolean b) throws Exception {
-                Log.i("permission", b + "");
+                Log.i("permission", b + "右派优选");
                 if (b) {
                     Matisse.from(WebViewActivity.this)
                             .choose(MimeType.ofImage())
@@ -375,7 +375,7 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
             rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe(new Consumer<Boolean>() {
                 @Override
                 public void accept(Boolean b) throws Exception {
-                    Log.i("permission", b + "");
+                    Log.i("permission", b + "只排");
                     if (b) {
                         Matisse.from(WebViewActivity.this)
 //                    .jumpCapture()//直接跳拍摄，默认可以同时拍摄照片和视频
