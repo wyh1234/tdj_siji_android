@@ -21,6 +21,9 @@ public class WebViewPresenter extends BasePresenter<Model, WebViewActivity> impl
         return null;
     }
 
+    /**
+     * 退换补打卡上传
+     */
     @Override
     public void uploadImage(File file) {
         LogUtils.i(file);
@@ -44,4 +47,31 @@ public class WebViewPresenter extends BasePresenter<Model, WebViewActivity> impl
             }
         });
     }
+
+    /**
+     * 拍照打卡上传
+     */
+    public void uploadImageSingle(File file) {
+        LogUtils.i(file);
+        HttpUtils.onUploadOne(getIView().getContext(), file, Constants.upload, new JsonResponseHandler() {
+            @Override
+            public void onError(ApiException e) {
+
+            }
+
+            @Override
+            public void onSuccess(JSONObject response) {
+                try {
+                    if (response.getInt("err") == 200) {
+                        if (response.getString("data") != null) {
+                            getIView().uploadImage_Success(response.getString("data"));
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
 }

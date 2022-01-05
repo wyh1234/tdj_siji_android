@@ -433,7 +433,7 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
             String captureImagePath = Matisse.obtainCaptureImageResult(data);
             if (captureImagePath != null && !captureImagePath.isEmpty()) {
                 BitmapTools.ReturnObject object = BitmapTools.getImageTwo(new File(captureImagePath).getPath());
-                mPresenter.uploadImage(BitmapTools.saveBitmap(object.bitmap, currentPhotoPath));
+                mPresenter.uploadImageSingle(BitmapTools.saveBitmap(object.bitmap, currentPhotoPath));
             }
         }
 
