@@ -330,7 +330,8 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
 
         @JavascriptInterface
         public void takePhoto() {
-            TakePictureMethod();
+            //只拍照打卡
+            TakePictureMethodSingle();
         }
 
         @JavascriptInterface
@@ -420,20 +421,22 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
                 mPresenter.uploadImage(BitmapTools.saveBitmap(object.bitmap, currentPhotoPath));
             }
         }
-        //只拍照,调用系统相机
+
+        //只拍照打卡,调用系统相机
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            try {
+                createImageFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             //获取拍摄的图片路径，如果是录制视频则是视频的第一帧图片路径
             String captureImagePath = Matisse.obtainCaptureImageResult(data);
             if (captureImagePath != null && !captureImagePath.isEmpty()) {
                 BitmapTools.ReturnObject object = BitmapTools.getImageTwo(new File(captureImagePath).getPath());
-                mPresenter.uploadImage(BitmapTools.saveBitmap(object.bitmap, new File(captureImagePath).getPath()));
-            } else {
-                //获取选择图片或者视频的结果路径，如果开启裁剪的话，获取的是原图的地址
-                List<String> list = Matisse.obtainSelectPathResult(data);//文件形式路径
-                BitmapTools.ReturnObject object = BitmapTools.getImageTwo(new File(list.get(0)).getPath());
-                mPresenter.uploadImage(BitmapTools.saveBitmap(object.bitmap, new File(list.get(0)).getPath()));
+                mPresenter.uploadImage(BitmapTools.saveBitmap(object.bitmap, currentPhotoPath));
             }
         }
+
     }
 
 //    @Subscribe(threadMode = ThreadMode.MAIN)
