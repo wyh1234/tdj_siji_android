@@ -63,4 +63,9 @@
     <color name="floral_white">#FFFAF0</color>
 
     <!-- 柠檬绸色 -->
+
+    <color name="gray_6e">#eeeeee</color>
+
+    <color name="bank_FF6C6C6C">#FF6C6C6C</color>
+
 </resources>

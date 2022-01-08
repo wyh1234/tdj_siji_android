@@ -2,6 +2,8 @@ package com.tdj_sj_webandroid;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -11,8 +13,6 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.provider.MediaStore;
-import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.view.Window;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.widget.ImageView;
@@ -44,6 +45,7 @@ import com.tdj_sj_webandroid.utils.GeneralUtils;
 import com.tdj_sj_webandroid.utils.GifSizeFilter;
 import com.tdj_sj_webandroid.utils.IMyLocation;
 import com.tdj_sj_webandroid.utils.ImageWaterMarkUtil;
+import com.tdj_sj_webandroid.utils.JumpPermissionManagement;
 import com.tdj_sj_webandroid.utils.MyGlideEngine;
 import com.tdj_sj_webandroid.utils.ToastUtils;
 
@@ -77,8 +79,6 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
     @BindView(R.id.tv_title)
     TextView tv_title;
 
-    /* @BindView(R.id.myProgressBar)
-     ProgressBar myProgressBar;*/
     @BindView(R.id.wv_program)
     SimpleWebView wv_program;
     private WebSettings settings;
@@ -93,6 +93,11 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
 
     private String currentPhotoPath;
 
+    /**
+     * 是否有定位权限 0无1有
+     */
+    private int isLocationPermission = 0;
+
     @Override
     protected WebViewPresenter loadPresenter() {
         return new WebViewPresenter();
@@ -100,7 +105,6 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
 
     @Override
     protected void initData() {
-
     }
 
     @Override
@@ -281,7 +285,7 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
         @JavascriptInterface
         public void confirmPlan(int index) {
             EventBus.getDefault().post(new ConfirmPlan(index, true));
-//            MainTabActivity.lunchMainTabAc(WebViewActivity.this,index);
+//          MainTabActivity.lunchMainTabAc(WebViewActivity.this,index);
             finish();
         }
 
@@ -313,11 +317,51 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
 //
 //        }
 
+        /**
+         * 上传 此时经纬度和是否有定位权限
+         */
         @JavascriptInterface
         public String getLocation() {
-            LogUtils.d("getLocation");
             getPermissions(false, true);
-            return Constants.latitude + "|" + Constants.longtitude;
+            if (aBoolean) {
+                isLocationPermission = 1;
+            } else {
+                isLocationPermission = 0;
+                initPermissionSettingDialog();
+            }
+            Log.d("upupload", "" + isLocationPermission);
+            return Constants.latitude + "|" + Constants.longtitude + "|" + isLocationPermission;
+        }
+
+        /**
+         * 权限设置弹窗
+         */
+        private void initPermissionSettingDialog() {
+            AlertDialog.Builder builder = new AlertDialog.Builder(WebViewActivity.this);
+            View view = LayoutInflater.from(WebViewActivity.this).inflate(R.layout.permission_detail_dialog, null);
+            builder.setView(view);
+            builder.create();
+            Window windows = builder.create().getWindow();
+            //圆角
+            windows.setBackgroundDrawableResource(R.drawable.bg_circle);
+            Dialog dialog = builder.show();
+            view.findViewById(R.id.close_id).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+            view.findViewById(R.id.confirm_id).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                    try {
+                        JumpPermissionManagement.GoToSetting(WebViewActivity.this);
+                    } catch (Exception e) {
+
+                    }
+                }
+            });
         }
 
         @JavascriptInterface
@@ -438,20 +482,6 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
         }
 
     }
-
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void onMapEvent(LocationBean locationBean){
-//        double latitude = locationBean.getLatitude();
-//        double longitude = locationBean.getLongitude();
-//        if (locationBean.isBack() && locationBean.isWbeView()) {
-//            wv_program.post(new Runnable() {
-//                @Override
-//                public void run() {
-//                    wv_program.loadUrl("javascript:getLocation(\"" + (longitude) + "\",\"" + (latitude) + "\")");
-//                }
-//            });
-//        }
-//    }
 
     /**
      * 退补换 货增加时间戳水印,合并两个bitMap(已改为接口添水印,可删除)

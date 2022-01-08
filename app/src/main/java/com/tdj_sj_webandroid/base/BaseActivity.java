@@ -28,13 +28,14 @@ import io.reactivex.functions.Consumer;
  * Created by wanyh on 2017/9/11.
  */
 /*0356
-* */
+ * */
 public abstract class BaseActivity<P extends IPresenter> extends FragmentActivity implements IView {
     protected View view;
     protected P mPresenter;
-     public RxPermissions rxPermissions;
-     private boolean aBoolean;
+    public RxPermissions rxPermissions;
+    public boolean aBoolean;
     protected StateView mStateView;//用于显示加载中、网络异常，空布局、内容布局
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,31 +57,34 @@ public abstract class BaseActivity<P extends IPresenter> extends FragmentActivit
         //初始化监听
         initListener();
 
-        rxPermissions=new RxPermissions(this);
+        rxPermissions = new RxPermissions(this);
         mStateView = StateView.inject(getStateViewRoot());
         mStateView.setEmptyResource(R.layout.page_empty);
-        if (!aBoolean){
-            getPermissions(false,false);
+        if (!aBoolean) {
+            getPermissions(false, false);
         }
         //加载网络（或者本地）数据
         initData();
     }
-    /**StateView的根布局，默认是整个界面，如果需要变换可以重写此方法*/
+
+    /**
+     * StateView的根布局，默认是整个界面，如果需要变换可以重写此方法
+     */
     public View getStateViewRoot() {
         return view;
     }
 
-    public void getPermissions(boolean isBack,boolean isWeb){
+    public void getPermissions(boolean isBack, boolean isWeb) {
 
-            rxPermissions.request( Manifest.permission.ACCESS_COARSE_LOCATION).subscribe(new Consumer<Boolean>() {
-                @Override
-                public void accept(Boolean b) throws Exception {
-                    aBoolean=b;
-                    if (b){
-                        LocationUtils.getInstance().startLocalService(isBack,isWeb);
-                    }
+        rxPermissions.request(Manifest.permission.ACCESS_COARSE_LOCATION).subscribe(new Consumer<Boolean>() {
+            @Override
+            public void accept(Boolean b) throws Exception {
+                aBoolean = b;
+                if (b) {
+                    LocationUtils.getInstance().startLocalService(isBack, isWeb);
                 }
-            });
+            }
+        });
 
     }
 
@@ -119,7 +123,7 @@ public abstract class BaseActivity<P extends IPresenter> extends FragmentActivit
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (this.mPresenter != null){
+        if (this.mPresenter != null) {
             mPresenter.detachView();
         }
         LocationUtils.getInstance().stopLocalService();
@@ -158,7 +162,7 @@ public abstract class BaseActivity<P extends IPresenter> extends FragmentActivit
     }
 
     /*code 不同事件接受處理*/
-    @Subscribe( threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void eventCode(LocationBean locationBean) {
         LogUtils.i(locationBean);
 /*        LogUtils.i(this instanceof StorageManagementActivity);
@@ -191,11 +195,13 @@ public abstract class BaseActivity<P extends IPresenter> extends FragmentActivit
     public boolean isEventBusRegisted(Object subscribe) {
         return EventBus.getDefault().isRegistered(subscribe);
     }
+
     public void registerEventBus(Object subscribe) {
         if (!isEventBusRegisted(subscribe)) {
             EventBus.getDefault().register(subscribe);
         }
     }
+
     public void unregisterEventBus(Object subscribe) {
         if (isEventBusRegisted(subscribe)) {
             EventBus.getDefault().unregister(subscribe);
