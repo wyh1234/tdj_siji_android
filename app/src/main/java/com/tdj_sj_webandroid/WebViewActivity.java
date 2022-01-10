@@ -358,7 +358,6 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
                     try {
                         JumpPermissionManagement.GoToSetting(WebViewActivity.this);
                     } catch (Exception e) {
-
                     }
                 }
             });

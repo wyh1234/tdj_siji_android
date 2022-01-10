@@ -59,6 +59,9 @@ public class JumpPermissionManagement {
             case MANUFACTURER_LETV:
                 Letv(activity);
                 break;
+            case MANUFACTURER_VIVO:
+                ViVo(activity);
+                break;
             default:
                 ApplicationInfo(activity);
                 Log.e("goToSetting", "目前暂不支持此系统");
@@ -123,6 +126,15 @@ public class JumpPermissionManagement {
         intent.putExtra("packageName", BuildConfig.APPLICATION_ID);
         ComponentName comp = new ComponentName("com.letv.android.letvsafe", "com.letv.android.letvsafe.PermissionAndApps");
         intent.setComponent(comp);
+        activity.startActivity(intent);
+    }
+
+    public static void ViVo(Activity activity) {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        ComponentName componentName = new ComponentName("com.vivo.permissionmanager", "com.vivo.permissionmanager.activity.PurviewTabActivity");
+        intent.setComponent(componentName);
+        intent.putExtra("extra_pkgname", BuildConfig.APPLICATION_ID);
         activity.startActivity(intent);
     }
 
