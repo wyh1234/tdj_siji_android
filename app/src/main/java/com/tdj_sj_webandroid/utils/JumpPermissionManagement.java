@@ -11,7 +11,7 @@ import android.util.Log;
 import com.tdj_sj_webandroid.BuildConfig;
 
 /**
- * 跳转系统设置(一个跳不了)
+ * 跳转系统设置(使用adb dumps调试)
  */
 public class JumpPermissionManagement {
 
