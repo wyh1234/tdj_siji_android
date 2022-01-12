@@ -11,8 +11,8 @@ public class Constants {
 //    public final static String URL = "https://siji.51taodj.com/tdj-driver/";
 //    public final static String URL1 = "https://siji.51taodj.com/tdj-driver";
     //新的预上线
-    //  public final static String URL = "https://siji.51taodj.com/ysx-driver/";
-    //  public final static String URL1 = "https://siji.51taodj.com/ysx-driver/";
+    // public final static String URL = "https://siji.51taodj.com/ysx-driver/";
+    //   public final static String URL1 = "https://siji.51taodj.com/ysx-driver/";
     //测试环境
     public final static String URL = "https://siji.51taodj.com/test-driver/";
     public final static String URL1 = "https://siji.51taodj.com/test-driver";

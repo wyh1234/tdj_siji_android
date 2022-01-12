@@ -3,6 +3,7 @@ package com.tdj_sj_webandroid.fragment;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
@@ -17,9 +18,15 @@ import com.tdj_sj_webandroid.ScannerHistoryActivity;
 import com.tdj_sj_webandroid.SimpleWebView;
 import com.tdj_sj_webandroid.WebViewActivity;
 import com.tdj_sj_webandroid.base.BaseFrgment;
+import com.tdj_sj_webandroid.model.ConfirmPlan;
+import com.tdj_sj_webandroid.model.LocationBean;
+import com.tdj_sj_webandroid.model.event.RefreshBackEvent;
 import com.tdj_sj_webandroid.mvp.presenter.IPresenter;
 import com.tdj_sj_webandroid.utils.Constants;
 import com.tdj_sj_webandroid.utils.GeneralUtils;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,23 +37,34 @@ import butterknife.ButterKnife;
 public class MyFragment extends BaseFrgment {
     @BindView(R.id.tv_refresh)
     TextView tv_refresh;
-  /*  @BindView(R.id.myProgressBar)
-    ProgressBar myProgressBar;*/
+    /*  @BindView(R.id.myProgressBar)
+      ProgressBar myProgressBar;*/
     @BindView(R.id.wv_program)
     SimpleWebView wv_program;
     private WebSettings settings;
     private MainTabActivity activity;
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         activity = (MainTabActivity) context;
+        registerEventBus(this);
     }
+
     @Override
     protected void initView(View view) {
         ButterKnife.bind(this, view);
         wv_program.addJavascriptInterface(new AndroidtoJs(), "android");//AndroidtoJS类对象映射到js的test对象
         initDetailsH5();
     }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        unregisterEventBus(this);
+    }
+
     /**
      * 当界面重新展示时（fragment.show）,调用onrequest刷新界面
      */
@@ -59,15 +77,17 @@ public class MyFragment extends BaseFrgment {
             initDetailsH5();
         }
     }
+
     /**
      * 初始化webView
      */
     @SuppressLint("SetJavaScriptEnabled")
     private void initDetailsH5() {
-        Map<String,String> map=new HashMap<>();
+        Log.d("sssssssss", "llogg " + "初始化 ");
+        Map<String, String> map = new HashMap<>();
         map.put("token", GeneralUtils.getToken(getContext()));
-            wv_program.loadUrl(Constants.URL+Constants.mine_do,map);
-        LogUtils.d(Constants.URL+Constants.mine_do);
+        wv_program.loadUrl(Constants.URL + Constants.mine_do, map);
+        LogUtils.d(Constants.URL + Constants.mine_do);
         wv_program.setWebViewClient(new SimpleWebView.SimpleWebViewClient() {
     /*        @Override
             public void onPageFinished(com.tencent.smtt.sdk.WebView webView, String url) {
@@ -106,6 +126,11 @@ public class MyFragment extends BaseFrgment {
         });*/
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(RefreshBackEvent event) {
+        initDetailsH5();
+    }
+
     @Override
     protected void loadData() {
 
@@ -123,52 +148,49 @@ public class MyFragment extends BaseFrgment {
 
     public class AndroidtoJs extends Object {
         @JavascriptInterface
-        public void quitLogin()
-        {
+        public void quitLogin() {
             GeneralUtils.removeToken(AppAplication.getAppContext());
             Intent intent = new Intent(getContext(), MianActivity.class);
-           startActivity(intent);
-           activity.finish();
+            startActivity(intent);
+            activity.finish();
 
         }
+
         @JavascriptInterface
-        public void backHomePage()
-        {
+        public void backHomePage() {
             activity.setTabSelection(0);
 
         }
+
         @JavascriptInterface
-        public void changePassword()
-        {
+        public void changePassword() {
             GeneralUtils.removeToken(AppAplication.getAppContext());
             Intent intent = new Intent(getContext(), MianActivity.class);
             startActivity(intent);
-
-
-
         }
+
         @JavascriptInterface
-        public void passwordChange(String url)
-        {
-            Intent intent=new Intent(getContext(), WebViewActivity.class);
-            intent.putExtra("url", Constants.URL1+url);
+        public void passwordChange(String url) {
+            Intent intent = new Intent(getContext(), WebViewActivity.class);
+            intent.putExtra("url", Constants.URL1 + url);
             startActivity(intent);
 
 
-
         }
+
         @JavascriptInterface
-        public void  startDepart(String url){
+        public void startDepart(String url) {
             LogUtils.d(url);
-            Intent intent=new Intent(getContext(), WebViewActivity.class);
-            intent.putExtra("url", Constants.URL1+url);
+            Intent intent = new Intent(getContext(), WebViewActivity.class);
+            intent.putExtra("url", Constants.URL1 + url);
             startActivity(intent);
 
 
         }
+
         @JavascriptInterface
-        public void  scannerHistory(){
-            Intent intent=new Intent(getContext(), ScannerHistoryActivity.class);
+        public void scannerHistory() {
+            Intent intent = new Intent(getContext(), ScannerHistoryActivity.class);
             startActivity(intent);
         }
 

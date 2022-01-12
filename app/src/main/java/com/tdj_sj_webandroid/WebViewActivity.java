@@ -38,6 +38,7 @@ import com.tdj_sj_webandroid.contract.TDJContract;
 import com.tdj_sj_webandroid.model.BackHomePage;
 import com.tdj_sj_webandroid.model.ConfirmPlan;
 import com.tdj_sj_webandroid.model.Resume;
+import com.tdj_sj_webandroid.model.event.RefreshBackEvent;
 import com.tdj_sj_webandroid.mvp.presenter.WebViewPresenter;
 import com.tdj_sj_webandroid.utils.BitmapTools;
 import com.tdj_sj_webandroid.utils.Constants;
@@ -380,6 +381,15 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements I
         @JavascriptInterface
         public void uploadImage() {
             TakePictureMethod();
+        }
+
+        /**
+         * 打卡界面返回我的页面刷新
+         */
+        @JavascriptInterface
+        public void gobackRefresh() {
+            EventBus.getDefault().post(new RefreshBackEvent(1));
+            finish();
         }
 
     }
