@@ -268,6 +268,7 @@ public class MapFragment extends BaseFrgment {
             public void onSuccess(JSONObject response) {
                 try {
                     if (response.getInt("err") == 200) {
+                        isFirstGetLocation = true;
                         if (response.getString("data") != null) {
                             uploadImage_Success(response.getString("data"));
 
